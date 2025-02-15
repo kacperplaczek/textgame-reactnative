@@ -86,7 +86,7 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.gratekstowa"
+    namespace 'com.forsolutions.noreturn'
     defaultConfig {
         applicationId 'com.forsolutions.noreturn'
         minSdkVersion rootProject.ext.minSdkVersion
