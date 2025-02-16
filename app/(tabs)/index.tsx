@@ -59,15 +59,15 @@ const styles = StyleSheet.create({
         color: 'limegreen',
         fontFamily: 'VT323Regular',
         textAlign: 'center',
-        marginBottom: 20,
+        marginBottom: 30,
     },
     spacer: {
         flex: 1, // żeby "KLIKNIJ" poszło na dół
     },
     border: {
         position: 'absolute',
-        top: 30,
-        bottom: 10,
+        top: 15,
+        bottom: 15,
         left: 20,
         right: 20,
         borderRadius: 10,

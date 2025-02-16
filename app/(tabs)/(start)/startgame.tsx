@@ -1,40 +1,39 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import {
-    View,
-    Text,
-    ScrollView,
-    TouchableOpacity,
-    StyleSheet,
-    Image,
-    ActivityIndicator,
-    ImageBackground, Dimensions
-} from 'react-native';
-import { useRouter, useLocalSearchParams } from 'expo-router';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Dimensions, ImageBackground } from 'react-native';
+import { useRouter } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import Storage from 'expo-storage';
+
 import { substituteGenderSuffixes } from '@/lib/dialogue/GenderSuffix';
 import { translations, Language } from '@/lib/translations/translations';
 import { DialogueController } from '@/lib/dialogue/DialogueController';
+import { npcData, NpcKey } from '@/lib/dialogue/NPCData';
+import { getCurrentLanguage } from '@/lib/settings/LanguageController';
 
 const { width, height } = Dimensions.get('window');
+
+type DialogueMessage = {
+    autor: 'NPC' | 'GRACZ';
+    npcKey?: NpcKey;
+    tekst: string;
+};
 
 export default function StartGameScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [hasStartedGame, setHasStartedGame] = useState<boolean | null>(null);
     const [plec, setPlec] = useState<'pan' | 'pani' | null>(null);
     const [jezyk, setJezyk] = useState<Language>('pl');
-    const [dialogue, setDialogue] = useState<{ autor: 'NPC' | 'GRACZ'; tekst: string }[]>([]);
+    const [dialogue, setDialogue] = useState<DialogueMessage[]>([]);
     const [options, setOptions] = useState<{ tekst: string; akcja: () => void }[]>([]);
     const [currentScene, setCurrentScene] = useState<string | null>(null);
 
     const router = useRouter();
-    const { refresh } = useLocalSearchParams();
     const scrollRef = useRef<ScrollView>(null);
 
     const checkGameStarted = useCallback(async () => {
         setIsLoading(true);
         const started = await Storage.getItem({ key: 'gameStarted' });
         const gender = await Storage.getItem({ key: 'plec' });
-        const storedLang = await Storage.getItem({ key: 'lang' });
         const storedScene = await DialogueController.getScene();
 
         if (started === 'true') {
@@ -47,18 +46,17 @@ export default function StartGameScreen() {
             setPlec(gender);
         }
 
-        if (storedLang === 'pl' || storedLang === 'en') {
-            setJezyk(storedLang);
-        }
+        setCurrentScene(storedScene || 'dzwoni_officer');
 
-        setCurrentScene(storedScene || 'dzwoni_officer'); // domyślnie początkowa scena
+        const lang = await getCurrentLanguage();
+        setJezyk(lang);
 
         setIsLoading(false);
     }, []);
 
     useEffect(() => {
         checkGameStarted();
-    }, [refresh]);
+    }, []);
 
     useEffect(() => {
         if (hasStartedGame === false) {
@@ -70,11 +68,11 @@ export default function StartGameScreen() {
         scrollRef.current?.scrollToEnd({ animated: true });
     }, [dialogue]);
 
-    const addMessage = (autor: 'NPC' | 'GRACZ', tekst: string) => {
-        setDialogue((prev) => [...prev, { autor, tekst }]);
+    const addMessage = (autor: 'NPC' | 'GRACZ', tekst: string, npcKey?: NpcKey) => {
+        setDialogue((prev) => [...prev, { autor, tekst, npcKey }]);
     };
 
-    const renderText = (text: string, plec: 'pan' | 'pani' | null, jezyk: Language) => {
+    const renderText = (text: string) => {
         if (jezyk === 'pl') {
             return substituteGenderSuffixes(text, plec);
         }
@@ -98,7 +96,7 @@ export default function StartGameScreen() {
 
         switch (currentScene) {
             case 'dzwoni_officer':
-                addMessage('NPC', translations[jezyk].dzwoniOfficer);
+                addMessage('NPC', translations[jezyk].dzwoniOfficer, 'officer');
                 setOptions([
                     {
                         tekst: translations[jezyk].odbierzPolaczenie,
@@ -108,13 +106,13 @@ export default function StartGameScreen() {
                 break;
 
             case 'start':
-                addMessage('NPC', translations[jezyk].connecting);
+                addMessage('NPC', translations[jezyk].connecting, 'officer');
                 setOptions([]);
                 setTimeout(() => handleSceneChange('pytanie_o_plec'), 5000);
                 break;
 
             case 'pytanie_o_plec':
-                addMessage('NPC', translations[jezyk].welcome);
+                addMessage('NPC', translations[jezyk].welcome, 'officer');
                 setOptions([
                     { tekst: translations[jezyk].pan, akcja: () => handleGenderChoice('pan') },
                     { tekst: translations[jezyk].pani, akcja: () => handleGenderChoice('pani') },
@@ -122,7 +120,7 @@ export default function StartGameScreen() {
                 break;
 
             case 'powitanie_po_pleci':
-                addMessage('NPC', translations[jezyk].dalej);
+                addMessage('NPC', translations[jezyk].dalej, 'officer');
                 setOptions([]);
                 break;
 
@@ -145,20 +143,33 @@ export default function StartGameScreen() {
             style={styles.background}
             resizeMode="cover"
         >
+            <StatusBar hidden />
             <View style={styles.dialogueContainer}>
                 <ScrollView ref={scrollRef}>
                     {dialogue.map((msg, index) => (
-                        <View key={index} style={styles.messageBlock}>
-                            {msg.autor === 'NPC' && (
+                        <View
+                            key={index}
+                            style={[
+                                styles.messageBlock,
+                                msg.autor === 'GRACZ' && styles.playerMessageBlock, // Tu dla GRACZA osobny styl
+                            ]}
+                        >
+                            {msg.autor === 'NPC' && msg.npcKey && npcData[msg.npcKey] && (
                                 <View style={styles.messageHeader}>
-                                    <Image
-                                        source={require('../../../assets/images/avatar/oficer_rekrutacji.png')}
-                                        style={styles.avatar}
-                                    />
-                                    <Text style={styles.messageTitle}>{translations[jezyk].officerTitle}</Text>
+                                    <Image source={npcData[msg.npcKey].avatar} style={styles.avatar} />
+                                    <Text style={styles.messageTitle}>
+                                        {translations[jezyk][npcData[msg.npcKey].nameKey]}
+                                    </Text>
                                 </View>
                             )}
-                            <Text style={styles.messageText}>{renderText(msg.tekst, plec, jezyk)}</Text>
+                            <Text
+                                style={[
+                                    styles.messageText,
+                                    msg.autor === 'GRACZ' && styles.playerMessageText, // Tu dla GRACZA osobny styl tekstu
+                                ]}
+                            >
+                                {renderText(msg.tekst)}
+                            </Text>
                         </View>
                     ))}
                 </ScrollView>
@@ -176,55 +187,35 @@ export default function StartGameScreen() {
 }
 
 const styles = StyleSheet.create({
-    background: {
-        flex: 1,
-        width: '100%',
-        height: '100%',
-    },
-    loadingContainer: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'black',
-    },
+    background: { flex: 1, width: '100%', height: '100%' },
+    loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' },
     dialogueContainer: {
         flex: 1,
         marginHorizontal: width * 0.05,
         marginTop: height * 0.02,
         marginBottom: height * 0.01,
         padding: 10,
-        borderWidth: 3,
+        borderWidth: 2,
         borderColor: 'limegreen',
         borderRadius: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
     },
-    messageBlock: {
-        marginBottom: 12,
+    messageBlock: { marginBottom: 12 },
+    playerMessageBlock: {
+        backgroundColor: '#219653',
+        padding: 8,
+        borderRadius: 10,
     },
-    messageHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 4,
-    },
-    avatar: {
-        width: 28,
-        height: 28,
-        borderRadius: 14,
-        marginRight: 8,
-    },
-    messageTitle: {
-        color: 'limegreen',
-        fontFamily: 'VT323Regular',
-        fontSize: 20,
-    },
-    messageText: {
+    playerMessageText: {
         color: 'white',
         fontFamily: 'VT323Regular',
-        fontSize: 20,
+        fontSize: 16,
     },
-    optionsContainer: {
-        marginBottom: height * 0.02,
-    },
+    messageHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
+    avatar: { width: 28, height: 28, borderRadius: 14, marginRight: 8 },
+    messageTitle: { color: 'limegreen', fontFamily: 'VT323Regular', fontSize: 18 },
+    messageText: { color: 'white', fontFamily: 'VT323Regular', fontSize: 16 },
+    optionsContainer: { marginBottom: height * 0.02 },
     choiceButton: {
         marginHorizontal: width * 0.05,
         marginBottom: 8,
@@ -235,10 +226,5 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         alignItems: 'center',
     },
-    choiceButtonText: {
-        color: 'limegreen',
-        fontFamily: 'VT323Regular',
-        fontSize: 18,
-    },
+    choiceButtonText: { color: 'limegreen', fontFamily: 'VT323Regular', fontSize: 18 },
 });
-
