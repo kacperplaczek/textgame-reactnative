@@ -1,8 +1,8 @@
-import { NpcKey } from './NPCData';
+import { NpcKey } from '@/lib/dialogue/NPCData';
 
 export type SceneType = {
     npcKey?: NpcKey;
-    tekst: string;
+    tekst: () => string;
     options?: { tekst: string; next: string }[];
     checkpoint?: boolean;
     deathScreen?: string;
@@ -10,10 +10,9 @@ export type SceneType = {
     autoNextDelay?: number;
     waitTime?: number;
     enableNotification?: boolean;
-    waitText?: string;
 };
 
-export const getScenes = (translations: any): Record<string, SceneType> => ({
+export const getScenes = (translations: any, plec: 'pan' | 'pani' | null): Record<string, SceneType> => ({
     dzwoni_officer: {
         npcKey: 'officer',
         tekst: translations.dzwoniOfficer,
@@ -23,18 +22,37 @@ export const getScenes = (translations: any): Record<string, SceneType> => ({
         npcKey: 'officer',
         tekst: translations.connecting,
         autoNextScene: 'pytanie_o_plec',
-        autoNextDelay: 5000, // 5 sekund
+        autoNextDelay: 2000,
     },
     pytanie_o_plec: {
         npcKey: 'officer',
         tekst: translations.welcome,
+        checkpoint: true,
         options: [
-            { tekst: translations.pan, next: 'powitanie_po_pleci' },
-            { tekst: translations.pani, next: 'powitanie_po_pleci' },
+            { tekst: translations.pan, next: 'powitanie_po_pleci_pan' },
+            { tekst: translations.pani, next: 'powitanie_po_pleci_pani' },
         ],
     },
-    powitanie_po_pleci: {
+    powitanie_po_pleci_pan: {
         npcKey: 'officer',
-        tekst: translations.dalej,
+        tekst: translations.dalej_pan,
+        autoNextScene: 'zly_wybor',
+        autoNextDelay: 2000,
+    },
+    powitanie_po_pleci_pani: {
+        npcKey: 'officer',
+        tekst: translations.dalej_pani,
+        autoNextScene: 'zly_wybor',
+        autoNextDelay: 2000,
+    },
+    zly_wybor: {
+        npcKey: 'officer',
+        tekst: translations.zlyWyborText,
+        options: [{ tekst: translations.continueText, next: 'zly_ruch' }],
+    },
+    zly_ruch: {
+        npcKey: 'officer',
+        tekst: translations.zlyRuchText,
+        deathScreen: 'explosionDeathScreen',
     },
 });

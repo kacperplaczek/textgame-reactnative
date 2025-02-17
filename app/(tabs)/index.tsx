@@ -1,12 +1,23 @@
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import { getCurrentLanguage } from '@/lib/settings/LanguageController';
+import { translations } from '@/lib/translations/translations';
+import { useEffect, useState } from 'react';
 
 export default function HomeScreen() {
     const router = useRouter();
+    const [jezyk, setJezyk] = useState<'pl' | 'en'>('pl');
+
+    useEffect(() => {
+        const fetchLanguage = async () => {
+            const lang = await getCurrentLanguage();
+            setJezyk(lang);
+        };
+        fetchLanguage();
+    }, []);
 
     return (
         <View style={styles.wrapper}>
-            {/* Klikalny cały ekran */}
             <TouchableOpacity
                 style={styles.fullscreenTouchable}
                 onPress={() => router.replace('/startgame')}
@@ -15,17 +26,13 @@ export default function HomeScreen() {
                 <ImageBackground
                     source={require('../../assets/images/bg_ufo.png')}
                     style={styles.background}
-                    resizeMode="contain" // ewentualnie 'cover' - zobacz, co lepiej wygląda
+                    resizeMode="contain"
                 >
-                    <Text style={styles.title}>BEZ POWROTU</Text>
-
+                    <Text style={styles.title}>{translations[jezyk].startScreenTitle}</Text>
                     <View style={styles.spacer} />
-
-                    <Text style={styles.subtitle}>KLIKNIJ EKRAN ABY ROZPOCZĄĆ</Text>
+                    <Text style={styles.subtitle}>{translations[jezyk].startScreenSubtitle}</Text>
                 </ImageBackground>
             </TouchableOpacity>
-
-            {/* Dekoracyjna ramka */}
             <View style={styles.border} />
         </View>
     );

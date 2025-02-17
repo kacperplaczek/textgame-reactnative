@@ -1,6 +1,6 @@
 import Storage from 'expo-storage';
 
-// Scena i checkpoint
+// Obsługa scen
 export const DialogueController = {
     getScene: async (): Promise<string | null> => {
         return await Storage.getItem({ key: 'currentScene' });

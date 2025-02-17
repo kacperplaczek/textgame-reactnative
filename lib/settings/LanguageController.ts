@@ -1,15 +1,18 @@
+import * as Localization from 'expo-localization';
 import Storage from 'expo-storage';
-import { Language } from '@/lib/translations/translations';
+import type { Language } from '@/lib/translations/translations';
 
 export const getCurrentLanguage = async (): Promise<Language> => {
-    const lang = await Storage.getItem({ key: 'lang' });
+    const storedLang = await Storage.getItem({ key: 'lang' });
 
-    if (lang === 'pl' || lang === 'en') {
-        return lang;
+    if (storedLang === 'pl' || storedLang === 'en') {
+        return storedLang;
     }
 
-    // Na sztywno, na razie PL – potem naprawimy automatyczne
-    const defaultLang: Language = 'pl';
+    // Nowy sposób pobierania języka systemowego
+    const systemLang = Localization.getLocales()[0]?.languageCode;
+
+    const defaultLang: Language = systemLang === 'pl' ? 'pl' : 'en';
 
     await Storage.setItem({ key: 'lang', value: defaultLang });
 
