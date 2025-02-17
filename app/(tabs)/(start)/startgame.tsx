@@ -9,23 +9,23 @@ import { translations, Language } from '@/lib/translations/translations';
 import { DialogueController } from '@/lib/dialogue/DialogueController';
 import { npcData, NpcKey } from '@/lib/dialogue/NPCData';
 import { getCurrentLanguage } from '@/lib/settings/LanguageController';
+import { getScenes, SceneType } from '@/lib/dialogue/scenesWithDeath';
+import { calculateRemainingTime } from '@/lib/dialogue/SceneUtils';
+import { scheduleNotification } from "@/lib/notifications/NotificationUtils";
+import GameMenu from '@/components/ui/GameMenu';
 
 const { width, height } = Dimensions.get('window');
-
-type DialogueMessage = {
-    autor: 'NPC' | 'GRACZ';
-    npcKey?: NpcKey;
-    tekst: string;
-};
 
 export default function StartGameScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [hasStartedGame, setHasStartedGame] = useState<boolean | null>(null);
     const [plec, setPlec] = useState<'pan' | 'pani' | null>(null);
     const [jezyk, setJezyk] = useState<Language>('pl');
-    const [dialogue, setDialogue] = useState<DialogueMessage[]>([]);
+    const [dialogue, setDialogue] = useState<{ autor: 'NPC' | 'GRACZ'; tekst: string; npcKey?: NpcKey }[]>([]);
     const [options, setOptions] = useState<{ tekst: string; akcja: () => void }[]>([]);
     const [currentScene, setCurrentScene] = useState<string | null>(null);
+    const [waiting, setWaiting] = useState<{ sceneName: string; endTime: number } | null>(null);
+    const [remainingTime, setRemainingTime] = useState<number | null>(null);
 
     const router = useRouter();
     const scrollRef = useRef<ScrollView>(null);
@@ -80,107 +80,114 @@ export default function StartGameScreen() {
     };
 
     const handleSceneChange = async (sceneName: string) => {
-        setCurrentScene(sceneName);
-        await DialogueController.setScene(sceneName);
-    };
+        const scenes = getScenes(translations[jezyk]);
+        const scene = scenes[sceneName];
 
-    const handleGenderChoice = async (gender: 'pan' | 'pani') => {
-        await Storage.setItem({ key: 'plec', value: gender });
-        setPlec(gender);
-        addMessage('GRACZ', translations[jezyk][gender]);
-        await handleSceneChange('powitanie_po_pleci');
+        if (scene.waitTime) {
+            const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
+            setWaiting({ sceneName, endTime });
+
+            if (scene.enableNotification) {
+                await scheduleNotification(
+                    'Czas oczekiwania zakończony',
+                    'Możesz kontynuować dialog.',
+                    scene.waitTime
+                );
+            }
+        } else {
+            setCurrentScene(sceneName);
+            await DialogueController.setScene(sceneName);
+        }
+
+        if (scene.checkpoint) {
+            await DialogueController.setCheckpoint(sceneName);
+        }
     };
 
     useEffect(() => {
-        if (!currentScene) return;
+        if (!currentScene || waiting) return;
+        const scenes = getScenes(translations[jezyk]);
+        const scene = scenes[currentScene];
 
-        switch (currentScene) {
-            case 'dzwoni_officer':
-                addMessage('NPC', translations[jezyk].dzwoniOfficer, 'officer');
-                setOptions([
-                    {
-                        tekst: translations[jezyk].odbierzPolaczenie,
-                        akcja: () => handleSceneChange('start'),
-                    },
-                ]);
-                break;
+        if (!scene) return;
 
-            case 'start':
-                addMessage('NPC', translations[jezyk].connecting, 'officer');
-                setOptions([]);
-                setTimeout(() => handleSceneChange('pytanie_o_plec'), 5000);
-                break;
+        addMessage('NPC', scene.tekst, scene.npcKey);
 
-            case 'pytanie_o_plec':
-                addMessage('NPC', translations[jezyk].welcome, 'officer');
-                setOptions([
-                    { tekst: translations[jezyk].pan, akcja: () => handleGenderChoice('pan') },
-                    { tekst: translations[jezyk].pani, akcja: () => handleGenderChoice('pani') },
-                ]);
-                break;
-
-            case 'powitanie_po_pleci':
-                addMessage('NPC', translations[jezyk].dalej, 'officer');
-                setOptions([]);
-                break;
-
-            default:
-                console.warn('Nieznana scena:', currentScene);
+        if (scene.options) {
+            setOptions(
+                scene.options.map((option) => ({
+                    tekst: option.tekst,
+                    akcja: () => handleSceneChange(option.next),
+                }))
+            );
+        } else {
+            setOptions([]);
         }
-    }, [currentScene, jezyk]);
+
+        if (scene.autoNextScene && scene.autoNextDelay) {
+            const timeout = setTimeout(() => {
+                handleSceneChange(scene.autoNextScene!);
+            }, scene.autoNextDelay);
+
+            return () => clearTimeout(timeout);
+        }
+    }, [currentScene, jezyk, waiting]);
+
+
+    useEffect(() => {
+        if (waiting) {
+            const interval = setInterval(() => {
+                const remaining = calculateRemainingTime(waiting.endTime);
+                setRemainingTime(remaining);
+
+                if (remaining <= 0) {
+                    clearInterval(interval);
+                    setWaiting(null);
+                    handleSceneChange(waiting.sceneName);
+                }
+            }, 1000);
+
+            return () => clearInterval(interval);
+        }
+    }, [waiting]);
 
     if (isLoading) {
-        return (
-            <View style={styles.loadingContainer}>
-                <ActivityIndicator color="limegreen" />
-            </View>
-        );
+        return <View style={styles.loadingContainer}><ActivityIndicator color="limegreen" /></View>;
     }
 
     return (
-        <ImageBackground
-            source={require('../../../assets/images/bg_komputer.png')}
-            style={styles.background}
-            resizeMode="cover"
-        >
+        <ImageBackground source={require('../../../assets/images/bg_komputer.png')} style={styles.background} resizeMode="cover">
             <StatusBar hidden />
-            <View style={styles.dialogueContainer}>
-                <ScrollView ref={scrollRef}>
-                    {dialogue.map((msg, index) => (
-                        <View
-                            key={index}
-                            style={[
-                                styles.messageBlock,
-                                msg.autor === 'GRACZ' && styles.playerMessageBlock, // Tu dla GRACZA osobny styl
-                            ]}
-                        >
-                            {msg.autor === 'NPC' && msg.npcKey && npcData[msg.npcKey] && (
-                                <View style={styles.messageHeader}>
-                                    <Image source={npcData[msg.npcKey].avatar} style={styles.avatar} />
-                                    <Text style={styles.messageTitle}>
-                                        {translations[jezyk][npcData[msg.npcKey].nameKey]}
-                                    </Text>
-                                </View>
-                            )}
-                            <Text
-                                style={[
-                                    styles.messageText,
-                                    msg.autor === 'GRACZ' && styles.playerMessageText, // Tu dla GRACZA osobny styl tekstu
-                                ]}
-                            >
-                                {renderText(msg.tekst)}
-                            </Text>
-                        </View>
-                    ))}
-                </ScrollView>
-            </View>
+            <GameMenu onReset={() => setDialogue([])} />
 
-            <View style={styles.optionsContainer}>
-                {options.map((option, index) => (
-                    <TouchableOpacity key={index} style={styles.choiceButton} onPress={option.akcja}>
-                        <Text style={styles.choiceButtonText}>{option.tekst}</Text>
-                    </TouchableOpacity>
-                ))}
+            <View style={styles.contentContainer}>
+                <View style={styles.dialogueContainer}>
+                    <ScrollView ref={scrollRef}>
+                        {dialogue.map((msg, index) => (
+                            <View key={index} style={styles.messageBlock}>
+                                {msg.autor === 'NPC' && msg.npcKey && npcData[msg.npcKey] && (
+                                    <View style={styles.messageHeader}>
+                                        <Image source={npcData[msg.npcKey].avatar} style={styles.avatar} />
+                                        <Text style={styles.messageTitle}>{translations[jezyk][npcData[msg.npcKey].nameKey]}</Text>
+                                    </View>
+                                )}
+                                <Text style={styles.messageText}>{renderText(msg.tekst)}</Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+
+                    {waiting && remainingTime !== null && (
+                        <Text style={styles.waitingText}>Oczekiwanie: {Math.floor(remainingTime / 60)}m {remainingTime % 60}s</Text>
+                    )}
+                </View>
+
+                <View style={styles.optionsContainer}>
+                    {options.map((option, index) => (
+                        <TouchableOpacity key={index} onPress={option.akcja} style={styles.choiceButton}>
+                            <Text style={styles.choiceButtonText}>{option.tekst}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
             </View>
         </ImageBackground>
     );
@@ -189,42 +196,95 @@ export default function StartGameScreen() {
 const styles = StyleSheet.create({
     background: { flex: 1, width: '100%', height: '100%' },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' },
+
+    contentContainer: { flex: 1, justifyContent: 'space-between', paddingTop: 50 },
+
     dialogueContainer: {
         flex: 1,
-        marginHorizontal: width * 0.05,
-        marginTop: height * 0.02,
-        marginBottom: height * 0.01,
         padding: 10,
-        borderWidth: 2,
-        borderColor: 'limegreen',
-        borderRadius: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
+        borderColor: 'limegreen',
+        borderWidth: 2,
+        borderRadius: 10,
+        marginHorizontal: 10,
+        marginBottom: 10,
     },
-    messageBlock: { marginBottom: 12 },
+
+    messageBlock: {
+        marginBottom: 12,
+    },
+
     playerMessageBlock: {
         backgroundColor: '#219653',
         padding: 8,
         borderRadius: 10,
     },
+
     playerMessageText: {
         color: 'white',
         fontFamily: 'VT323Regular',
         fontSize: 16,
     },
-    messageHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
-    avatar: { width: 28, height: 28, borderRadius: 14, marginRight: 8 },
-    messageTitle: { color: 'limegreen', fontFamily: 'VT323Regular', fontSize: 18 },
-    messageText: { color: 'white', fontFamily: 'VT323Regular', fontSize: 16 },
-    optionsContainer: { marginBottom: height * 0.02 },
+
+    messageHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 4,
+    },
+
+    avatar: {
+        width: 28,
+        height: 28,
+        borderRadius: 14,
+        marginRight: 8,
+    },
+
+    messageTitle: {
+        color: 'limegreen',
+        fontFamily: 'VT323Regular',
+        fontSize: 18,
+    },
+
+    messageText: {
+        color: 'white',
+        fontFamily: 'VT323Regular',
+        fontSize: 16,
+    },
+
+    optionsContainer: {
+        paddingHorizontal: 10,
+        marginBottom: 10,
+    },
+
     choiceButton: {
-        marginHorizontal: width * 0.05,
-        marginBottom: 8,
-        paddingVertical: 10,
-        borderWidth: 2,
-        borderColor: 'limegreen',
+        paddingVertical: 12,
+        paddingHorizontal: 10,
         backgroundColor: 'black',
+        borderColor: 'limegreen',
+        borderWidth: 2,
         borderRadius: 8,
+        marginBottom: 8,
         alignItems: 'center',
     },
-    choiceButtonText: { color: 'limegreen', fontFamily: 'VT323Regular', fontSize: 18 },
+
+    choiceButtonText: {
+        color: 'limegreen',
+        fontFamily: 'VT323Regular',
+        fontSize: 18,
+    },
+
+    waitingText: {
+        marginTop: 10,
+        textAlign: 'center',
+        color: 'limegreen',
+        fontFamily: 'VT323Regular',
+        fontSize: 18,
+    },
+
+    menuButtonContainer: {
+        position: 'absolute',
+        top: 10,
+        right: 10,
+        zIndex: 10,
+    },
 });
