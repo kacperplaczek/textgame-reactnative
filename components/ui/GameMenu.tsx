@@ -1,15 +1,13 @@
 import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { useRouter } from 'expo-router';
-import Storage from 'expo-storage';
 import { Ionicons } from '@expo/vector-icons';
+import * as Updates from 'expo-updates';
+import Storage from 'expo-storage';
 
 type MenuProps = {
     onReset?: () => void;
 };
 
 export default function GameMenu({ onReset }: MenuProps) {
-    const router = useRouter();
-
     const handleResetGame = async () => {
         Alert.alert(
             'Reset gry',
@@ -19,9 +17,20 @@ export default function GameMenu({ onReset }: MenuProps) {
                 {
                     text: 'Tak, resetuj',
                     onPress: async () => {
-                        await Storage.clear(); // Czyści całą pamięć
-                        onReset?.(); // Opcjonalnie wywołaj przekazaną funkcję
-                        router.replace('/startgame?refresh=1'); // Restart widoku
+                        // Czyścimy całą pamięć
+                        const allKeys = await Storage.getAllKeys();
+                        for (const key of allKeys) {
+                            await Storage.removeItem({ key });
+                        }
+
+                        onReset?.();
+
+                        // Restart aplikacji za pomocą expo-updates
+                        try {
+                            await Updates.reloadAsync();
+                        } catch (e) {
+                            console.error('Błąd podczas restartu aplikacji:', e);
+                        }
                     },
                 },
             ]
