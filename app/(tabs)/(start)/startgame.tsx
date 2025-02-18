@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Dimensions, ImageBackground } from 'react-native';
-import { useRouter } from 'expo-router';
+import {Href, useRouter} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Storage from 'expo-storage';
 
@@ -13,6 +13,7 @@ import { calculateRemainingTime } from '@/lib/dialogue/SceneUtils';
 import { scheduleNotification } from '@/lib/notifications/NotificationUtils';
 import { deathScreensMap } from '@/lib/screens/DeathScreens';
 import GameMenu from '@/components/ui/GameMenu';
+import {endActScreensMap} from "@/lib/screens/EndActScreens";
 
 const { width, height } = Dimensions.get('window');
 
@@ -28,6 +29,9 @@ export default function StartGameScreen() {
     const [remainingTime, setRemainingTime] = useState<number | null>(null);
     const [dead, setDead] = useState(false);
     const [deadScreen, setDeadScreen] = useState<string | null>(null);
+    const [endAct, setEndAct] = useState(false);
+    const [endActScreen, setEndActScreen] = useState<string | null>(null);
+    const [actFinished, setActFinished] = useState<{ actKey: string; nextAct: string } | null>(null);
 
     const router = useRouter();
     const scrollRef = useRef<ScrollView>(null);
@@ -156,6 +160,13 @@ export default function StartGameScreen() {
             addMessage('NPC', tekst, scene.npcKey);
         }
 
+        if (scene.endAct) {
+            setEndAct(true);
+            setEndActScreen(scene.endAct);
+            setActFinished({ actKey: sceneName, nextAct: scene.nextAct || 'startgame' });
+            return;
+        }
+
         // Jeżeli scena wymaga czekania
         if (scene.waitTime) {
             const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
@@ -230,6 +241,21 @@ export default function StartGameScreen() {
         if (!DeathScreenComponent) return <Text>Błąd: Nie znaleziono ekranu śmierci!</Text>;
         return <DeathScreenComponent onRetry={handleDeathScreenPress} />;
     }
+
+    if (endAct && endActScreen && actFinished) {
+        const EndActScreenComponent = endActScreensMap[endActScreen];
+        if (!EndActScreenComponent) return <Text>Błąd: Nie znaleziono ekranu końca aktu!</Text>;
+
+        return (
+            <EndActScreenComponent
+                onContinue={async () => {
+                    await Storage.setItem({ key: 'currentAct', value: actFinished.nextAct });
+                    router.replace(`/${actFinished.nextAct}` as Href<string>);
+                }}
+            />
+        );
+    }
+
 
 
     return (
