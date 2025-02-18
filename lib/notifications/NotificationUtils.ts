@@ -1,14 +1,14 @@
 import * as Notifications from 'expo-notifications';
 
-export const scheduleNotification = async (title: string, body: string, seconds: number) => {
+export async function scheduleNotification(waitTimeInSeconds: number, sceneName: string) {
     await Notifications.scheduleNotificationAsync({
         content: {
-            title,
-            body,
+            title: 'Czas minął!',
+            body: `Możesz wrócić do sceny: ${sceneName}`,
         },
         trigger: {
-            seconds: seconds,
+            seconds: waitTimeInSeconds,
             repeats: false,
-        } as Notifications.TimeIntervalTriggerInput, // <-- TUTAJ KONKRETNY TYP
+        },
     });
-};
+}

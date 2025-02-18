@@ -66,8 +66,10 @@ export default function StartGameScreen() {
             setDeadScreen(storedDeathScreen);
         } else if (storedScene) {
             setCurrentScene(storedScene);
+            processScene(storedScene);
         } else {
             setCurrentScene('dzwoni_officer');
+            processScene('dzwoni_officer');
         }
 
         setIsLoading(false);
@@ -117,7 +119,10 @@ export default function StartGameScreen() {
         if (!scene) return;
 
         const tekst = typeof scene.tekst === 'function' ? scene.tekst() : scene.tekst;
-        addMessage('NPC', tekst, scene.npcKey);
+        // Sprawdź, czy tekst jest różny od ostatniego
+        if (dialogue.length === 0 || dialogue[dialogue.length - 1].tekst !== tekst) {
+            addMessage('NPC', tekst, scene.npcKey);
+        }
 
         if (scene.options) {
             setOptions(
@@ -143,69 +148,59 @@ export default function StartGameScreen() {
 
         if (!scene) return;
 
+        setCurrentScene(sceneName);
+
+        // Dodaj wiadomość, tylko jeżeli to nie jest scena czekania
+        if (!scene.waitTime) {
+            const tekst = typeof scene.tekst === 'function' ? scene.tekst() : scene.tekst;
+            addMessage('NPC', tekst, scene.npcKey);
+        }
+
+        // Jeżeli scena wymaga czekania
         if (scene.waitTime) {
             const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
-            setWaiting({ sceneName, endTime });
+            setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
 
-            if (scene.enableNotification) {
-                await scheduleNotification(
-                    'Czas oczekiwania zakończony',
-                    'Możesz kontynuować dialog.',
-                    scene.waitTime
-                );
-            }
+            await Storage.setItem({ key: 'waitingEndTime', value: endTime.toString() });
+            await Storage.setItem({ key: 'waitingScene', value: scene.autoNextScene ?? sceneName });
+
+            console.log(`Rozpoczęto czekanie na scenę ${sceneName}, koniec za ${scene.waitTime} sekund`);
             return;
         }
 
-        if (scene.deathScreen) {
-            await DialogueController.setDeathScreen(scene.deathScreen);
-            setDead(true);
-            setDeadScreen(scene.deathScreen);
+        // Ustawienie opcji
+        if (scene.options) {
+            setOptions(
+                scene.options.map((option) => ({
+                    tekst: option.tekst,
+                    akcja: () => {
+                        addMessage('GRACZ', option.tekst);
+                        handleSceneChange(option.next);
+                    },
+                }))
+            );
         } else {
-            setCurrentScene(sceneName);
-            await DialogueController.setScene(sceneName);
+            setOptions([]);
         }
 
+        // Automatyczne przejście do kolejnej sceny po czasie
+        if (scene.autoNextScene && scene.autoNextDelay) {
+            setTimeout(() => {
+                handleSceneChange(scene.autoNextScene!);
+            }, scene.autoNextDelay);
+        }
+
+        // Zapisz checkpoint, śmierć, itp.
         if (scene.checkpoint) {
             await DialogueController.setCheckpoint(sceneName);
         }
-    };
-
-
-    useEffect(() => {
-        if (currentScene && !waiting && !dead) {
-            const scenes = getScenes(translations[jezyk], plec);
-            const scene = scenes[currentScene];
-
-            if (!scene) return;
-
-            const tekst = typeof scene.tekst === 'function' ? scene.tekst() : scene.tekst;
-            addMessage('NPC', tekst, scene.npcKey);
-
-            if (scene.options) {
-                setOptions(
-                    scene.options.map((option) => ({
-                        tekst: option.tekst,
-                        akcja: () => {
-                            addMessage('GRACZ', option.tekst); // Dodanie odpowiedzi gracza
-                            handleSceneChange(option.next);
-                        },
-                    }))
-                );
-            } else {
-                setOptions([]);
-            }
-
-            if (scene.autoNextScene && scene.autoNextDelay) {
-                const timeout = setTimeout(() => {
-                    handleSceneChange(scene.autoNextScene!);
-                }, scene.autoNextDelay);
-
-                return () => clearTimeout(timeout);
-            }
+        if (scene.deathScreen) {
+            await DialogueController.setDeathScreen(scene.deathScreen);
+            setDeadScreen(scene.deathScreen);
+            setDead(true);
         }
-    }, [currentScene, jezyk, plec, waiting, dead]);
-
+        await DialogueController.setScene(sceneName);
+    };
 
     useEffect(() => {
         if (waiting) {
@@ -223,6 +218,8 @@ export default function StartGameScreen() {
             return () => clearInterval(interval);
         }
     }, [waiting]);
+
+
 
     if (isLoading) {
         return <View style={styles.loadingContainer}><ActivityIndicator color="limegreen" /></View>;

@@ -1,68 +1,106 @@
-import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import * as Updates from 'expo-updates';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { useRouter } from 'expo-router';
+import { actsConfig } from '@/lib/settings/actConfig';
+import { useEffect, useState } from 'react';
 import Storage from 'expo-storage';
 
-type MenuProps = {
-    onReset?: () => void;
-};
+export default function ActsSwitch() {
+    const [completedActs, setCompletedActs] = useState<string[]>([]);
+    const [currentAct, setCurrentAct] = useState<string | null>(null);
+    const [loading, setLoading] = useState(true);
 
-export default function GameMenu({ onReset }: MenuProps) {
-    const handleResetGame = async () => {
-        Alert.alert(
-            'Reset gry',
-            'Na pewno chcesz zresetować grę i zacząć od nowa?',
-            [
-                { text: 'Anuluj', style: 'cancel' },
-                {
-                    text: 'Tak, resetuj',
-                    onPress: async () => {
-                        // Czyścimy całą pamięć
-                        const allKeys = await Storage.getAllKeys();
-                        for (const key of allKeys) {
-                            await Storage.removeItem({ key });
-                        }
+    const router = useRouter();
 
-                        onReset?.();
+    useEffect(() => {
+        const fetchData = async () => {
+            const completed = [];
+            for (const act of actsConfig) {
+                const isCompleted = await Storage.getItem({ key: act.completedKey });
+                if (isCompleted === 'true') {
+                    completed.push(act.key);
+                }
+            }
+            const current = await Storage.getItem({ key: 'currentAct' });
 
-                        // Restart aplikacji za pomocą expo-updates
-                        try {
-                            await Updates.reloadAsync();
-                        } catch (e) {
-                            console.error('Błąd podczas restartu aplikacji:', e);
-                        }
-                    },
-                },
-            ]
+            setCompletedActs(completed);
+            setCurrentAct(current);
+            setLoading(false);
+        };
+
+        fetchData();
+    }, []);
+
+    if (loading) {
+        return (
+            <View style={styles.container}>
+                <Text style={styles.loadingText}>Ładowanie aktów...</Text>
+            </View>
         );
-    };
+    }
+
+    const currentActTitle =
+        actsConfig.find((act) => act.key === currentAct)?.title || 'Nieznany akt';
 
     return (
-        <TouchableOpacity style={styles.menuButton} onPress={handleResetGame}>
-            <Text style={styles.menuText}>AKT 1</Text>
-        </TouchableOpacity>
+        <View style={styles.container}>
+            <Text style={styles.currentActText}>Aktualny akt: {currentActTitle}</Text>
+            {actsConfig.map((act) => {
+                const isCompleted = completedActs.includes(act.key);
+                const isCurrent = act.key === currentAct;
+
+                if (!isCompleted && !isCurrent) {
+                    return null;
+                }
+
+                return (
+                    <TouchableOpacity
+                        key={act.key}
+                        style={[styles.button, isCurrent && styles.activeButton]}
+                        onPress={() => router.replace(`/${act.key}` as any)}
+                    >
+                        <Text style={styles.buttonText}>{act.title}</Text>
+                    </TouchableOpacity>
+                );
+            })}
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    menuButton: {
+    container: {
         position: 'absolute',
         top: 10,
         left: 10,
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: 'limegreen',
-        paddingVertical: 5,
-        paddingHorizontal: 10,
-        borderTopLeftRadius: 8,
-        borderBottomLeftRadius: 8,
-        borderWidth: 3,
+        backgroundColor: 'black',
+        padding: 10,
+        borderWidth: 2,
         borderColor: 'limegreen',
+        borderRadius: 8,
     },
-    menuText: {
+    loadingText: {
+        color: 'limegreen',
+        fontFamily: 'VT323Regular',
+        fontSize: 16,
+    },
+    currentActText: {
+        color: 'limegreen',
+        fontFamily: 'VT323Regular',
+        fontSize: 16,
+        marginBottom: 8,
+    },
+    button: {
+        paddingVertical: 8,
+        paddingHorizontal: 12,
+        backgroundColor: 'limegreen',
+        borderRadius: 8,
+        marginBottom: 4,
+    },
+    activeButton: {
+        backgroundColor: '#219653',
+    },
+    buttonText: {
         color: 'black',
         fontFamily: 'VT323Regular',
-        fontSize: 18,
-        marginRight: 5,
+        fontSize: 16,
     },
 });

@@ -68,6 +68,7 @@ export default function PrologScreen() {
         } else {
             setIsSaving(true);
             await Storage.setItem({ key: 'gameStarted', value: 'true' });
+            await Storage.setItem({key: 'currentAct', value: 'startgame'});
             router.replace('/startgame?refresh=1');
         }
     };

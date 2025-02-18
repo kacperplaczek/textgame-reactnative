@@ -1,9 +1,18 @@
 export const translations = {
     pl: {
+        // TEST
+        oczekiwanieStart: 'Czekaj na odpowiedź...',
+        oczekiwanieKoniec: 'Dziękuję za czekanie. Przechodzimy dalej...',
+
         // Tytuły NPC
         officerTitle: 'OFICER REKRUTACYJNY',
         mechanicTitle: 'MECHANIK POKŁADOWY',
         captainTitle: 'KAPITAN STATKU',
+
+        // Ekrany śmierci
+
+        // Ekrany końcowe
+        endOfAct: 'Zakończono akt',
 
         // Scenariusz – Akt 1
         dzwoniOfficer: 'Dzwoni officer rekrutujący...',
@@ -38,10 +47,19 @@ export const translations = {
         menuResetError: 'Błąd podczas restartu aplikacji:',
     },
     en: {
+        // TEST
+        oczekiwanieStart: 'Czekaj na odpowiedź...',
+        oczekiwanieKoniec: 'Dziękuję za czekanie. Przechodzimy dalej...',
+
         // Titles NPC
         officerTitle: 'RECRUITMENT OFFICER',
         mechanicTitle: 'SHIP MECHANIC',
         captainTitle: 'SHIP CAPTAIN',
+
+        // Ekrany śmierci
+
+        // Ekrany końcowe
+        endOfAct: 'Zakończono akt',
 
         // Scenario – Act 1
         dzwoniOfficer: 'Incoming call from recruitment officer...',

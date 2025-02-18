@@ -1,7 +1,7 @@
-import { Tabs } from 'expo-router';
-import React, {useEffect} from 'react';
+import {Href, Tabs} from 'expo-router';
+import React, {useEffect, useState} from 'react';
 import { Platform } from 'react-native';
-
+import {useRouter} from "expo-router";
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
 import TabBarBackground from '@/components/ui/TabBarBackground';
@@ -9,6 +9,7 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import {useFonts} from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
+import {getCurrentAct} from "@/lib/helpers/getCurrentAct";
 
 export default function TabLayout() {
     const [fontsLoaded] = useFonts({
@@ -20,6 +21,8 @@ export default function TabLayout() {
             SplashScreen.hideAsync();
         }
     }, [fontsLoaded]);
+
+
 
     if (!fontsLoaded) {
         return null;

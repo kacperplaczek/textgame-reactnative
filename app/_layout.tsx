@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
+import * as Notifications from 'expo-notifications';
 
 import { useColorScheme } from '@/hooks/useColorScheme';
 
@@ -15,6 +16,26 @@ export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     VT323Regular: require('../assets/fonts/VT323-Regular.ttf'),
   });
+
+    useEffect(() => {
+        const configureNotifications = async () => {
+            const { status } = await Notifications.getPermissionsAsync();
+            if (status !== 'granted') {
+                await Notifications.requestPermissionsAsync();
+            }
+
+            // Ustawienie domyślnego zachowania na Androidzie
+            Notifications.setNotificationHandler({
+                handleNotification: async () => ({
+                    shouldShowAlert: true,
+                    shouldPlaySound: true,
+                    shouldSetBadge: false,
+                }),
+            });
+        };
+
+        configureNotifications();
+    }, []);
 
   useEffect(() => {
     if (fontsLoaded) {
