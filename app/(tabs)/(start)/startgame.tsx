@@ -3,7 +3,6 @@ import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIn
 import {Href, useRouter} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Storage from 'expo-storage';
-
 import { translations, Language } from '@/lib/translations/translations';
 import { DialogueController } from '@/lib/dialogue/DialogueController';
 import { npcData, NpcKey } from '@/lib/dialogue/NPCData';
@@ -169,12 +168,13 @@ export default function StartGameScreen() {
 
         // Jeżeli scena wymaga czekania
         if (scene.waitTime) {
+            setOptions([]); // Natychmiast chowamy przyciski!
             const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
             setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
-
+        
             await Storage.setItem({ key: 'waitingEndTime', value: endTime.toString() });
             await Storage.setItem({ key: 'waitingScene', value: scene.autoNextScene ?? sceneName });
-
+        
             console.log(`Rozpoczęto czekanie na scenę ${sceneName}, koniec za ${scene.waitTime} sekund`);
             return;
         }

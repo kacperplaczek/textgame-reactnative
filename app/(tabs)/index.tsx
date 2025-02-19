@@ -1,8 +1,9 @@
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
-import { useRouter } from 'expo-router';
+import { Href, useRouter } from 'expo-router';
 import { getCurrentLanguage } from '@/lib/settings/LanguageController';
 import { translations } from '@/lib/translations/translations';
 import { useEffect, useState } from 'react';
+import Storage from 'expo-storage';
 
 export default function HomeScreen() {
     const router = useRouter();
@@ -16,11 +17,22 @@ export default function HomeScreen() {
         fetchLanguage();
     }, []);
 
+    const handleStartPress = async () => {
+        const currentAct = await Storage.getItem({ key: 'currentAct' });
+        if (currentAct) {
+            router.replace(`/${currentAct}` as Href<string>);
+        } else {
+            // W przypadku gdy nie ma zapisanego aktu pierwszego przenosi do /startgame
+            // ! NIE ZMIENIAĆ GRA ZACZYNA SIĘ W STARTGAME.TSX
+            router.replace('/startgame');
+        }
+    };
+
     return (
         <View style={styles.wrapper}>
             <TouchableOpacity
                 style={styles.fullscreenTouchable}
-                onPress={() => router.replace('/startgame')}
+                onPress={handleStartPress}
                 activeOpacity={0.9}
             >
                 <ImageBackground
@@ -69,7 +81,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     spacer: {
-        flex: 1, // żeby "KLIKNIJ" poszło na dół
+        flex: 1,
     },
     border: {
         position: 'absolute',
@@ -80,6 +92,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         borderWidth: 3,
         borderColor: 'limegreen',
-        pointerEvents: 'none', // żeby nie blokowało kliknięć
+        pointerEvents: 'none',
     },
 });
