@@ -51,7 +51,7 @@ export default function GameMenu({ onReset }: MenuProps) {
     return (
         <TouchableOpacity style={styles.menuButton} onPress={handleResetGame}>
             <Text style={styles.menuText}>{translations[jezyk].menuButtonText} </Text>
-            <Ionicons name="menu" size={24} color="black" />
+            <Ionicons name="menu" size={24} color="#219653" />
         </TouchableOpacity>
     );
 }
@@ -63,14 +63,12 @@ const styles = StyleSheet.create({
         right: 10,
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'limegreen',
+        backgroundColor: 'transparent',
         paddingVertical: 5,
         paddingHorizontal: 10,
-        borderWidth: 3,
-        borderColor: 'limegreen',
     },
     menuText: {
-        color: 'black',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 18,
         marginRight: 5,

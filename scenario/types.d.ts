@@ -2,7 +2,7 @@ import {NpcKey} from "@/lib/dialogue/NPCData";
 
 type SceneType = {
     npcKey?: NpcKey;
-    tekst: () => string;
+    tekst?: () => string;
     options?: { tekst: string; next: string }[];
     checkpoint?: boolean;
     deathScreen?: string;
@@ -12,4 +12,8 @@ type SceneType = {
     enableNotification?: boolean;
     endAct?: string;
     nextAct?: string;
+    waitTimeScreen?: boolean,
+    waitTimeScreenName?: string,
+    sound?: string,
+    soundPlayLoop?: boolean,
 };

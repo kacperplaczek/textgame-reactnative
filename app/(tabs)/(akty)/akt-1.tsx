@@ -338,8 +338,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
         borderColor: 'limegreen',
         borderWidth: 2,
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
+        borderRadius: 10,
         marginHorizontal: 10,
         marginBottom: 10,
     },
@@ -369,7 +368,7 @@ const styles = StyleSheet.create({
     },
 
     messageText: {
-        color: 'white',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 16,
     },

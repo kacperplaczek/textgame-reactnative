@@ -36,7 +36,7 @@ export default function HomeScreen() {
                 activeOpacity={0.9}
             >
                 <ImageBackground
-                    source={require('../../assets/images/bg_ufo.png')}
+                    source={require('../../assets/images/bg_ufo.gif')}
                     style={styles.background}
                     resizeMode="contain"
                 >
@@ -68,14 +68,14 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 44,
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         textAlign: 'center',
         marginTop: 40,
     },
     subtitle: {
         fontSize: 24,
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         textAlign: 'center',
         marginBottom: 30,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         right: 20,
         borderRadius: 10,
         borderWidth: 3,
-        borderColor: 'limegreen',
+        borderColor: '#219653',
         pointerEvents: 'none',
     },
 });

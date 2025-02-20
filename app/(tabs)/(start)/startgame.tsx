@@ -13,6 +13,9 @@ import { scheduleNotification } from '@/lib/notifications/NotificationUtils';
 import { deathScreensMap } from '@/lib/screens/DeathScreens';
 import GameMenu from '@/components/ui/GameMenu';
 import {endActScreensMap} from "@/lib/screens/EndActScreens";
+import { Audio } from 'expo-av';
+import { soundsMap } from "@/lib/settings/soundMap";
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -31,9 +34,24 @@ export default function StartGameScreen() {
     const [endAct, setEndAct] = useState(false);
     const [endActScreen, setEndActScreen] = useState<string | null>(null);
     const [actFinished, setActFinished] = useState<{ actKey: string; nextAct: string } | null>(null);
+    const [sound, setSound] = useState<Audio.Sound | null>(null);
+    const activeSound = useRef<Audio.Sound | null >(null);
+
 
     const router = useRouter();
     const scrollRef = useRef<ScrollView>(null);
+
+    useEffect(() => {
+        const getPermissions = async () => {
+            const { status } = await Audio.requestPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Brak uprawnień do audio!');
+            }
+        };
+    
+        getPermissions();
+    }, []);
+    
 
     const saveDialogue = async (dialogue: typeof dialogue) => {
         try {
@@ -44,39 +62,78 @@ export default function StartGameScreen() {
         }
     };
 
+
+    const playSound = async (soundKey: string, loop: boolean) => {
+        try {
+            await stopSound(); // ⬅️ ZAWSZE NA POCZĄTKU
+    
+            const { sound: newSound } = await Audio.Sound.createAsync(
+                soundsMap[soundKey],
+                { isLooping: loop, volume: 0.5 }
+            );
+    
+            activeSound.current = newSound;
+            await newSound.playAsync();
+        } catch (e) {
+            console.error(`Błąd podczas odtwarzania dźwięku ${soundKey}:`, e);
+        }
+    };
+    
+    const stopSound = async () => {
+        try {
+            if (activeSound.current) {
+                await activeSound.current.stopAsync();
+                await activeSound.current.unloadAsync();
+                activeSound.current = null;
+            }
+        } catch (e) {
+            console.error('Błąd podczas zatrzymania dźwięku:', e);
+        }
+    };
+    
+    
+
     const checkGameStarted = useCallback(async () => {
         setIsLoading(true);
         const started = await Storage.getItem({ key: 'gameStarted' });
         const gender = await Storage.getItem({ key: 'plec' });
         const storedScene = await DialogueController.getScene();
         const storedDeathScreen = await DialogueController.getDeathScreen();
-
+    
         if (started === 'true') {
             setHasStartedGame(true);
         } else {
             setHasStartedGame(false);
         }
-
+    
         if (gender === 'pan' || gender === 'pani') {
             setPlec(gender);
         }
-
+    
         const lang = await getCurrentLanguage();
         setJezyk(lang);
-
+    
+        // ⬇️ DODANE - blokada odpalenia sceny, jeśli gra się nie zaczęła
+        if (started !== 'true') {
+            setIsLoading(false);
+            return;
+        }
+    
         if (storedDeathScreen) {
             setDead(true);
             setDeadScreen(storedDeathScreen);
         } else if (storedScene) {
             setCurrentScene(storedScene);
-            processScene(storedScene);
+            handleSceneChange(storedScene);
         } else {
             setCurrentScene('dzwoni_officer');
-            processScene('dzwoni_officer');
+            handleSceneChange('dzwoni_officer');
         }
-
+    
         setIsLoading(false);
     }, []);
+    
+    
 
     useEffect(() => {
         checkGameStarted();
@@ -105,6 +162,7 @@ export default function StartGameScreen() {
         if (lastCheckpoint) {
             await DialogueController.clearAfterCheckpoint(lastCheckpoint);
             await DialogueController.clearDeathScreen();
+            await stopSound();
 
             setDead(false);
             setDeadScreen(null);
@@ -118,15 +176,20 @@ export default function StartGameScreen() {
     const processScene = async (sceneName: string) => {
         const scenes = getScenes(translations[jezyk], plec);
         const scene = scenes[sceneName];
-
+    
         if (!scene) return;
-
+    
+        await stopSound(); // <-- zatrzymaj muzykę zawsze przed odpaleniem nowej
+    
+        if (scene.sound) {
+            await playSound(scene.sound, scene.soundPlayLoop ?? false);
+        }
+    
         const tekst = typeof scene.tekst === 'function' ? scene.tekst() : scene.tekst;
-        // Sprawdź, czy tekst jest różny od ostatniego
         if (dialogue.length === 0 || dialogue[dialogue.length - 1].tekst !== tekst) {
             addMessage('NPC', tekst, scene.npcKey);
         }
-
+    
         if (scene.options) {
             setOptions(
                 scene.options.map((option) => ({
@@ -137,49 +200,45 @@ export default function StartGameScreen() {
         } else {
             setOptions([]);
         }
-
+    
         if (scene.autoNextScene && scene.autoNextDelay) {
             setTimeout(() => {
                 handleSceneChange(scene.autoNextScene!);
             }, scene.autoNextDelay);
         }
     };
+    
+
+    // const handleSceneChange = async (sceneName: string) => {
 
     const handleSceneChange = async (sceneName: string) => {
         const scenes = getScenes(translations[jezyk], plec);
         const scene = scenes[sceneName];
-
+    
         if (!scene) return;
-
+    
+        console.log(`Zmiana sceny: ${sceneName}`);
+        console.log('Muzyka do odpalenia:', scene.sound);
+    
+        // 🛑 Stopujemy zawsze NAJPIERW
+        await stopSound();
+    
+        // Aktualizacja sceny
         setCurrentScene(sceneName);
-
-        // Dodaj wiadomość, tylko jeżeli to nie jest scena czekania
+        await DialogueController.setScene(sceneName);
+    
+        // 🎵 Odtwarzamy nową muzykę, jeżeli jest
+        if (scene.sound) {
+            await playSound(scene.sound, scene.soundPlayLoop ?? false);
+        }
+    
+        // Komunikat NPC
         if (!scene.waitTime) {
             const tekst = typeof scene.tekst === 'function' ? scene.tekst() : scene.tekst;
             addMessage('NPC', tekst, scene.npcKey);
         }
-
-        if (scene.endAct) {
-            setEndAct(true);
-            setEndActScreen(scene.endAct);
-            setActFinished({ actKey: sceneName, nextAct: scene.nextAct || 'startgame' });
-            return;
-        }
-
-        // Jeżeli scena wymaga czekania
-        if (scene.waitTime) {
-            setOptions([]); // Natychmiast chowamy przyciski!
-            const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
-            setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
-        
-            await Storage.setItem({ key: 'waitingEndTime', value: endTime.toString() });
-            await Storage.setItem({ key: 'waitingScene', value: scene.autoNextScene ?? sceneName });
-        
-            console.log(`Rozpoczęto czekanie na scenę ${sceneName}, koniec za ${scene.waitTime} sekund`);
-            return;
-        }
-
-        // Ustawienie opcji
+    
+        // Opcje wyboru
         if (scene.options) {
             setOptions(
                 scene.options.map((option) => ({
@@ -193,25 +252,43 @@ export default function StartGameScreen() {
         } else {
             setOptions([]);
         }
-
-        // Automatyczne przejście do kolejnej sceny po czasie
+    
+        // Czekanie
+        if (scene.waitTime) {
+            setOptions([]);
+            const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
+            setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
+    
+            await Storage.setItem({ key: 'waitingEndTime', value: endTime.toString() });
+            await Storage.setItem({ key: 'waitingScene', value: scene.autoNextScene ?? sceneName });
+    
+            return;
+        }
+    
+        // Auto-przejście
         if (scene.autoNextScene && scene.autoNextDelay) {
             setTimeout(() => {
                 handleSceneChange(scene.autoNextScene!);
             }, scene.autoNextDelay);
         }
-
-        // Zapisz checkpoint, śmierć, itp.
+    
         if (scene.checkpoint) {
             await DialogueController.setCheckpoint(sceneName);
         }
+    
         if (scene.deathScreen) {
             await DialogueController.setDeathScreen(scene.deathScreen);
             setDeadScreen(scene.deathScreen);
             setDead(true);
         }
-        await DialogueController.setScene(sceneName);
+    
+        if (scene.endAct) {
+            setEndAct(true);
+            setEndActScreen(scene.endAct);
+            setActFinished({ actKey: sceneName, nextAct: scene.nextAct || 'startgame' });
+        }
     };
+    
 
     useEffect(() => {
         if (waiting) {
@@ -249,6 +326,7 @@ export default function StartGameScreen() {
         return (
             <EndActScreenComponent
                 onContinue={async () => {
+                    await stopSound();
                     await Storage.setItem({ key: 'currentAct', value: actFinished.nextAct });
                     router.replace(`/${actFinished.nextAct}` as Href<string>);
                 }}
@@ -313,10 +391,9 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 10,
         backgroundColor: 'rgba(0, 0, 0, 0.9)',
-        borderColor: 'limegreen',
+        borderColor: '#219653',
         borderWidth: 2,
-        borderBottomLeftRadius: 10,
-        borderBottomRightRadius: 10,
+        borderRadius: 10,
         marginHorizontal: 10,
         marginBottom: 10,
     },
@@ -337,16 +414,16 @@ const styles = StyleSheet.create({
     },
 
     messageHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 4 },
-    avatar: { width: 28, height: 28, borderRadius: 14, marginRight: 8 },
+    avatar: { width: 28, height: 28, borderRadius: 4, marginRight: 8 },
 
     messageTitle: {
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 18,
     },
 
     messageText: {
-        color: 'white',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 16,
     },
@@ -355,7 +432,7 @@ const styles = StyleSheet.create({
     waitingText: {
         marginTop: 10,
         textAlign: 'center',
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 18,
     },
@@ -370,7 +447,7 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 10,
         backgroundColor: 'black',
-        borderColor: 'limegreen',
+        borderColor: '#219653',
         borderWidth: 2,
         borderRadius: 8,
         marginBottom: 8,
@@ -378,7 +455,7 @@ const styles = StyleSheet.create({
     },
 
     choiceButtonText: {
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 18,
     },

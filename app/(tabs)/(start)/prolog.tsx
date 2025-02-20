@@ -94,7 +94,7 @@ export default function PrologScreen() {
                     </Text>
                     <Text style={styles.text}>{displayedText}</Text>
 
-                    {isSaving && <ActivityIndicator color="limegreen" style={{ marginTop: 20 }} />}
+                    {isSaving && <ActivityIndicator color="#219653" style={{ marginTop: 20 }} />}
                 </View>
 
                 {/* Przyciski na dole */}
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     title: {
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 24,
         marginBottom: 12,
@@ -144,7 +144,7 @@ const styles = StyleSheet.create({
         lineHeight: 22,
     },
     tapText: {
-        color: 'limegreen',
+        color: '#219653',
         fontFamily: 'VT323Regular',
         fontSize: 16,
         textAlign: 'center',

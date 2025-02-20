@@ -5,6 +5,8 @@ export const getScenes = (translations: any, plec: 'pan' | 'pani' | null): Recor
         npcKey: 'officer',
         tekst: () => translations.dzwoniOfficer,
         options: [{ tekst: translations.odbierzPolaczenie, next: 'pytanie_powitalne' }],
+        sound: 'callphone',
+        soundPlayLoop: true
     },
     pytanie_powitalne: {
         npcKey: 'officer',

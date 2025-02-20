@@ -4,10 +4,10 @@ export const translations = {
         oczekiwanieStart: 'Czekaj na odpowiedź...',
         oczekiwanieKoniec: 'Dziękuję za czekanie. Przechodzimy dalej...',
 
-        // Tytuły NPC
-        officerTitle: 'OFICER REKRUTACYJNY',
-        mechanicTitle: 'MECHANIK POKŁADOWY',
-        captainTitle: 'KAPITAN STATKU',
+        // Tytuły NPC - muszą być dodsane do NPCData.ts w /lib
+        officerTitle: 'Oficer Rekrutacyjny',
+        mechanicTitle: 'Mechanik Pokładowy',
+        captainTitle: 'Kapitan Statku',
 
         // Ekrany śmierci
 

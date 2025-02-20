@@ -41,8 +41,8 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
-    title: { fontSize: 32, color: 'limegreen', marginBottom: 8, fontFamily: 'VT323Regular' },
+    title: { fontSize: 32, color: '#219653', marginBottom: 8, fontFamily: 'VT323Regular' },
     subtitle: { fontSize: 20, color: 'white', marginBottom: 16, fontFamily: 'VT323Regular' },
     spinner: { marginBottom: 10 },
-    waitingText: { fontSize: 18, color: 'limegreen', fontFamily: 'VT323Regular' },
+    waitingText: { fontSize: 18, color: '#219653', fontFamily: 'VT323Regular' },
 });
