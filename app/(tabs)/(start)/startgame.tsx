@@ -16,9 +16,6 @@ import {endActScreensMap} from "@/lib/screens/EndActScreens";
 import { Audio } from 'expo-av';
 import { soundsMap } from "@/lib/settings/soundMap";
 
-
-const { width, height } = Dimensions.get('window');
-
 export default function StartGameScreen() {
     const [isLoading, setIsLoading] = useState(true);
     const [hasStartedGame, setHasStartedGame] = useState<boolean | null>(null);
@@ -36,10 +33,9 @@ export default function StartGameScreen() {
     const [actFinished, setActFinished] = useState<{ actKey: string; nextAct: string } | null>(null);
     const [sound, setSound] = useState<Audio.Sound | null>(null);
     const activeSound = useRef<Audio.Sound | null >(null);
-
-
     const router = useRouter();
     const scrollRef = useRef<ScrollView>(null);
+
 
     useEffect(() => {
         const getPermissions = async () => {
@@ -132,8 +128,6 @@ export default function StartGameScreen() {
     
         setIsLoading(false);
     }, []);
-    
-    
 
     useEffect(() => {
         checkGameStarted();
@@ -172,7 +166,6 @@ export default function StartGameScreen() {
         }
     };
 
-
     const processScene = async (sceneName: string) => {
         const scenes = getScenes(translations[jezyk], plec);
         const scene = scenes[sceneName];
@@ -208,7 +201,6 @@ export default function StartGameScreen() {
         }
     };
     
-
     // const handleSceneChange = async (sceneName: string) => {
 
     const handleSceneChange = async (sceneName: string) => {
@@ -289,7 +281,6 @@ export default function StartGameScreen() {
         }
     };
     
-
     useEffect(() => {
         if (waiting) {
             const interval = setInterval(() => {
@@ -306,8 +297,6 @@ export default function StartGameScreen() {
             return () => clearInterval(interval);
         }
     }, [waiting]);
-
-
 
     if (isLoading) {
         return <View style={styles.loadingContainer}><ActivityIndicator color="limegreen" /></View>;
@@ -333,8 +322,6 @@ export default function StartGameScreen() {
             />
         );
     }
-
-
 
     return (
         <ImageBackground source={require('../../../assets/images/bg_komputer.png')} style={styles.background} resizeMode="cover">
@@ -379,6 +366,7 @@ export default function StartGameScreen() {
     );
 }
 
+const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     background: { flex: 1, width: '100%', height: '100%' },
     loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: 'black' },
