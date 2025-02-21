@@ -47,7 +47,6 @@ export default function StartGameScreen() {
     
         getPermissions();
     }, []);
-    
 
     const saveDialogue = async (dialogue: typeof dialogue) => {
         try {
@@ -57,7 +56,6 @@ export default function StartGameScreen() {
             console.error('Błąd zapisu historii dialogów:', error);
         }
     };
-
 
     const playSound = async (soundKey: string, loop: boolean) => {
         try {
@@ -87,8 +85,6 @@ export default function StartGameScreen() {
         }
     };
     
-    
-
     const checkGameStarted = useCallback(async () => {
         setIsLoading(true);
         const started = await Storage.getItem({ key: 'gameStarted' });
@@ -200,8 +196,6 @@ export default function StartGameScreen() {
             }, scene.autoNextDelay);
         }
     };
-    
-    // const handleSceneChange = async (sceneName: string) => {
 
     const handleSceneChange = async (sceneName: string) => {
         const scenes = getScenes(translations[jezyk], plec);
