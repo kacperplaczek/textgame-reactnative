@@ -76,25 +76,19 @@ export default function PrologScreen() {
             setIsTyping(false);
             return;
         }
-
-        console.log("🛑 Zatrzymuję dźwięk przed przejściem do startgame...");
-        await stopAllSounds();
-        await Storage.setItem({ key: 'gameStarted', value: 'true' });
-        router.replace('/startgame');
-
     
         if (currentScreen === 'intro') {
+            console.log("📜 Przechodzę do prologu...");
             setCurrentScreen('prolog');
-        } else {
+        } else if (currentScreen === 'prolog') {
             console.log("✅ Prolog zakończony, zapisuję stan gry...");
             setIsSaving(true);
-            await stopAllSounds(); // ⬅️ Zatrzymanie dźwięków przed przejściem do nowej sceny
+            await stopAllSounds();
             await Storage.setItem({ key: 'gameStarted', value: 'true' });
-    
-            console.log("🚀 Przekierowanie do startgame...");
             router.replace('/startgame');
         }
     };
+    
     
 
     return (

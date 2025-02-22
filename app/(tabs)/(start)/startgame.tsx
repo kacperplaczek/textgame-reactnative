@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Dimensions, ImageBackground } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Image, ActivityIndicator, Dimensions, ImageBackground, AppState } from 'react-native';
 import {Href, useRouter} from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import Storage from 'expo-storage';
@@ -75,7 +75,12 @@ export default function StartGameScreen() {
 
     const playSound = async (soundKey: string, loop: boolean) => {
         try {
-            await stopSound(); // ⬅️ ZAWSZE NA POCZĄTKU
+            if (AppState.currentState !== 'active') {
+                console.warn(`🚫 Aplikacja nie jest aktywna, nie odtwarzam dźwięku ${soundKey}`);
+                return;
+            }
+    
+            await stopSound(); // ⬅️ Zatrzymujemy poprzedni dźwięk
     
             const { sound: newSound } = await Audio.Sound.createAsync(
                 soundsMap[soundKey],

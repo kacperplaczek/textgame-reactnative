@@ -27,13 +27,13 @@ export default function HomeScreen() {
     
         if (gameStarted !== 'true') {
             console.log("🚀 Przenoszę gracza do prologu...");
-            router.replace('/prolog'); // Jeśli prolog nie został ukończony, przechodzi do prologu
+            router.replace('/prolog');
         } else if (currentAct) {
             console.log("🎭 Przenoszę gracza do aktu:", currentAct);
             router.replace(`/${currentAct}` as Href<string>);
         } else {
             console.log("🎮 Brak aktu, startuję od początku...");
-            router.replace('/startgame'); // Jeśli nie ma zapisanego aktu, zaczyna grę od nowa
+            router.replace('/startgame');
         }
     };
     

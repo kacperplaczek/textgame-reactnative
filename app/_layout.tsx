@@ -21,10 +21,10 @@ export default function RootLayout() {
         useEffect(() => {
           (async () => {
               try {
-                  await Audio.setAudioModeAsync({
+                    await Audio.setAudioModeAsync({
                       playsInSilentModeIOS: true,
-                      allowsRecordingIOS: false,
-                      staysActiveInBackground: false,
+                      allowsRecordingIOS: false, // ⬅️ Mikrofon jest wyłączony!
+                      staysActiveInBackground: false, // ⬅️ Nie wymuszamy odtwarzania w tle
                       interruptionModeIOS: 1,
                       interruptionModeAndroid: 1,
                       shouldDuckAndroid: true,
