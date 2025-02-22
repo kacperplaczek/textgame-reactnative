@@ -18,15 +18,25 @@ export default function HomeScreen() {
     }, []);
 
     const handleStartPress = async () => {
+        const gameStarted = await Storage.getItem({ key: 'gameStarted' });
         const currentAct = await Storage.getItem({ key: 'currentAct' });
-        if (currentAct) {
+    
+        console.log("🔍 Sprawdzanie statusu gry...");
+        console.log("📌 gameStarted:", gameStarted);
+        console.log("📌 currentAct:", currentAct);
+    
+        if (gameStarted !== 'true') {
+            console.log("🚀 Przenoszę gracza do prologu...");
+            router.replace('/prolog'); // Jeśli prolog nie został ukończony, przechodzi do prologu
+        } else if (currentAct) {
+            console.log("🎭 Przenoszę gracza do aktu:", currentAct);
             router.replace(`/${currentAct}` as Href<string>);
         } else {
-            // W przypadku gdy nie ma zapisanego aktu pierwszego przenosi do /startgame
-            // ! NIE ZMIENIAĆ GRA ZACZYNA SIĘ W STARTGAME.TSX
-            router.replace('/startgame');
+            console.log("🎮 Brak aktu, startuję od początku...");
+            router.replace('/startgame'); // Jeśli nie ma zapisanego aktu, zaczyna grę od nowa
         }
     };
+    
 
     return (
         <View style={styles.wrapper}>

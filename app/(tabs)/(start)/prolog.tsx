@@ -5,6 +5,7 @@ import Storage from 'expo-storage';
 import { StatusBar } from 'expo-status-bar';
 import { translations, Language } from '@/lib/translations/translations';
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
+import { Audio } from 'expo-av';
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,6 +56,19 @@ export default function PrologScreen() {
         }
     }, [isTyping, fullText]);
 
+
+    const stopAllSounds = async () => {
+        try {
+            console.log("⏹️ Zatrzymuję wszystkie dźwięki przed przejściem...");
+            const sound = new Audio.Sound();
+            await sound.stopAsync().catch(() => {}); // Próbuje zatrzymać dźwięk
+            await sound.unloadAsync().catch(() => {}); // Wymusza usunięcie z pamięci
+        } catch (e) {
+            console.error("❌ Błąd zatrzymywania dźwięków:", e);
+        }
+    };
+    
+
     const handleScreenChange = async () => {
         if (isTyping) {
             if (typingInterval) clearInterval(typingInterval);
@@ -63,15 +77,25 @@ export default function PrologScreen() {
             return;
         }
 
+        console.log("🛑 Zatrzymuję dźwięk przed przejściem do startgame...");
+        await stopAllSounds();
+        await Storage.setItem({ key: 'gameStarted', value: 'true' });
+        router.replace('/startgame');
+
+    
         if (currentScreen === 'intro') {
             setCurrentScreen('prolog');
         } else {
+            console.log("✅ Prolog zakończony, zapisuję stan gry...");
             setIsSaving(true);
+            await stopAllSounds(); // ⬅️ Zatrzymanie dźwięków przed przejściem do nowej sceny
             await Storage.setItem({ key: 'gameStarted', value: 'true' });
-            await Storage.setItem({key: 'currentAct', value: 'startgame'});
-            router.replace('/startgame?refresh=1');
+    
+            console.log("🚀 Przekierowanie do startgame...");
+            router.replace('/startgame');
         }
     };
+    
 
     return (
         <ImageBackground

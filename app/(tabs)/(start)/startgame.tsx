@@ -15,6 +15,7 @@ import GameMenu from '@/components/ui/GameMenu';
 import {endActScreensMap} from "@/lib/screens/EndActScreens";
 import { Audio } from 'expo-av';
 import { soundsMap } from "@/lib/settings/soundMap";
+import { useFocusEffect } from '@react-navigation/native';
 
 export default function StartGameScreen() {
     const [isLoading, setIsLoading] = useState(true);
@@ -35,7 +36,13 @@ export default function StartGameScreen() {
     const activeSound = useRef<Audio.Sound | null >(null);
     const router = useRouter();
     const scrollRef = useRef<ScrollView>(null);
+    const [refreshKey, setRefreshKey] = useState(0);
 
+
+
+    useEffect(() => {
+        console.log("🔄 Sprawdzanie stanu gry...");
+    }, [refreshKey])
 
     useEffect(() => {
         const getPermissions = async () => {
@@ -47,6 +54,15 @@ export default function StartGameScreen() {
     
         getPermissions();
     }, []);
+
+    const stopAllSounds = async () => {
+        try {
+            await Audio.setIsEnabledAsync(false);  // Wyłącza wszystkie dźwięki
+            await Audio.setIsEnabledAsync(true);   // Włącza dźwięki ponownie
+        } catch (e) {
+            console.error("Błąd zatrzymywania dźwięków:", e);
+        }
+    };
 
     const saveDialogue = async (dialogue: typeof dialogue) => {
         try {
@@ -87,10 +103,12 @@ export default function StartGameScreen() {
     
     const checkGameStarted = useCallback(async () => {
         setIsLoading(true);
+    
         const started = await Storage.getItem({ key: 'gameStarted' });
-        const gender = await Storage.getItem({ key: 'plec' });
         const storedScene = await DialogueController.getScene();
-        const storedDeathScreen = await DialogueController.getDeathScreen();
+    
+        console.log("📌 gameStarted:", started);
+        console.log("📌 storedScene:", storedScene);
     
         if (started === 'true') {
             setHasStartedGame(true);
@@ -98,32 +116,18 @@ export default function StartGameScreen() {
             setHasStartedGame(false);
         }
     
-        if (gender === 'pan' || gender === 'pani') {
-            setPlec(gender);
-        }
-    
-        const lang = await getCurrentLanguage();
-        setJezyk(lang);
-    
-        // ⬇️ DODANE - blokada odpalenia sceny, jeśli gra się nie zaczęła
-        if (started !== 'true') {
-            setIsLoading(false);
-            return;
-        }
-    
-        if (storedDeathScreen) {
-            setDead(true);
-            setDeadScreen(storedDeathScreen);
-        } else if (storedScene) {
+        if (storedScene) {
             setCurrentScene(storedScene);
             handleSceneChange(storedScene);
         } else {
+            console.log("🔄 Ustawiam domyślną scenę: dzwoni_officer");
             setCurrentScene('dzwoni_officer');
             handleSceneChange('dzwoni_officer');
         }
     
         setIsLoading(false);
     }, []);
+    
 
     useEffect(() => {
         checkGameStarted();
@@ -201,6 +205,7 @@ export default function StartGameScreen() {
         const scenes = getScenes(translations[jezyk], plec);
         const scene = scenes[sceneName];
     
+        if (sceneName === currentScene) return; 
         if (!scene) return;
     
         console.log(`Zmiana sceny: ${sceneName}`);
