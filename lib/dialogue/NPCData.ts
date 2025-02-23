@@ -16,27 +16,30 @@ Sprawdź też czy masz dodaną poprawną ściężkę avatara.
 
 */
 
+import { translations, Language } from "@/lib/translations/translations";
 
-import { translations, Language } from '@/lib/translations/translations';
-
-export type NpcKey = 'officer' | 'mechanic' | 'captain';
+export type NpcKey = "officer" | "flightControlCenter" | "mechanic" | "captain";
 
 type NpcData = {
-    nameKey: keyof typeof translations['pl'];
-    avatar: any;
+  nameKey: keyof (typeof translations)["pl"];
+  avatar: any;
 };
 
 export const npcData: Record<NpcKey, NpcData> = {
-    officer: {
-        nameKey: 'officerTitle',
-        avatar: require('@/assets/images/avatar/oficer_rekrutacji.png'),
-    },
-    mechanic: {
-        nameKey: 'mechanicTitle',
-        avatar: require('@/assets/images/avatar/oficer_rekrutacji.png'),
-    },
-    captain: {
-        nameKey: 'captainTitle',
-        avatar: require('@/assets/images/avatar/oficer_rekrutacji.png'),
-    },
+  officer: {
+    nameKey: "officerTitle",
+    avatar: require("@/assets/images/avatar/oficer_rekrutacji.png"),
+  },
+  flightControlCenter: {
+    nameKey: "flightControlCenterTitle",
+    avatar: require("@/assets/images/avatar/control_center_avatar.png"),
+  },
+  mechanic: {
+    nameKey: "mechanicTitle",
+    avatar: require("@/assets/images/avatar/oficer_rekrutacji.png"),
+  },
+  captain: {
+    nameKey: "captainTitle",
+    avatar: require("@/assets/images/avatar/oficer_rekrutacji.png"),
+  },
 };
