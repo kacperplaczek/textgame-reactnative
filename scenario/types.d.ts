@@ -6,6 +6,11 @@ type SceneType = {
   options?: { tekst: string; next: string; akcja?: () => Promise<void> }[];
   checkpoint?: boolean;
   deathScreen?: string;
+  options?: {
+    tekst: string;
+    next: string;
+    akcja?: string;
+  }[];
   autoNextScene?: string;
   autoNextDelay?: number;
   waitTime?: number;

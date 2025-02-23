@@ -230,7 +230,9 @@ export default function StartGameScreen() {
   }, [hasStartedGame]);
 
   useEffect(() => {
-    scrollRef.current?.scrollToEnd({ animated: true });
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   }, [dialogue]);
 
   const addMessage = (
@@ -246,17 +248,38 @@ export default function StartGameScreen() {
   };
 
   const handleDeathScreenPress = async () => {
-    const lastCheckpoint = await DialogueController.getLastCheckpoint();
-    if (lastCheckpoint) {
-      await DialogueController.clearAfterCheckpoint(lastCheckpoint);
-      await DialogueController.clearDeathScreen();
-      await stopSound();
+    const lastCheckpoint = await Storage.getItem({ key: "checkpoint" });
 
+    console.log("📌 Przywracanie checkpointu:", lastCheckpoint);
+
+    if (lastCheckpoint) {
+      // ✅ Resetujemy stan gry przed zmianą sceny
       setDead(false);
       setDeadScreen(null);
       setDialogue([]);
       setOptions([]);
+
+      await stopSound();
+      await DialogueController.clearAfterCheckpoint(lastCheckpoint);
+      await DialogueController.clearDeathScreen();
+
       setCurrentScene(lastCheckpoint);
+
+      // ✅ Krótkie opóźnienie, by uniknąć glitcha z ekranem śmierci
+      setTimeout(() => {
+        handleSceneChange(lastCheckpoint);
+      }, 200);
+    } else {
+      console.log("❌ Brak checkpointu! Powrót do początku.");
+      setDead(false);
+      setDeadScreen(null);
+      setDialogue([]);
+      setOptions([]);
+      setCurrentScene("rozpoczecie_akt2");
+
+      setTimeout(() => {
+        handleSceneChange("rozpoczecie_akt2");
+      }, 200);
     }
   };
 
@@ -316,12 +339,34 @@ export default function StartGameScreen() {
     setCurrentScene(sceneName);
     await DialogueController.setScene(sceneName);
 
-    // 🖼️ Jeśli scena wymaga pełnoekranowego UI, otwieramy go zamiast przekierowywać
+    // ❗️Dodaj krótki timeout, żeby ScrollView miał czas na aktualizację
+    setTimeout(() => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    }, 100);
+
+    // ✅ Sprawdzamy warunki przed przejściem do kolejnej sceny
+    if (sceneName === "start_procedure") {
+      const thrust = await Storage.getItem({ key: "thrustSetting" }); // Minimalny czy maksymalny?
+      const powerCheck = await Storage.getItem({ key: "powerCheck" }); // Czy gracz sprawdził zasilanie?
+
+      console.log(
+        `📌 Ustawienia gracza: ciąg=${thrust}, zasilanie=${powerCheck}`
+      );
+
+      if (thrust !== "minimal" || powerCheck !== "checked") {
+        console.log("❌ Zły wybór - śmierć!");
+        setDead(true);
+        setDeadScreen("explosion"); // Nazwa Twojego deathscreen
+        return;
+      }
+    }
+
+    // 🖼️ Jeśli scena ma ekran specjalny (np. rozmowę w pełnym ekranie)
     if (scene.specialScreen) {
       setSpecialSceneContent({
         title: scene.specialScreen.title,
         subtitle: scene.specialScreen.subtitle,
-        npcKey: scene.npcKey,
+        npcKey: scene.npcKey, // ✅ Pobieramy NPC!
         background: scene.specialScreen.background,
         nextScene: scene.autoNextScene ?? sceneName,
         autoNextDelay: scene.autoNextDelay,
@@ -332,24 +377,18 @@ export default function StartGameScreen() {
       return;
     }
 
-    // 📌 **Obsługa `autoReply` → Automatyczna odpowiedź gracza**
-    if (scene.autoReply) {
-      addMessage("GRACZ", scene.autoReply);
-    }
-
-    // 📌 **Obsługa `autoReplyInsert` → Wstawianie dynamicznej odpowiedzi gracza**
-    let npcTekst =
-      typeof scene.tekst === "function" ? scene.tekst() : scene.tekst;
-    if (scene.autoReplyInsert) {
-      npcTekst = npcTekst.replace("{{graczOdpowiedz}}", scene.autoReply || "");
-    }
-
-    // 📝 **Dodanie wiadomości NPC**
+    // 📌 Normalne przejście sceny
     if (!scene.waitTime) {
-      addMessage("NPC", npcTekst, scene.npcKey);
+      const tekst =
+        typeof scene.tekst === "function" ? scene.tekst() : scene.tekst;
+      addMessage("NPC", tekst, scene.npcKey);
     }
 
-    // 🎭 **Obsługa opcji odpowiedzi**
+    if (scene.checkpoint) {
+      console.log(`💾 Zapisuję checkpoint: ${sceneName}`);
+      await Storage.setItem({ key: "checkpoint", value: scene.checkpoint });
+    }
+
     if (scene.options) {
       setOptions(
         scene.options.map((option) => ({
@@ -364,44 +403,22 @@ export default function StartGameScreen() {
       setOptions([]);
     }
 
-    // ⏳ **Obsługa czasu oczekiwania przed kolejną sceną**
-    if (scene.waitTime) {
-      setOptions([]);
-      const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
-      setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
-
-      await Storage.setItem({
-        key: "waitingEndTime",
-        value: endTime.toString(),
-      });
-      await Storage.setItem({
-        key: "waitingScene",
-        value: scene.autoNextScene ?? sceneName,
-      });
-
-      return;
-    }
-
-    // ⏩ **Obsługa auto-przejścia po określonym czasie**
     if (scene.autoNextScene && scene.autoNextDelay) {
       setTimeout(() => {
         handleSceneChange(scene.autoNextScene!);
       }, scene.autoNextDelay);
     }
 
-    // 🎯 **Zapisywanie checkpointu**
     if (scene.checkpoint) {
       await DialogueController.setCheckpoint(sceneName);
     }
 
-    // 💀 **Obsługa ekranu śmierci**
     if (scene.deathScreen) {
       await DialogueController.setDeathScreen(scene.deathScreen);
       setDeadScreen(scene.deathScreen);
       setDead(true);
     }
 
-    // 🎬 **Obsługa zakończenia aktu**
     if (scene.endAct) {
       setEndAct(true);
       setEndActScreen(scene.endAct);
@@ -411,6 +428,119 @@ export default function StartGameScreen() {
       });
     }
   };
+
+  //   const handleSceneChange = async (sceneName: string) => {
+  //     const scenes = getScenes(translations[jezyk], plec);
+  //     const scene = scenes[sceneName];
+
+  //     if (!scene) return;
+
+  //     console.log(`🎬 Zmiana sceny: ${sceneName}`);
+
+  //     await stopSound();
+
+  //     if (scene.sound) {
+  //       await playSound(scene.sound, scene.soundPlayLoop ?? false);
+  //     }
+
+  //     setCurrentScene(sceneName);
+  //     await DialogueController.setScene(sceneName);
+
+  //     // 🖼️ Jeśli scena wymaga pełnoekranowego UI, otwieramy go zamiast przekierowywać
+  //     if (scene.specialScreen) {
+  //       setSpecialSceneContent({
+  //         title: scene.specialScreen.title,
+  //         subtitle: scene.specialScreen.subtitle,
+  //         npcKey: scene.npcKey,
+  //         background: scene.specialScreen.background,
+  //         nextScene: scene.autoNextScene ?? sceneName,
+  //         autoNextDelay: scene.autoNextDelay,
+  //         requireWait: scene.specialScreen.requireWait ?? false,
+  //         requireWaitTime: scene.specialScreen.requireWaitTime ?? 5000,
+  //       });
+  //       setSpecialSceneVisible(true);
+  //       return;
+  //     }
+
+  //     // 📌 **Obsługa `autoReply` → Automatyczna odpowiedź gracza**
+  //     if (scene.autoReply) {
+  //       addMessage("GRACZ", scene.autoReply);
+  //     }
+
+  //     // 📌 **Obsługa `autoReplyInsert` → Wstawianie dynamicznej odpowiedzi gracza**
+  //     let npcTekst =
+  //       typeof scene.tekst === "function" ? scene.tekst() : scene.tekst;
+  //     if (scene.autoReplyInsert) {
+  //       npcTekst = npcTekst.replace("{{graczOdpowiedz}}", scene.autoReply || "");
+  //     }
+
+  //     // 📝 **Dodanie wiadomości NPC**
+  //     if (!scene.waitTime) {
+  //       addMessage("NPC", npcTekst, scene.npcKey);
+  //     }
+
+  //     // 🎭 **Obsługa opcji odpowiedzi**
+  //     if (scene.options) {
+  //       setOptions(
+  //         scene.options.map((option) => ({
+  //           tekst: option.tekst,
+  //           akcja: () => {
+  //             addMessage("GRACZ", option.tekst);
+  //             handleSceneChange(option.next);
+  //           },
+  //         }))
+  //       );
+  //     } else {
+  //       setOptions([]);
+  //     }
+
+  //     // ⏳ **Obsługa czasu oczekiwania przed kolejną sceną**
+  //     if (scene.waitTime) {
+  //       setOptions([]);
+  //       const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
+  //       setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
+
+  //       await Storage.setItem({
+  //         key: "waitingEndTime",
+  //         value: endTime.toString(),
+  //       });
+  //       await Storage.setItem({
+  //         key: "waitingScene",
+  //         value: scene.autoNextScene ?? sceneName,
+  //       });
+
+  //       return;
+  //     }
+
+  //     // ⏩ **Obsługa auto-przejścia po określonym czasie**
+  //     if (scene.autoNextScene && scene.autoNextDelay) {
+  //       setTimeout(() => {
+  //         handleSceneChange(scene.autoNextScene!);
+  //       }, scene.autoNextDelay);
+  //     }
+
+  //     // 🎯 **Zapisywanie checkpointu**
+  //     if (scene.checkpoint) {
+  //       await DialogueController.setCheckpoint(sceneName);
+  //     }
+
+  //     // 💀 **Obsługa ekranu śmierci**
+  //     if (scene.deathScreen) {
+  //       await DialogueController.setDeathScreen(scene.deathScreen);
+  //       setDeadScreen(scene.deathScreen);
+  //       setDead(true);
+  //     }
+
+  //     // 🎬 **Obsługa zakończenia aktu**
+  //     if (scene.endAct) {
+  //       setEndAct(true);
+  //       setEndActScreen(scene.endAct);
+  //       setActFinished({
+  //         actKey: sceneName,
+  //         nextAct: scene.nextAct || "startgame",
+  //       });
+  //     }
+  //   };
 
   //   const handleSceneChange = async (sceneName: string) => {
   //     const scenes = getScenes(translations[jezyk], plec);

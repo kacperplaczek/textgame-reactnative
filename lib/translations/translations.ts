@@ -82,6 +82,10 @@ export const translations = {
     akt2Scen4: "Niestety na etapie nie jest to możliwe. Ile osób liczy załoga?",
     akt2Odp5: "Lecę tylko Ja",
     akt2Odp6: "Nie wiem. Gdzie moi ludzie?",
+    akt2Scen5:
+      "Wszystko się zgadza! Przygotuj się do startu. Włącz silniki i ustaw ciąg minimalny.",
+    akt2Scen6:
+      "Nikt Ci nie powiedział? Niestety ich prom uległ awarii poszycia i skończyło się to ... źle! Przygotuj się do startu. Włącz silniki i ustaw ciąg minimalny.",
 
     // Intro / Prolog
     introTitle: "WSTĘP",
