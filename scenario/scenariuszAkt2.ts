@@ -122,7 +122,7 @@ export const getScenes = (
   next_act: {
     npcKey: "flightControlCenter",
     tekst: () => "Start przebiegł pomyślnie. Możesz kontynuować misję!",
-    autoNextScene: "startgame",
+    autoNextScene: "rozpoczecie_akt2",
     autoNextDelay: 3000,
   },
 });

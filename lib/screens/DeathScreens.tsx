@@ -6,8 +6,8 @@ export const deathScreensMap: Record<
 > = {
   explosionDeathScreen: ({ onRetry }) => (
     <DeathScreen
-      title="ROZWALONO STATEK"
-      description="Twój statek został zniszczony..."
+      title="TWÓJ STATEK EKSPLODOWAŁ"
+      //   description="Twój statek został zniszczony..."
       image={require("@/assets/images/deathscreens/ship_explode.png")}
       onRetry={onRetry}
     />
@@ -17,7 +17,7 @@ export const deathScreensMap: Record<
   spaceDeathScreen: ({ onRetry }) => (
     <DeathScreen
       title="WYSSANY W PRÓŻNIĘ"
-      description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
+      //   description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
       image={require("@/assets/images/bg_intro.png")}
       onRetry={onRetry}
     />
