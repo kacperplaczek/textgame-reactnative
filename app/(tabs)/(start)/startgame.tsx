@@ -80,6 +80,16 @@ export default function StartGameScreen() {
   } | null>(null);
   const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
 
+  async function clearStoredTime() {
+    try {
+      await Storage.removeItem({ key: "waitingEndTime" });
+      await Storage.removeItem({ key: "waitingScene" });
+      console.log("✅ Zapisany czas został usunięty.");
+    } catch (error) {
+      console.error("❌ Błąd podczas usuwania zapisanego czasu:", error);
+    }
+  }
+
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
   }, [refreshKey]);
@@ -217,8 +227,6 @@ export default function StartGameScreen() {
           setWaitingScreenVisible(true);
           setRemainingTime(remaining);
         } else {
-          console.log("✅ Czas oczekiwania minął, przechodzimy dalej...");
-          await clearStoredTime();
           setWaiting(null);
           setWaitingScreenVisible(false);
           handleSceneChange(storedScene);

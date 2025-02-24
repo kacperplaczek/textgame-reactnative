@@ -28,6 +28,7 @@ import { Audio } from "expo-av";
 import { soundsMap } from "@/lib/settings/soundMap";
 import { useFocusEffect } from "@react-navigation/native";
 import SpecialSceneOverlay from "@/components/ui/CallingScreenOverlay";
+import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -77,6 +78,8 @@ export default function StartGameScreen() {
     requireWaitTime?: number;
   } | null>(null);
 
+  const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
+
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
   }, [refreshKey]);
@@ -91,6 +94,16 @@ export default function StartGameScreen() {
 
     getPermissions();
   }, []);
+
+  async function clearStoredTime() {
+    try {
+      await Storage.removeItem({ key: "waitingEndTime" });
+      await Storage.removeItem({ key: "waitingScene" });
+      console.log("✅ Zapisany czas został usunięty.");
+    } catch (error) {
+      console.error("❌ Błąd podczas usuwania zapisanego czasu:", error);
+    }
+  }
 
   const stopAllSounds = async () => {
     try {
@@ -220,6 +233,35 @@ export default function StartGameScreen() {
   //   }, []);
 
   useEffect(() => {
+    const checkWaitingState = async () => {
+      const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+      const storedScene = await Storage.getItem({ key: "waitingScene" });
+
+      if (storedEndTime && storedScene) {
+        const endTime = parseInt(storedEndTime, 10);
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = Math.max(0, Math.floor(endTime - now));
+
+        console.log(`⏳ Pozostały czas: ${remaining} sekund`);
+
+        if (remaining > 0) {
+          console.log("🔄 Przywracanie ekranu oczekiwania...");
+
+          setWaiting({ sceneName: storedScene, endTime });
+          setWaitingScreenVisible(true);
+          setRemainingTime(remaining);
+        } else {
+          setWaiting(null);
+          setWaitingScreenVisible(false);
+          handleSceneChange(storedScene);
+        }
+      }
+    };
+
+    checkWaitingState();
+  }, []);
+
+  useEffect(() => {
     checkGameStarted();
   }, []);
 
@@ -343,6 +385,35 @@ export default function StartGameScreen() {
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
     }, 100);
+
+    if (scene.notifyTime) {
+      console.log("⏳ Ustawiamy czas oczekiwania:", scene.notifyTime, "sekund");
+
+      let storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+
+      if (!storedEndTime) {
+        const now = Math.floor(Date.now() / 1000);
+        storedEndTime = (now + scene.notifyTime).toString();
+
+        await Storage.setItem({ key: "waitingEndTime", value: storedEndTime });
+        await Storage.setItem({
+          key: "waitingScene",
+          value: scene.autoNextScene ?? sceneName,
+        });
+
+        console.log("📌 Zapisano NOWY waitingEndTime:", storedEndTime);
+      } else {
+        console.log("📌 Używam zapisany waitingEndTime:", storedEndTime);
+      }
+
+      setWaiting({
+        sceneName: scene.autoNextScene ?? sceneName,
+        endTime: parseInt(storedEndTime),
+      });
+      setWaitingScreenVisible(true);
+
+      return;
+    }
 
     // ✅ Sprawdzamy warunki przed przejściem do kolejnej sceny
     if (sceneName === "start_procedure") {
@@ -674,6 +745,11 @@ export default function StartGameScreen() {
     >
       <StatusBar hidden />
       <GameMenu />
+
+      <WaitingScreenOverlay
+        visible={waitingScreenVisible}
+        timeLeft={remainingTime}
+      />
 
       <SpecialSceneOverlay
         visible={specialSceneVisible}
