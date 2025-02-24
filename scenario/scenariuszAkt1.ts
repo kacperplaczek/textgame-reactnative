@@ -48,16 +48,35 @@ export const getScenes = (
     npcKey: "officer",
     tekst: () => translations.pytanieOPowody00001,
     options: [
+      // {
+      //   tekst: translations.pytaniePowitalneOpcja1,
+      //   next: "przejscie_do_misji_powody",
+      // },
+      // {
+      //   tekst: translations.pytaniePowitalneOpcja2,
+      //   next: "przejscie_do_misji_nie_interes",
+      // },
       {
         tekst: translations.pytaniePowitalneOpcja1,
-        next: "przejscie_do_misji_powody",
+        next: "akt2_scen_waiting",
       },
       {
         tekst: translations.pytaniePowitalneOpcja2,
-        next: "przejscie_do_misji_nie_interes",
+        next: "akt2_scen_waiting",
       },
     ],
   },
+
+  akt2_scen_waiting: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Przygotowujemy statek do startu... To potrwa chwilę.",
+    notifyTime: 500, // 10 sekund
+    notifyScreen: true, // Pokazujemy ekran oczekiwania
+    notifyScreenName: "statek_przygotowanie", // Nazwa ekranu oczekiwania
+    enableNotification: true, // Wysłanie powiadomienia, jeśli aplikacja jest wyłączona
+    autoNextScene: "pytanie_o_powody", // Po 10 sekundach przejście do kolejnej sceny
+  },
+
   przejscie_do_misji_powody: {
     npcKey: "officer",
     tekst: () => translations.przejscieDoMisjiPowody00001,

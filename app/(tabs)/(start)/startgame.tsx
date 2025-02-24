@@ -28,6 +28,8 @@ import { Audio } from "expo-av";
 import { soundsMap } from "@/lib/settings/soundMap";
 import { useFocusEffect } from "@react-navigation/native";
 import SpecialSceneOverlay from "@/components/ui/CallingScreenOverlay";
+import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
+import * as Notifications from "expo-notifications";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -76,6 +78,7 @@ export default function StartGameScreen() {
     requireWait?: boolean;
     requireWaitTime?: number;
   } | null>(null);
+  const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
@@ -196,6 +199,37 @@ export default function StartGameScreen() {
   }, []);
 
   useEffect(() => {
+    const checkWaitingState = async () => {
+      const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+      const storedScene = await Storage.getItem({ key: "waitingScene" });
+
+      if (storedEndTime && storedScene) {
+        const endTime = parseInt(storedEndTime, 10); // Pobieramy zapisany czas jako liczba (ms)
+        const now = Date.now(); // Pobieramy aktualny timestamp (ms)
+        const remaining = Math.max(0, Math.floor((endTime - now) / 1000)); // Konwersja na sekundy
+
+        console.log(`⏳ Pozostały czas: ${remaining} sekund`);
+
+        if (remaining > 0) {
+          console.log("🔄 Przywracanie ekranu oczekiwania...");
+
+          setWaiting({ sceneName: storedScene, endTime });
+          setWaitingScreenVisible(true);
+          setRemainingTime(remaining);
+        } else {
+          console.log("✅ Czas oczekiwania minął, przechodzimy dalej...");
+          await clearStoredTime();
+          setWaiting(null);
+          setWaitingScreenVisible(false);
+          handleSceneChange(storedScene);
+        }
+      }
+    };
+
+    checkWaitingState();
+  }, []);
+
+  useEffect(() => {
     checkGameStarted();
   }, []);
 
@@ -267,7 +301,6 @@ export default function StartGameScreen() {
     } else {
       setOptions([]);
     }
-
     if (scene.autoNextScene && scene.autoNextDelay) {
       setTimeout(() => {
         handleSceneChange(scene.autoNextScene!);
@@ -284,6 +317,7 @@ export default function StartGameScreen() {
     console.log(`🎬 Zmiana sceny: ${sceneName}`);
 
     await stopSound();
+    // await clearStoredTime();
 
     if (scene.sound) {
       await playSound(scene.sound, scene.soundPlayLoop ?? false);
@@ -291,6 +325,38 @@ export default function StartGameScreen() {
 
     setCurrentScene(sceneName);
     await DialogueController.setScene(sceneName);
+
+    if (scene.notifyTime) {
+      console.log("⏳ Ustawiamy czas oczekiwania:", scene.notifyTime, "sekund");
+
+      // 🕒 Pobieramy istniejący czas zakończenia
+      let storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+
+      if (!storedEndTime) {
+        // 🕒 Pobieramy aktualny czas w sekundach i ustawiamy nowy czas zakończenia
+        const now = Math.floor(Date.now() / 1000);
+        storedEndTime = (now + scene.notifyTime).toString();
+
+        await Storage.setItem({ key: "waitingEndTime", value: storedEndTime });
+        await Storage.setItem({
+          key: "waitingScene",
+          value: scene.autoNextScene ?? sceneName,
+        });
+
+        console.log("📌 Zapisano NOWY waitingEndTime:", storedEndTime);
+      } else {
+        console.log("📌 Używam zapisany waitingEndTime:", storedEndTime);
+      }
+
+      // 🔄 Ustawiamy ekran oczekiwania
+      setWaiting({
+        sceneName: scene.autoNextScene ?? sceneName,
+        endTime: parseInt(storedEndTime),
+      });
+      setWaitingScreenVisible(true);
+
+      return;
+    }
 
     // 🖼️ Jeśli scena wymaga pełnoekranowego UI, otwieramy go zamiast przekierowywać
     if (scene.specialScreen) {
@@ -307,6 +373,57 @@ export default function StartGameScreen() {
       setSpecialSceneVisible(true);
       return;
     }
+
+    // ⏳ **Obsługa notifyTime - ekran oczekiwania i powiadomienia**
+    // if (scene.notifyTime) {
+    //   console.log(`⏳ Czekamy ${scene.notifyTime} sekund...`);
+
+    //   setOptions([]); // Usuwamy opcje wyboru
+    //   setWaiting({
+    //     sceneName: scene.autoNextScene ?? sceneName,
+    //     endTime: Date.now() + scene.notifyTime * 1000,
+    //   });
+
+    //   await Storage.setItem({
+    //     key: "waitingEndTime",
+    //     value: (Date.now() + scene.notifyTime * 1000).toString(),
+    //   });
+    //   await Storage.setItem({
+    //     key: "waitingScene",
+    //     value: scene.autoNextScene ?? sceneName,
+    //   });
+
+    //   // **Pokazanie nowego UI oczekiwania**
+    //   setWaitingScreenVisible(true);
+    //   setRemainingTime(scene.notifyTime);
+
+    //   // **Zaplanowanie powiadomienia push**
+    //   if (scene.enableNotification) {
+    //     console.log(
+    //       "🔔 Powiadomienie zostanie zaplanowane za",
+    //       scene.notifyTime,
+    //       "sekund."
+    //     );
+    //     await Notifications.scheduleNotificationAsync({
+    //       content: {
+    //         title: "Czas ruszać dalej!",
+    //         body: "Przygotowania zakończone.",
+    //         sound: true,
+    //       },
+    //       trigger: { seconds: scene.notifyTime }, // 🔥 Teraz powiadomienie przyjdzie DOKŁADNIE po `notifyTime`
+    //     });
+    //   }
+
+    //   // **Automatyczna zmiana sceny po notifyTime**
+    //   setTimeout(() => {
+    //     console.log("⏩ Koniec oczekiwania, przejście do kolejnej sceny.");
+    //     setWaitingScreenVisible(false);
+    //     setWaiting(null);
+    //     handleSceneChange(scene.autoNextScene ?? sceneName);
+    //   }, scene.notifyTime * 1000);
+
+    //   return; // ⬅️ Przerywamy dalsze wykonywanie
+    // }
 
     // 📌 **Obsługa `autoReply` → Automatyczna odpowiedź gracza**
     if (scene.autoReply) {
@@ -461,16 +578,40 @@ export default function StartGameScreen() {
     }, 200); // ⬅️ Krótkie opóźnienie, żeby uniknąć zapętlenia
   };
 
+  // useEffect(() => {
+  //   if (waiting) {
+  //     const interval = setInterval(() => {
+  //       const remaining = calculateRemainingTime(waiting.endTime);
+  //       setRemainingTime(remaining);
+
+  //       if (remaining <= 0) {
+  //         clearInterval(interval);
+  //         setWaiting(null);
+  //         handleSceneChange(waiting.sceneName);
+  //       }
+  //     }, 1000);
+
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [waiting]);
+
   useEffect(() => {
     if (waiting) {
       const interval = setInterval(() => {
-        const remaining = calculateRemainingTime(waiting.endTime);
+        const now = Math.floor(Date.now() / 1000);
+        const remaining = Math.max(0, Math.floor(waiting.endTime - now));
+
         setRemainingTime(remaining);
 
         if (remaining <= 0) {
+          console.log("⏩ Koniec oczekiwania, przejście do kolejnej sceny.");
           clearInterval(interval);
           setWaiting(null);
-          handleSceneChange(waiting.sceneName);
+          setWaitingScreenVisible(false);
+          clearStoredTime(); // ⬅️ Dopiero teraz usuwamy zapisany czas!
+          setTimeout(() => {
+            handleSceneChange(waiting.sceneName);
+          }, 500); // ⬅️ Minimalne opóźnienie, by uniknąć glitcha
         }
       }, 1000);
 
@@ -520,6 +661,11 @@ export default function StartGameScreen() {
     >
       <StatusBar hidden />
       <GameMenu />
+
+      <WaitingScreenOverlay
+        visible={waitingScreenVisible}
+        timeLeft={remainingTime}
+      />
 
       <SpecialSceneOverlay
         visible={specialSceneVisible}

@@ -32,4 +32,8 @@ type SceneType = {
     requireWaitTime?: number;
   };
   instantResponse?: string;
+  notifyTime?: number; // ⏳ Czas oczekiwania w sekundach
+  notifyScreen?: boolean; // 🖥️ Czy pokazać ekran oczekiwania?
+  notifyScreenName?: string; // 📌 Nazwa ekranu oczekiwania
+  enableNotification?: boolean; // 🔔 Czy wysłać powiadomienie push?
 };
