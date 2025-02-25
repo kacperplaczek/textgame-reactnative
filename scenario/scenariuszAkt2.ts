@@ -1062,10 +1062,26 @@ export const getScenes = (
     options: [
       {
         tekst: "Rozkazy",
-        next: "akt2_wyobrazenie_o_eksploracji",
+        next: "akt2_nie_moznaignorowac",
       },
       {
         tekst: "Nowe horyzonty",
+        next: "akt2_nie_moznaignorowac",
+      },
+    ],
+  },
+
+  akt2_nie_moznaignorowac: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Nie możemy ignorować indywidualnych dążeń, które sprawiają, że zostajesz wybrany do tak wyjątkowych zadań. Możliwe, że gdzieś w głębi siebie szukasz odpowiedzi, której na Ziemi nie znajdziesz?",
+    options: [
+      {
+        tekst: "Powody osobiste",
+        next: "akt2_wyobrazenie_o_eksploracji",
+      },
+      {
+        tekst: "Nauka i eksploracja",
         next: "akt2_wyobrazenie_o_eksploracji",
       },
     ],
@@ -1078,10 +1094,58 @@ export const getScenes = (
     options: [
       {
         tekst: "Być może",
-        next: "akt2_jaskinie_smierc",
+        next: "akt2_pewne_nieodkryte_kwestie",
       },
       {
         tekst: "Nie wiem",
+        next: "akt2_pewne_nieodkryte_kwestie",
+      },
+    ],
+  },
+
+  akt2_pewne_nieodkryte_kwestie: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Rozumiem, że pewne kwestie pozostaną nieodkryte, ale czy pamiętasz moment, kiedy zdecydowałeś się na tę podróż? Co było tym impulsującym momentem?",
+    options: [
+      {
+        tekst: "Pragnienie zmian",
+        next: "akt2_interesujaceAleMowiacOzmianach",
+      },
+      {
+        tekst: "Nie przypomina sobie",
+        next: "akt2_interesujaceAleMowiacOzmianach",
+      },
+    ],
+  },
+
+  akt2_interesujaceAleMowiacOzmianach: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Interesujące... Ale mówiąc o zmianach, wykrywamy gwałtowne zmiany barometryczne blisko twojej lokalizacji. Czy dostrzegasz jakieś oznaki nadchodzącej burzy?",
+    options: [
+      {
+        tekst: "Wydaje mi się, że czuje wiatr",
+        next: "akt2_jaskinie_smierc",
+      },
+      {
+        tekst: "Wszystko wygląda spokojnie",
+        next: "akt2_jaskinie_koniec_waitTime",
+      },
+    ],
+  },
+
+  akt2_niepozwolesiezmylic: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Nie pozwól się zmylić ciszy przed burzą. Nasze instrumenty wskazują na szybko zbliżającą się megaburzę piaskową. Musisz natychmiast znaleźć schronienie.",
+    options: [
+      {
+        tekst: "Poszukam schronienia",
+        next: "akt2_jaskinie_smierc",
+      },
+      {
+        tekst: "Idę dalej",
         next: "akt2_jaskinie_koniec_waitTime",
       },
     ],
