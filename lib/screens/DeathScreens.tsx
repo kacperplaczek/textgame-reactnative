@@ -40,4 +40,14 @@ export const deathScreensMap: Record<
       onRetry={onRetry}
     />
   ),
+
+  // Tu dodasz kolejne typy śmierci np.
+  stormDeathScreen: ({ onRetry }) => (
+    <DeathScreen
+      title="GINIESZ W BURZY"
+      //   description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
+      image={require("@/assets/images/spadles_z_urwiska.png")}
+      onRetry={onRetry}
+    />
+  ),
 };

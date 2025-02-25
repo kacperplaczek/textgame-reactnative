@@ -202,36 +202,6 @@ export default function StartGameScreen() {
     setIsLoading(false);
   }, []);
 
-  //   const checkGameStarted = useCallback(async () => {
-  //     setIsLoading(true);
-
-  //     const started = await Storage.getItem({ key: "gameStarted" });
-  //     const currentAct =
-  //       (await Storage.getItem({ key: "currentAct" })) || "akt-1";
-  //     const storedScene = await DialogueController.getScene();
-
-  //     console.log("📌 currentAct:", currentAct);
-  //     console.log("📌 gameStarted:", started);
-  //     console.log("📌 storedScene:", storedScene);
-
-  //     if (started === "true") {
-  //       setHasStartedGame(true);
-  //     } else {
-  //       setHasStartedGame(false);
-  //     }
-
-  //     if (!storedScene) {
-  //       setCurrentScene(storedScene);
-  //       handleSceneChange(storedScene);
-  //     } else {
-  //       console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_akt2");
-  //       setCurrentScene("rozpoczecie_akt2");
-  //       handleSceneChange("rozpoczecie_akt2");
-  //     }
-
-  //     setIsLoading(false);
-  //   }, []);
-
   useEffect(() => {
     const checkWaitingState = async () => {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });

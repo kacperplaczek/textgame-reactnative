@@ -290,6 +290,7 @@ export const getScenes = (
   akt2_niewidzialnosc: {
     npcKey: "flightControlCenter",
     tekst: () => "Cholera! Nic nie widzę!",
+    enableDarknessUI: true,
     options: [
       { tekst: "Kliknij, aby kontynuować", next: "akt2_wymiar_niemożliwy" },
     ],
@@ -359,6 +360,7 @@ export const getScenes = (
       { tekst: "Potrząśnij kryształem", next: "death_explosion" }, // 💀 Śmierć, powrót do checkpointu
       { tekst: "Ok. Sprawdź", next: "akt2_powrot_do_normy" },
     ],
+    diasableDarknessUI: true,
   },
 
   // 🔥 DIALOG (P) – POWRÓT DO NORMALNOŚCI
@@ -642,8 +644,9 @@ export const getScenes = (
   },
 
   akt2_ustawCheckPoint2: {
-    checkpoint: true,
     autoNextScene: "akt2_rozbitek_cossciemniasz",
+    checkpoint: true,
+    autoNextDelay: 100,
   },
 
   // DLA "COŚ ŚCIEMNIASZ"
@@ -664,8 +667,9 @@ export const getScenes = (
   },
 
   akt2_ustawCheckPoint1: {
-    checkpoint: true,
     autoNextScene: "akt2_rozbitek_brzmiracjonalnie",
+    checkpoint: true,
+    autoNextDelay: 100,
   },
 
   // DLA "BRZMI RACJONALNIE"
@@ -1126,11 +1130,11 @@ export const getScenes = (
     options: [
       {
         tekst: "Wydaje mi się, że czuje wiatr",
-        next: "akt2_jaskinie_smierc",
+        next: "akt2_niepozwolesiezmylic",
       },
       {
         tekst: "Wszystko wygląda spokojnie",
-        next: "akt2_jaskinie_koniec_waitTime",
+        next: "akt2_niepozwolesiezmylic",
       },
     ],
   },
@@ -1142,12 +1146,343 @@ export const getScenes = (
     options: [
       {
         tekst: "Poszukam schronienia",
-        next: "akt2_jaskinie_smierc",
+        next: "akt2_schroenienie_start",
       },
       {
         tekst: "Idę dalej",
-        next: "akt2_jaskinie_koniec_waitTime",
+        next: "akt2_spadaszwotchlan_2",
       },
     ],
+  },
+
+  akt2_spadaszwotchlan_2: {
+    npcKey: "rozbitek",
+    tekst: () => "Spadasz z urwiska",
+    deathScreen: "spadlesWOtchlan",
+  },
+
+  akt2_schroenienie_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Schronienie jest blisko, widzę małą grotę skalną niedaleko. Musisz znaleźć schronienie natychmiast.",
+    options: [
+      {
+        tekst: "Chowam się w grocie",
+        next: "akt2_schroenienie_grota_start",
+      },
+      {
+        tekst: "Idę dalej",
+        next: "akt2_spadaszwotchlan_2",
+      },
+    ],
+  },
+
+  akt2_schroenienie_grota_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Pogodowe okno czasowe jest bardzo małe. Musisz zdecydować, czy ruszyć w stronę sygnału, czy ratować rozbitka. Moje zdanie już znasz.",
+    options: [
+      {
+        tekst: "Ratujemy człowieka",
+        next: "akt2_badanie_czlowieka_start",
+      },
+      {
+        tekst: "Badamy sygnał",
+        next: "akt2_badaniesygnalu_start",
+      },
+    ],
+  },
+
+  // ? START SEKCJI Z RATOWANIEM CZŁOWIEKA
+  akt2_badanie_czlowieka_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Protokół zaleca zbadanie sygnały. Wolałabym nie zgłaszać niesubordynacji ale sam/a decydujesz.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_ratowanie_cd1",
+  },
+
+  akt2_ratowanie_cd1: {
+    npcKey: "rozbitek",
+    tekst: () => "Już się nie mogę doczekać. Mam dość tej przeklętej planty!",
+    options: [
+      {
+        tekst: "Już dobrze. Ruszamy do sygnału",
+        next: "akt2_badaniesygnalu_start",
+      },
+      {
+        tekst: "Ruszamy po rozbitka",
+        next: "akt2_badanie_ruszamy_po_rozbitka",
+      },
+    ],
+  },
+
+  akt2_badanie_ruszamy_po_rozbitka: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Zgłaszam naruszenie protokołu! Jeżeli chcesz uratować człowieka ruszaj na zachód. Sygnał jest coraz bardziej wyraźny.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_ratowanie_jestesmoimaniolem",
+  },
+
+  akt2_ratowanie_jestesmoimaniolem: {
+    npcKey: "rozbitek",
+    tekst: () => "Jesteś moim aniołem stróżem. Dziękuję  ",
+    options: [
+      {
+        tekst: "Dobrze będzie mieć towarzystwo",
+        next: "akt2_towarzystwo_mozebycwskazane",
+      },
+      {
+        tekst: "Nie masz wątpliwości",
+        next: "akt2_towarzystwo_mozebycwskazane",
+      },
+    ],
+  },
+
+  akt2_towarzystwo_mozebycwskazane: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Towarzystwo może być wskazane dla Twojego zdrowia psychicznego ale na pewno nie dla zapasów, które mogą szybko się skończyć.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_ratowanie_jestesnamiejscu1",
+  },
+
+  akt2_ratowanie_jestesnamiejscu1: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Jesteś moim aniołem stróżem. Dziękuję  ",
+    options: [
+      {
+        tekst: "Uciekaj na statek",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Wejdź do budynku",
+        next: "akt2_ratowanie_wejdzdobudynku",
+      },
+    ],
+  },
+
+  akt2_ratowanie_wejdzdobudynku: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Na reszcie jesteś! Nawet nie wiesz jak się cieszę. Wracamy do domu?",
+    options: [
+      {
+        tekst: "Tak, idziemy wracamy na statek",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Chcesz coś zabrać?",
+        next: "akt2_ratowanie_znalazlemkrysztal",
+      },
+    ],
+  },
+
+  akt2_ratowanie_znalazlemkrysztal: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Tak. Wyobraź sobie, żę znalazłem pewien kryształ. Nie wiem do czego służy ale będzie sporo wart jak wrócimy na ziemie",
+    options: [
+      {
+        tekst: "Wróćcie razem na statek",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Ukradnij kryształ i uciekaj",
+        next: "akt2_ratowanie_poczekajazubierzeskafander",
+      },
+    ],
+  },
+
+  // TODO: Dodać zapisanie tej czynności do cache.
+  akt2_ratowanie_poczekajazubierzeskafander: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Tak. Wyobraź sobie, żę znalazłem pewien kryształ. Nie wiem do czego służy ale będzie sporo wart jak wrócimy na ziemie",
+    options: [
+      {
+        tekst: "Poczekaj",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Ucieknij",
+        next: "akt2_end_of_act",
+      },
+    ],
+  },
+
+  // ? START SEKCJI Z BADANIEM SYGNAŁU
+
+  akt2_badaniesygnalu_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Sygnał jest coraz silniejszy, prowadzi nas w stronę źródła. Bądź ostrożny.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_badaniesygnalu_niewierzezostawiaszmnie",
+  },
+
+  akt2_badaniesygnalu_niewierzezostawiaszmnie: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Tak. Wyobraź sobie, żę znalazłem pewien kryształ. Nie wiem do czego służy ale będzie sporo wart jak wrócimy na ziemie",
+    options: [
+      {
+        tekst: "Już dobrze. Ruszamy po rozbitka",
+        next: "akt2_badanie_czlowieka_start",
+      },
+      {
+        tekst: "Ruszamy zbadać sygnał",
+        next: "akt2_badaniesygnalu_wspanialeruszaj",
+      },
+    ],
+  },
+
+  akt2_badaniesygnalu_wspanialeruszaj: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Wspaniale. Ruszaj na wschód. Żródło sygnału jest blisko.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_badaniesygnalu_niewierzezostawiaszmnie",
+  },
+
+  akt2_badaniesygnalu_wkurzonyrozbitek: {
+    npcKey: "rozbitek",
+    tekst: () => "Nie zapomnę Ci tego! Pozostawiasz mnie tutaj na śmierć!",
+    options: [
+      {
+        tekst: "Zostań w schronieniu",
+        next: "akt2_badaniesygnalu_zostanwSchronieniu",
+      },
+      {
+        tekst: "Idziemy",
+        next: "akt2_ruiny_start",
+      },
+    ],
+  },
+
+  akt2_badaniesygnalu_zostanwSchronieniu: {
+    npcKey: "rozbitek",
+    tekst: () => "Nie zapomnę Ci tego! Pozostawiasz mnie tutaj na śmierć!",
+    deathScreen: "stormDeathScreen",
+  },
+
+  akt2_ruiny_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Przed Tobą rozciągają się jakieś ruiny. Wyglądają na ruiny cywilizacji której statkiem się poruszasz.",
+    options: [
+      {
+        tekst: "Podejdź zbadać ruiny",
+        next: "akt2_ruiny_zbadajruiny",
+      },
+      {
+        tekst: "Mam pewne obawy",
+        next: "akt2_ruiny_mampewneobawy",
+      },
+    ],
+  },
+
+  akt2_ruiny_zbadajruiny: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Przed Tobą rozciąga się wielka hala o dziwnych kształcie. Na jej środku znajduje się monument, a na nim kryształ.",
+    options: [
+      {
+        tekst: "Zbadaj kryształ",
+        next: "akt2_ruiny_zbadajkrysztal",
+      },
+      {
+        tekst: "Zostaw kryształ i uciekaj",
+        next: "akt2_ruiny_zostawkrysztal",
+      },
+    ],
+  },
+
+  akt2_ruiny_mampewneobawy: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Twoje obawy są jak najbardziej uzasadnione ale chyba nie mamy większego wyjścia. Przed Tobą rozciąga się wielka hala o dziwnych kształcie. Na jej środku znajduje się monument, a na nim kryształ.",
+    options: [
+      {
+        tekst: "Zbadaj kryształ",
+        next: "akt2_ruiny_zbadajkrysztal",
+      },
+      {
+        tekst: "Zostaw kryształ i uciekaj",
+        next: "akt2_ruiny_zostawkrysztal",
+      },
+    ],
+  },
+
+  akt2_ruiny_zbadajkrysztal: {
+    npcKey: "flightControlCenter",
+    tekst: () => "To mi się podoba, podchodzisz do  kryształu.",
+    notifyTime: 10,
+    notifyScreenName: "hibernacja_w_toku",
+    autoNextScene: "akt2_ruiny_analiza_krysztalu",
+  },
+
+  akt2_ruiny_zostawkrysztal: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Za daleko zabrnęliśmy. Jak już tutaj jesteś to po prostu zbadaj kryształ...",
+    notifyTime: 10,
+    notifyScreenName: "hibernacja_w_toku",
+    autoNextScene: "akt2_ruiny_analiza_krysztalu",
+  },
+
+  akt2_ruiny_analiza_krysztalu: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Analiza nic nie wykazała ale warto zabrać kryształ na statek. Nigdy nie wiadomo czy nie przyda się w przyszłości",
+    options: [
+      {
+        tekst: "Schowaj kryształ",
+        next: "akt2_ruiny_zbadajkrysztal",
+      },
+      {
+        tekst: "Nie wiem czy to dobry pomysł",
+        next: "akt2_ruiny_zostawkrysztal",
+      },
+    ],
+  },
+
+  akt2_ruiny_maszkrysztal: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Masz kryształ. Nawet jeżeli nic nie robi jest to artefakt obcych i zgodnie z umową dostaniesz za niego sowite wynagrodzenie",
+    options: [
+      {
+        tekst: "Wracamy na statek",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Poszukajmy rozbitka",
+        next: "akt2_badaniesygnalu_zostanwSchronieniu",
+      },
+    ],
+  },
+
+  akt2_ruiny_maszkrysztal_brakaktywnosci: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Kryształ nie wykazuje żadnej aktywności więc jest niegroźny. Przypominam, że zgodnie z umową jest to technologia obcych i dostaniesz za nią pokaźną sumę.",
+    options: [
+      {
+        tekst: "Wracamy na statek",
+        next: "akt2_end_of_act",
+      },
+      {
+        tekst: "Poszukajmy rozbitka",
+        next: "akt2_badaniesygnalu_zostanwSchronieniu",
+      },
+    ],
+  },
+
+  akt2_end_of_act: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Brawo! Przeszedłeś Rozdział 2",
+    endAct: "actEndScreen",
+    nextAct: "akt-2",
   },
 });

@@ -39,5 +39,5 @@ type SceneType = {
 
   // W obu przypadkach użyj tylko 'true' lub w ogóle nie oddawaj tego do kodu...
   enableDarknessUI?: boolean; // Czy ma w danej scenie odpalić całkowitą ciemność w UI?
-  diaslbeDarknessUI?: boolean; // Czy ma w danej scenie usunąć zapis o całkowitej ciemności i tym samym wyłączyć całkowitą ciemność ?
+  diasableDarknessUI?: boolean; // Czy ma w danej scenie usunąć zapis o całkowitej ciemności i tym samym wyłączyć całkowitą ciemność ?
 };
