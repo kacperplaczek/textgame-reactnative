@@ -18,7 +18,7 @@ Sprawdź też czy masz dodaną poprawną ściężkę avatara.
 
 import { translations, Language } from "@/lib/translations/translations";
 
-export type NpcKey = "officer" | "flightControlCenter" | "mechanic" | "captain";
+export type NpcKey = "officer" | "flightControlCenter" | "rozbitek" | "captain";
 
 type NpcData = {
   nameKey: keyof (typeof translations)["pl"];
@@ -34,9 +34,9 @@ export const npcData: Record<NpcKey, NpcData> = {
     nameKey: "flightControlCenterTitle",
     avatar: require("@/assets/images/avatar/control_center_avatar.png"),
   },
-  mechanic: {
-    nameKey: "mechanicTitle",
-    avatar: require("@/assets/images/avatar/oficer_rekrutacji.png"),
+  rozbitek: {
+    nameKey: "rozbitekTitle",
+    avatar: require("@/assets/images/avatar/survivor_avatar.png"),
   },
   captain: {
     nameKey: "captainTitle",

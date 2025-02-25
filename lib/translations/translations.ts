@@ -6,7 +6,7 @@ export const translations = {
 
     // Tytuły NPC - muszą być dodsane do NPCData.ts w /lib
     officerTitle: "Oficer Rekrutacyjny",
-    mechanicTitle: "Mechanik Pokładowy",
+    rozbitekTitle: "Rozbitek",
     captainTitle: "Kapitan Statku",
     flightControlCenterTitle: "Centrum Kontroli Lotów",
 
@@ -79,13 +79,16 @@ export const translations = {
     akt2Odp3: "Tak, jak od linijki",
     akt2Odp4: "Nie, chce coś zmienić",
     akt2Scen3: "Ile osób liczy załoga?",
-    akt2Scen4: "Niestety na etapie nie jest to możliwe. Ile osób liczy załoga?",
+    akt2Scen4_update:
+      "Niestety na tym etapie nie jest to możliwe. Ile osób liczy załoga?",
     akt2Odp5: "Lecę tylko Ja",
     akt2Odp6: "Nie wiem. Gdzie moi ludzie?",
     akt2Scen5:
       "Wszystko się zgadza! Przygotuj się do startu. Włącz silniki i ustaw ciąg minimalny.",
     akt2Scen6:
       "Nikt Ci nie powiedział? Niestety ich prom uległ awarii poszycia i skończyło się to ... źle! Przygotuj się do startu. Włącz silniki i ustaw ciąg minimalny.",
+    akt2Odp7: "Lecę tylko Ja",
+    akt2Odp8: "Nie wiem. Gdzie moi ludzie?",
 
     // Intro / Prolog
     introTitle: "WSTĘP",

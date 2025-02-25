@@ -36,4 +36,8 @@ type SceneType = {
   notifyScreen?: boolean; // 🖥️ Czy pokazać ekran oczekiwania?
   notifyScreenName?: string; // 📌 Nazwa ekranu oczekiwania
   enableNotification?: boolean; // 🔔 Czy wysłać powiadomienie push?
+
+  // W obu przypadkach użyj tylko 'true' lub w ogóle nie oddawaj tego do kodu...
+  enableDarknessUI?: boolean; // Czy ma w danej scenie odpalić całkowitą ciemność w UI?
+  diaslbeDarknessUI?: boolean; // Czy ma w danej scenie usunąć zapis o całkowitej ciemności i tym samym wyłączyć całkowitą ciemność ?
 };
