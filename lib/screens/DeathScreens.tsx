@@ -13,6 +13,24 @@ export const deathScreensMap: Record<
     />
   ),
 
+  spadlesZUrwiska: ({ onRetry }) => (
+    <DeathScreen
+      title="SPADASZ Z URWISKA"
+      //   description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
+      image={require("@/assets/images/spadles_z_urwiska.png")}
+      onRetry={onRetry}
+    />
+  ),
+
+  spadlesWOtchlan: ({ onRetry }) => (
+    <DeathScreen
+      title="SPADASZ W OTCHŁAŃ"
+      //   description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
+      image={require("@/assets/images/spadles_z_urwiska.png")}
+      onRetry={onRetry}
+    />
+  ),
+
   // Tu dodasz kolejne typy śmierci np.
   spaceDeathScreen: ({ onRetry }) => (
     <DeathScreen

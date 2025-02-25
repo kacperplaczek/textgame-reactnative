@@ -466,7 +466,8 @@ export default function StartGameScreen() {
 
     if (scene.checkpoint) {
       console.log(`💾 Zapisuję checkpoint: ${sceneName}`);
-      await Storage.setItem({ key: "checkpoint", value: scene.checkpoint });
+      await Storage.removeItem({ key: "checkpoint" }); // Usunięcie starego
+      await Storage.setItem({ key: "checkpoint", value: sceneName });
     }
 
     if (scene.options) {

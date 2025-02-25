@@ -427,6 +427,17 @@ export const getScenes = (
     ],
   },
 
+  // 🔥 PROBA SZYFROWANIA
+  akt2_ladowanie: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Wylądowaliśmy! Znajdujemy się nieopodal źródła sygnału. Ubierz się w skafander i opcjonalnie wyposaż w broń - o ile ją zabrałeś/aś ",
+    options: [
+      { tekst: "Ubierz skafander", next: "akt2_skafander" },
+      { tekst: "Ubierz skafander i wez bron", next: "akt2_skafander_bron" },
+    ],
+  },
+
   // 🔥 SPRAWDZENIE DRONA
   akt2_dron: {
     npcKey: "flightControlCenter",
@@ -621,13 +632,18 @@ export const getScenes = (
     options: [
       {
         tekst: "Brzmi racjonalnie",
-        next: "akt2_rozbitek_brzmiracjonalnie",
+        next: "akt2_ustawCheckPoint1",
       },
       {
         tekst: "Coś ściemniasz",
-        next: "akt2_rozbitek_cossciemniasz",
+        next: "akt2_ustawCheckPoint2",
       },
     ],
+  },
+
+  akt2_ustawCheckPoint2: {
+    checkpoint: true,
+    autoNextScene: "akt2_rozbitek_cossciemniasz",
   },
 
   // DLA "COŚ ŚCIEMNIASZ"
@@ -638,28 +654,435 @@ export const getScenes = (
     options: [
       {
         tekst: "Najpierw muszę zbadać sygnał",
-        next: "akt2_transmisja_z_rozbitkiem",
+        next: "akt2_rozbitek_dialogkontynuacja",
       },
       {
         tekst: "Wiesz coś o sygnale?",
-        next: "akt2_odrzucenie_1_transmisji_z_robitkiem",
+        next: "akt2_rozbitek_dialogkontynuacja",
       },
     ],
+  },
+
+  akt2_ustawCheckPoint1: {
+    checkpoint: true,
+    autoNextScene: "akt2_rozbitek_brzmiracjonalnie",
   },
 
   // DLA "BRZMI RACJONALNIE"
   akt2_rozbitek_brzmiracjonalnie: {
     npcKey: "rozbitek",
     tekst: () =>
-      "Sam widziałeś/aś warunki na tej planecie. Myślisz, że mógłbym to wymyślić? Lepiej pomyśl jak mi pomóc?",
+      "Bo takie jest. Sam widziałeś/aś warunki na tej planecie. Możesz mi jakoś pomóc?",
     options: [
       {
         tekst: "Najpierw muszę zbadać sygnał",
-        next: "akt2_transmisja_z_rozbitkiem",
+        next: "akt2_rozbitek_dialogkontynuacja",
       },
       {
         tekst: "Wiesz coś o sygnale?",
+        next: "akt2_rozbitek_dialogkontynuacja",
+      },
+    ],
+  },
+
+  // Schodzimy do jednego dialogu dla obu powyższych
+
+  akt2_rozbitek_dialogkontynuacja: {
+    npcKey: "rozbitek",
+    tekst: () => "Nie wiem na co jeszcze czekasz. Ruszaj!",
+    options: [
+      {
+        tekst: "Ruszaj na północ",
+        next: "akt2_rozbitek_polnoc",
+      },
+      {
+        tekst: "Ruszaj na południe",
+        next: "akt2_rozbitek_poludnie",
+      },
+    ],
+  },
+
+  // Start dwóch rozbierznych dróg
+
+  akt2_rozbitek_polnoc: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Dobrze, że pamiętałeś co mówiłam. Poszedłbyś na południe i spadłbyś w przepaść... Przed Tobą kolejny wybór. Możesz udać się przełęczą ale będziesz narażony/a na szalone warunki pogodowe, albo wybrać drogę przez system jaskiń - z tym, że nie mam pojęcia co tam jest... Co zdecydujesz?",
+    options: [
+      {
+        tekst: "Wybieram ścieżkę przełęczą",
+        next: "akt2_przelecze_start",
+      },
+      {
+        tekst: "Jaskinie. Pogoda jest ... szalona",
+        next: "akt2_jasknie_start",
+      },
+    ],
+  },
+
+  akt2_rozbitek_poludnie: {
+    npcKey: "rozbitek",
+    deathScreen: "spadlesZUrwiska",
+    tekst: () => "Spadłeś z Urwiska...",
+  },
+
+  // ? Start ścieżki przełęcza
+  akt2_przelecze_start: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Przed Tobą spokojny spacerek o długości 1000 m do następnego podejścia. Nie śpiesz się, pogoda jest stabilna, a podłoże przypomina wielką tarkę ostrych kamieni więc uważaj na każdy krok...  ",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_przelecze_cd1",
+  },
+
+  akt2_przelecze_cd1: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Nie chce się wtrącać ale mam nadzieję, że zabrałeś dodatkowy prowiant... Marzę o zimnym piwku.",
+    options: [
+      {
+        tekst: "Nie martw się. Wszystko jest",
+        next: "akt2_przelecze_wszystkoJest",
+      },
+      {
+        tekst: "Najpierw musimy Cię znaleść",
+        next: "akt2_przelecze_musimycie_znalezc",
+      },
+    ],
+  },
+
+  akt2_przelecze_wszystkoJest: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Uspokoiłeś/aś mnie ale zanim do tego dojdzie i usiądziemy przy zimnym piwku będziemy musieli wymyśleć jak mnie znaleść.",
+    options: [
+      {
+        tekst: "Mam pewien pomysł",
+        next: "akt2_przelecze_mam_pomysl",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
         next: "akt2_odrzucenie_1_transmisji_z_robitkiem",
+      },
+    ],
+  },
+
+  akt2_przelecze_musimycie_znalezc: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Zmieniasz temat. Rozumiem. Czyli mój ratunek nie jest jeszcze taki pewny. Najpierw skupmy się jak mnie znaleść.",
+    options: [
+      {
+        tekst: "Mam pewien pomysł",
+        next: "akt2_przelecze_mam_pomysl",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_przelecze_narazieotym_niemysle",
+      },
+    ],
+  },
+
+  akt2_przelecze_mam_pomysl: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Z nas dwóch to ja jestem profesorem i nic nie wymyśliłem. Ciekawe na co Ty wpadniesz...",
+    options: [
+      {
+        tekst: "Zobaczysz",
+        next: "akt2_przelecze_cd3",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_przelecze_cd3",
+      },
+    ],
+  },
+
+  akt2_przelecze_narazieotym_niemysle: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "A powinieneś/aś. Z nas dwóch to ja jestem profesorem i nic nie wymyśliłem. Ciekawe na co Ty wpadniesz...",
+    options: [
+      {
+        tekst: "Zobaczysz",
+        next: "akt2_przelecze_cd3",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_przelecze_cd3",
+      },
+    ],
+  },
+
+  akt2_przelecze_cd3: {
+    npcKey: "rozbitek",
+    tekst: () => "Widzę, że nie masz ochoty na rozmowy. Odezwę się później.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_przelecze_cd4",
+  },
+
+  akt2_przelecze_cd4: {
+    npcKey: "rozbitek",
+    tekst: () => "Zdecydowanie! Dotarłeś/aś do wzniesienia. Teraz się skup",
+    options: [
+      // ! Trzeba dodać ogólną kontynuację - wyjście z dialogu odrębnego.
+      {
+        tekst: "Użyj czekanów do wspinaczki",
+        next: "akt2_przelecze_koniec_waitTime",
+      },
+      {
+        tekst: "Wspinaj się klasycznie",
+        next: "akt2_przelecze_smierc",
+      },
+    ],
+  },
+
+  akt2_przelecze_smierc: {
+    npcKey: "rozbitek",
+    tekst: () => "Spadasz w otchłań",
+    deathScreen: "spadlesWOtchlan",
+  },
+
+  akt2_jasknie_start: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Idziemy jaskiniami. W takim razie ruszaj i zobaczymy co nas tam czeka...",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_jasknie_cd1",
+  },
+
+  akt2_jasknie_cd1: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Nie chce się wtrącać ale mam nadzieję, że zabrałeś dodatkowy prowiant... Marzę o zimnym piwku.",
+    options: [
+      {
+        tekst: "Nie martw się. Wszystko jest",
+        next: "akt2_jasknie_wszystkojestniemartwsie",
+      },
+      {
+        tekst: "Najpierw musimy Cię znaleść",
+        next: "akt2_jasknie_musimycieznalezc",
+      },
+    ],
+  },
+
+  akt2_jasknie_musimycieznalezc: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Zmieniasz temat. Rozumiem. Czyli mój ratunek nie jest jeszcze taki pewny. Najpierw skupmy się jak mnie znaleść.",
+    options: [
+      {
+        tekst: "Mam pewien pomysł",
+        next: "akt2_przelecze_cd3",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_przelecze_smierc",
+      },
+    ],
+  },
+
+  akt2_jasknie_wszystkojestniemartwsie: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Uspokoiłeś/aś mnie ale zanim do tego dojdzie i usiądziemy przy zimnym piwku będziemy musieli wymyśleć jak mnie znaleść.",
+    options: [
+      {
+        tekst: "Mam pewien pomysł",
+        next: "akt2_jasknie_mampewienpomysl",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_jasknie_niemysleotym",
+      },
+    ],
+  },
+
+  akt2_jasknie_mampewienpomysl: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "Z nas dwóch to ja jestem profesorem i nic nie wymyśliłem. Ciekawe na co Ty wpadniesz...",
+    options: [
+      {
+        tekst: "Zobaczysz",
+        next: "akt2_jasknie_cd4",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_jasknie_cd4",
+      },
+    ],
+  },
+
+  akt2_jasknie_niemysleotym: {
+    npcKey: "rozbitek",
+    tekst: () =>
+      "A powinieneś/aś. Z nas dwóch to ja jestem profesorem i nic nie wymyśliłem. Ciekawe na co Ty wpadniesz...",
+    options: [
+      {
+        tekst: "Zobaczysz",
+        next: "akt2_jasknie_cd4",
+      },
+      {
+        tekst: "Na razie o tym nie myślę",
+        next: "akt2_jasknie_cd4",
+      },
+    ],
+  },
+
+  akt2_jasknie_cd4: {
+    npcKey: "rozbitek",
+    tekst: () => "Widzę, że nie masz ochoty na rozmowy. Odezwę się później.",
+    autoNextDelay: 3000,
+    autoNextScene: "akt2_jasknie_cd5",
+  },
+
+  akt2_jasknie_cd5: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Przed Tobą studnia. Musisz jakoś ją pokonać ...",
+    options: [
+      {
+        tekst: "Spróbuj przeskoczyć",
+        next: "akt2_jaskinie_smierc",
+      },
+      {
+        tekst: "Użyj liny",
+        next: "akt2_jaskinie_koniec_waitTime",
+      },
+    ],
+  },
+
+  akt2_jaskinie_smierc: {
+    npcKey: "rozbitek",
+    tekst: () => "Spadasz w otchłań",
+    deathScreen: "spadlesWOtchlan",
+  },
+
+  akt2_jaskinie_koniec_waitTime: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Przeprawa w toku...",
+    notifyTime: 10, // testowo 10 sekund
+    notifyScreenName: "hibernacja_w_toku",
+    autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
+  },
+
+  akt2_przelecze_koniec_waitTime: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Przeprawa w toku...",
+    notifyTime: 10, // testowo 10 sekund
+    notifyScreenName: "hibernacja_w_toku",
+    autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
+  },
+
+  akt2_jasknie_dotarlesNaSzczytKanionu: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Dotarłeś/aś na szczyt kanionu. Już niedaleko do źródła sygnału ... Pamiętaj, jesteś tam sam/a, bez wsparcia - każdy twój krok może przynieść odkrycia... albo zagrożenia...",
+    options: [
+      {
+        tekst: "Wiem, dzięki",
+        next: "akt2_jasknie_jestessamotnymodkrywca",
+      },
+      {
+        tekst: "Niebezpieczeństwa?",
+        next: "akt2_jasknie_jestessamotnymodkrywca",
+      },
+    ],
+  },
+
+  akt2_jasknie_jestessamotnymodkrywca: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Jesteś samotnym odkrywcą w tej niezbadanej przestrzeni. Ludzka psychika nie jest stworzona do takiego odosobnienia. Czy izolacja zaczyna cię już dotykać?",
+    options: [
+      {
+        tekst: "Intryguje mnie",
+        next: "akt2_wszystkie_procedury",
+      },
+      {
+        tekst: "Przytłacza mnie",
+        next: "akt2_wszystkie_procedury",
+      },
+    ],
+  },
+
+  akt2_wszystkie_procedury: {
+    npcKey: "flightControlCenter",
+    tekst: () => "Wszystkie procedury są jednoznaczne... ale mogę to zgłosić?",
+    options: [
+      {
+        tekst: "Zgłoś ",
+        next: "akt2_nadalekiej_planecie",
+      },
+      {
+        tekst: "Zachowaj dla siebie",
+        next: "akt2_nadalekiej_planecie",
+      },
+    ],
+  },
+
+  akt2_nadalekiej_planecie: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Na dalekiej planecie, z dala od codziennych zmartwień, może czasem wydawać się, że możemy uwolnić się od naszych sekretów. Może chcesz się czymś podzielić? Często, ludzie w ekstremalnych sytuacjach odkrywają nowe prawdy o sobie.",
+    options: [
+      {
+        tekst: "To moja sprawa",
+        next: "akt2_przeszloscczest_rzuca",
+      },
+      {
+        tekst: "Nie teraz",
+        next: "akt2_przeszloscczest_rzuca",
+      },
+    ],
+  },
+
+  akt2_przeszloscczest_rzuca: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Przeszłość często rzuca długi cień na teraźniejszość, a decyzje, które podjęliśmy kiedyś, mogą kształtować nasze teraz. Uważasz, że są sekrety, które mogą być tak przerażające lub destrukcyjne, że lepiej by było ich nigdy nie odkrywać?",
+    options: [
+      {
+        tekst: "Niektóre lepiej zostawić",
+        next: "akt2_misje_takie_jak_twoja",
+      },
+      {
+        tekst: "Niektóre wyjdą",
+        next: "akt2_misje_takie_jak_twoja",
+      },
+    ],
+  },
+
+  akt2_misje_takie_jak_twoja: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Misje takie jak twoja to nie tylko kwestia badań i eksploracji. Czasem wydaje mi się, że jest coś więcej, co przyciąga nas do gwiazd. Co Ciebie przyciąga do gwiazd?",
+    options: [
+      {
+        tekst: "Rozkazy",
+        next: "akt2_wyobrazenie_o_eksploracji",
+      },
+      {
+        tekst: "Nowe horyzonty",
+        next: "akt2_wyobrazenie_o_eksploracji",
+      },
+    ],
+  },
+
+  akt2_wyobrazenie_o_eksploracji: {
+    npcKey: "flightControlCenter",
+    tekst: () =>
+      "Wyobrażenie o eksploracji kosmicznej często bywa snem o ucieczce. Możemy próbować uciec od naszych problemów na Ziemi, szukając rozwiązania w gwiazdach. Czy była to ucieczka także dla ciebie, czy może coś więcej?",
+    options: [
+      {
+        tekst: "Być może",
+        next: "akt2_jaskinie_smierc",
+      },
+      {
+        tekst: "Nie wiem",
+        next: "akt2_jaskinie_koniec_waitTime",
       },
     ],
   },
