@@ -204,8 +204,12 @@ export default function StartGameScreen() {
 
   useEffect(() => {
     const checkWaitingState = async () => {
+      console.log("🔍 Sprawdzanie stanu oczekiwania...");
+
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
       const storedScene = await Storage.getItem({ key: "waitingScene" });
+
+      console.log("📌 Odczytane wartości:", { storedEndTime, storedScene });
 
       if (storedEndTime && storedScene) {
         const endTime = parseInt(storedEndTime, 10);
@@ -213,20 +217,36 @@ export default function StartGameScreen() {
         let remaining = endTime - now;
 
         if (remaining <= 0) {
-          console.log("✅ Czas minął! Przenoszę do:", storedScene);
+          console.log(
+            "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
+          );
+
           await Storage.removeItem({ key: "waitingEndTime" });
           await Storage.removeItem({ key: "waitingScene" });
+
           setWaiting(null);
           setWaitingScreenVisible(false);
-          handleSceneChange(storedScene);
+          setRemainingTime(null);
+
+          // ❗️Zapewniamy, że nie ustawi nowego licznika!
+          setTimeout(() => {
+            handleSceneChange(storedScene);
+          }, 500);
+
+          return;
         } else {
           console.log(
-            `⏳ Przywracanie odliczania... Pozostały czas: ${remaining} sekund`
+            `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
           );
           setWaiting({ sceneName: storedScene, endTime });
           setWaitingScreenVisible(true);
           setRemainingTime(remaining);
         }
+      } else {
+        console.log("🔄 Brak oczekiwania, resetowanie UI...");
+        setWaiting(null);
+        setWaitingScreenVisible(false);
+        setRemainingTime(null);
       }
     };
 
