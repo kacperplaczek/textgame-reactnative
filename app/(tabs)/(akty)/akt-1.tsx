@@ -77,7 +77,7 @@ export default function StartGameScreen() {
     requireWait?: boolean;
     requireWaitTime?: number;
   } | null>(null);
-
+  const [darknessUI, setDarknessUI] = useState(false);
   const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
 
   useEffect(() => {
@@ -214,17 +214,14 @@ export default function StartGameScreen() {
 
         if (remaining <= 0) {
           console.log("✅ Czas minął! Przenoszę do:", storedScene);
-
-          // ❌ Usuwamy stare dane, żeby nie były używane ponownie
           await Storage.removeItem({ key: "waitingEndTime" });
           await Storage.removeItem({ key: "waitingScene" });
-
           setWaiting(null);
           setWaitingScreenVisible(false);
           handleSceneChange(storedScene);
         } else {
           console.log(
-            `⏳ Przywracanie ekranu oczekiwania... Pozostały czas: ${remaining} sekund`
+            `⏳ Przywracanie odliczania... Pozostały czas: ${remaining} sekund`
           );
           setWaiting({ sceneName: storedScene, endTime });
           setWaitingScreenVisible(true);
@@ -358,41 +355,69 @@ export default function StartGameScreen() {
     setCurrentScene(sceneName);
     await DialogueController.setScene(sceneName);
 
+    if (scene.notifyTime) {
+      const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+      const now = Math.floor(Date.now() / 1000);
+
+      if (storedEndTime) {
+        const endTime = parseInt(storedEndTime, 10);
+        const remaining = endTime - now;
+
+        if (remaining <= 0) {
+          console.log("✅ Czas minął! Przenoszę do:", scene.autoNextScene);
+          await Storage.removeItem({ key: "waitingEndTime" });
+          await Storage.removeItem({ key: "waitingScene" });
+
+          // ❗️Nie ustawiamy nowego czasu, tylko od razu zmieniamy scenę
+          setWaiting(null);
+          setWaitingScreenVisible(false);
+          handleSceneChange(scene.autoNextScene);
+          return;
+        }
+
+        console.log(
+          `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
+        );
+        setWaiting({ sceneName: scene.autoNextScene, endTime });
+        setWaitingScreenVisible(true);
+        setRemainingTime(remaining);
+        return;
+      }
+
+      // ❗️Nowy czas ustawiamy TYLKO, jeśli `waitingEndTime` nie istniało!
+      if (!storedEndTime) {
+        const endTime = now + scene.notifyTime;
+        await Storage.setItem({
+          key: "waitingEndTime",
+          value: endTime.toString(),
+        });
+        await Storage.setItem({
+          key: "waitingScene",
+          value: scene.autoNextScene,
+        });
+
+        console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+
+        setWaiting({ sceneName: scene.autoNextScene, endTime });
+        setWaitingScreenVisible(true);
+      }
+    }
+
+    if (scene.enableDarknessUI) {
+      await Storage.setItem({ key: "darknessUI", value: "true" });
+      console.log("\u2728 Darkness UI enabled!");
+    }
+
+    if (scene.disableDarknessUI) {
+      await Storage.removeItem({ key: "darknessUI" });
+      console.log("\u274c Darkness UI disabled!");
+      setRefreshKey((prev) => prev + 1); // Wymusza odświeżenie UI
+    }
+
     // ❗️Dodaj krótki timeout, żeby ScrollView miał czas na aktualizację
     setTimeout(() => {
       scrollRef.current?.scrollToEnd({ animated: true });
     }, 100);
-
-    if (scene.notifyTime) {
-      console.log("⏳ Ustawiamy czas oczekiwania:", scene.notifyTime, "sekund");
-
-      // ❌ Najpierw usuwamy stary czas, aby nie powodował błędów
-      await Storage.removeItem({ key: "waitingEndTime" });
-      await Storage.removeItem({ key: "waitingScene" });
-
-      const now = Math.floor(Date.now() / 1000); // 🕒 Pobieramy aktualny czas w sekundach
-      const endTime = now + scene.notifyTime;
-
-      // ✅ Teraz zapisujemy nowy czas
-      await Storage.setItem({
-        key: "waitingEndTime",
-        value: endTime.toString(),
-      });
-      await Storage.setItem({
-        key: "waitingScene",
-        value: scene.autoNextScene ?? sceneName,
-      });
-
-      console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
-
-      setWaiting({
-        sceneName: scene.autoNextScene ?? sceneName,
-        endTime: endTime,
-      });
-
-      setWaitingScreenVisible(true);
-      return;
-    }
 
     // ✅ Sprawdzamy warunki przed przejściem do kolejnej sceny
     if (sceneName === "start_procedure") {
@@ -481,6 +506,15 @@ export default function StartGameScreen() {
     }
   };
 
+  useEffect(() => {
+    const checkDarknessUI = async () => {
+      const storedValue = await Storage.getItem({ key: "darknessUI" });
+      setDarknessUI(!!storedValue);
+    };
+
+    checkDarknessUI();
+  }, []);
+
   const closeModalAndChangeScene = (nextScene: string) => {
     console.log("📌 Zamykam modal i przechodzę do sceny:", nextScene);
     setModalVisible(false);
@@ -492,21 +526,17 @@ export default function StartGameScreen() {
 
   useEffect(() => {
     if (waiting) {
-      console.log(
-        "🔄 Odliczanie aktywne, pozostały czas:",
-        waiting.endTime - Math.floor(Date.now() / 1000)
-      );
-
-      const interval = setInterval(() => {
+      const interval = setInterval(async () => {
         const now = Math.floor(Date.now() / 1000);
         const remaining = waiting.endTime - now;
 
         if (remaining > 0) {
           setRemainingTime(remaining);
-          console.log(`⏳ Pozostały czas: ${remaining} sekund`);
         } else {
-          console.log("✅ Czas minął! Przenoszę do:", waiting.sceneName);
+          console.log("✅ Czas odliczania dobiegł końca, zmiana sceny!");
           clearInterval(interval);
+          await Storage.removeItem({ key: "waitingEndTime" });
+          await Storage.removeItem({ key: "waitingScene" });
           setWaiting(null);
           setWaitingScreenVisible(false);
           handleSceneChange(waiting.sceneName);

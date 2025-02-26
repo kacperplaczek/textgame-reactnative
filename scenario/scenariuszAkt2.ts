@@ -360,7 +360,7 @@ export const getScenes = (
       { tekst: "Potrząśnij kryształem", next: "death_explosion" }, // 💀 Śmierć, powrót do checkpointu
       { tekst: "Ok. Sprawdź", next: "akt2_powrot_do_normy" },
     ],
-    diasableDarknessUI: true,
+    disableDarknessUI: true,
   },
 
   // 🔥 DIALOG (P) – POWRÓT DO NORMALNOŚCI
@@ -464,7 +464,7 @@ export const getScenes = (
     tekst: async () => {
       const equipment = await getPlayerEquipment();
 
-      if (equipment === "Bron i dron zwiadowczy") {
+      if (equipment === "Broń i dron zwiadowczy") {
         return "Karabin w dlon! Jestes gotowy/a do wyjscia. Za chwile sluza sie otworzy i wyjdziesz na powierzchnie.";
       } else {
         return "Niestety nie zabrales/as ze soba broni. Musisz improwizowac! Jestes gotowy/a do wyjscia. Za chwile sluza sie otworzy i wyjdziesz na powierzchnie.";
@@ -967,7 +967,7 @@ export const getScenes = (
   akt2_jaskinie_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => "Przeprawa w toku...",
-    notifyTime: 10, // testowo 10 sekund
+    notifyTime: 100, // testowo 10 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
@@ -975,7 +975,7 @@ export const getScenes = (
   akt2_przelecze_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => "Przeprawa w toku...",
-    notifyTime: 10, // testowo 10 sekund
+    notifyTime: 100, // testowo 10 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
@@ -1342,7 +1342,7 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () => "Wspaniale. Ruszaj na wschód. Żródło sygnału jest blisko.",
     autoNextDelay: 3000,
-    autoNextScene: "akt2_badaniesygnalu_niewierzezostawiaszmnie",
+    autoNextScene: "akt2_badaniesygnalu_wkurzonyrozbitek",
   },
 
   akt2_badaniesygnalu_wkurzonyrozbitek: {
