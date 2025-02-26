@@ -384,15 +384,18 @@ export default function StartGameScreen() {
         const remaining = endTime - now;
 
         if (remaining <= 0) {
-          console.log("✅ Czas minął! Przenoszę do:", scene.autoNextScene);
+          console.log(
+            "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
+          );
           await Storage.removeItem({ key: "waitingEndTime" });
           await Storage.removeItem({ key: "waitingScene" });
 
-          // ❗️Nie ustawiamy nowego czasu, tylko od razu zmieniamy scenę
           setWaiting(null);
           setWaitingScreenVisible(false);
-          handleSceneChange(scene.autoNextScene);
-          return;
+          setRemainingTime(null);
+
+          // ❗️BLOKADA – nie uruchamiamy notifyTime ponownie!
+          return handleSceneChange(scene.autoNextScene);
         }
 
         console.log(
@@ -404,7 +407,7 @@ export default function StartGameScreen() {
         return;
       }
 
-      // ❗️Nowy czas ustawiamy TYLKO, jeśli `waitingEndTime` nie istniało!
+      // ❗️ZMIANA: Nowy czas ustawiamy TYLKO, jeśli `waitingEndTime` nie istniało przed wywołaniem funkcji!
       if (!storedEndTime) {
         const endTime = now + scene.notifyTime;
         await Storage.setItem({
@@ -418,7 +421,12 @@ export default function StartGameScreen() {
 
         console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
 
-        setWaiting({ sceneName: scene.autoNextScene, endTime });
+        // 🔄 Ustawiamy ekran oczekiwania
+        setWaiting({
+          sceneName: scene.autoNextScene ?? sceneName,
+          endTime: parseInt(storedEndTime),
+          notifyScreenName: scene.notifyScreenName ?? "default",
+        });
         setWaitingScreenVisible(true);
       }
     }
@@ -485,11 +493,18 @@ export default function StartGameScreen() {
       await Storage.setItem({ key: "checkpoint", value: sceneName });
     }
 
+    // 🎭 **Obsługa opcji odpowiedzi**
     if (scene.options) {
       setOptions(
         scene.options.map((option) => ({
           tekst: option.tekst,
-          akcja: () => {
+          akcja: async () => {
+            console.log("🛠 Wykonuję akcję dla opcji:", option.tekst);
+
+            if (option.akcja) {
+              await option.akcja();
+            }
+
             addMessage("GRACZ", option.tekst);
             handleSceneChange(option.next);
           },
@@ -612,7 +627,8 @@ export default function StartGameScreen() {
 
       <WaitingScreenOverlay
         visible={waitingScreenVisible}
-        timeLeft={remainingTime}
+        timeLeft={remainingTime ?? 0}
+        notifyScreenName={waiting?.notifyScreenName ?? "default"}
       />
 
       <SpecialSceneOverlay

@@ -1,40 +1,131 @@
 import React from "react";
-import { View, Text, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ActivityIndicator,
+  ImageBackground,
+  Modal,
+} from "react-native";
+
+// 🔹 Definiujemy ekrany + ich tła
+const waitingScreens = {
+  hibernacja_w_toku: {
+    title: "❄️ Hibernacja w toku...",
+    subtitle: "Twoje ciało przechodzi w stan hibernacji.",
+    color: "#219653",
+    background: require("@/assets/images/bg_ufo.png"),
+  },
+  odpoczynek: {
+    title: "😴 Odpoczynek...",
+    subtitle: "Regenerujesz siły przed dalszą podróżą.",
+    color: "#219653",
+    background: require("@/assets/images/bg_ufo.png"),
+  },
+  rekrutacja_oficer: {
+    title: "PROSZĘ CZEKAĆ",
+    subtitle: "PRZETWARZANIE ZGŁOSZENIA REKRUTACYJNEGO",
+    color: "#219653",
+    background: require("@/assets/images/rekrutacja_oficer_tlo.png"),
+  },
+  sygnal: {
+    title: "📡 Oczekiwanie na sygnał...",
+    subtitle: "Czekasz na połączenie ze statkiem.",
+    color: "#219653",
+    background: require("@/assets/images/bg_ufo.png"),
+  },
+};
+
+// 🔹 Domyślny ekran (jeśli `notifyScreenName` nie pasuje)
+const defaultScreen = {
+  title: "⌛ Oczekiwanie...",
+  subtitle: "Przygotowania w toku...",
+  color: "#219653",
+  background: require("@/assets/images/bg_ufo.png"),
+};
 
 export default function WaitingScreenOverlay({
   visible,
   timeLeft,
+  notifyScreenName,
 }: {
   visible: boolean;
   timeLeft: number;
+  notifyScreenName: string;
 }) {
   if (!visible) return null;
 
+  // 🔹 Pobieramy ekran na podstawie `notifyScreenName`
+  const screen = waitingScreens[notifyScreenName] || defaultScreen;
+
   return (
-    <View style={styles.overlay}>
-      <Text style={styles.title}>⌛ Oczekiwanie...</Text>
-      <Text style={styles.subtitle}>Przygotowania w toku...</Text>
-      <ActivityIndicator size="large" color="limegreen" />
-      <Text style={styles.timeText}>
-        Pozostały czas: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
-      </Text>
-    </View>
+    <Modal visible={visible} animationType="fade" transparent={false}>
+      <ImageBackground source={screen.background} style={styles.background}>
+        <View style={styles.overlay}>
+          {/* 🔹 Tytuł na górze */}
+          <View style={styles.header}>
+            <Text style={[styles.title, { color: screen.color }]}>
+              {screen.title}
+            </Text>
+          </View>
+
+          {/* 🔹 Dolna część z opisem i czasem */}
+          <View style={styles.footer}>
+            {/* <ActivityIndicator size="large" color={screen.color} /> */}
+            <Text style={styles.subtitle}>{screen.subtitle}</Text>
+            <Text style={styles.timeText}>
+              Pozostały czas: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
+            </Text>
+          </View>
+        </View>
+      </ImageBackground>
+    </Modal>
   );
 }
 
 const styles = StyleSheet.create({
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.9)",
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    zIndex: 999,
   },
-  title: { color: "white", fontSize: 24, fontWeight: "bold" },
-  subtitle: { color: "gray", fontSize: 18, marginVertical: 10 },
-  timeText: { color: "limegreen", fontSize: 16, marginTop: 10 },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // 🔹 Przyciemnienie, żeby poprawić czytelność tekstu
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 20,
+    width: "100%",
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    marginTop: 80,
+  },
+  footer: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 80,
+  },
+  title: {
+    fontSize: 32,
+    textAlign: "center",
+    fontFamily: "VT323Regular",
+  },
+  subtitle: {
+    color: "#219653",
+    fontSize: 18,
+    marginVertical: 10,
+    textAlign: "center",
+    fontFamily: "VT323Regular",
+  },
+  timeText: {
+    color: "limegreen",
+    fontSize: 18,
+    marginTop: 10,
+    textAlign: "center",
+    fontFamily: "VT323Regular",
+  },
 });

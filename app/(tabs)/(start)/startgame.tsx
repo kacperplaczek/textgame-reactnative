@@ -299,6 +299,34 @@ export default function StartGameScreen() {
       addMessage("NPC", tekst, scene.npcKey);
     }
 
+    if (scene.clearHistory) {
+      console.log("🧹 Czyszczenie historii dialogów...");
+
+      // ✅ Resetuj stan dialogów i opcji natychmiast
+      setDialogue([]);
+      setOptions([]);
+
+      // ✅ Usuń zapisane wiadomości z pamięci
+      await Storage.removeItem({ key: `dialogue_akt1` }); // <-- Sprawdź, czy to pasuje do Twojego klucza w Storage
+      await DialogueController.clearHistory(); // <-- Jeśli masz kontroler dialogów
+
+      // ✅ Usuń zapisane stany oczekiwania
+      await Storage.removeItem({ key: "waitingEndTime" });
+      await Storage.removeItem({ key: "waitingScene" });
+
+      console.log(
+        "✅ Historia wyczyszczona! Przenoszę do:",
+        scene.autoNextScene
+      );
+
+      // 🔄 **Małe opóźnienie, aby UI się odświeżyło**
+      setTimeout(() => {
+        handleSceneChange(scene.autoNextScene ?? "poczatek_gry");
+      }, 100); // ⬅️ Czasami React potrzebuje kilku ms, by odświeżyć stan
+
+      return;
+    }
+
     if (scene.options) {
       setOptions(
         scene.options.map((option) => ({
@@ -360,6 +388,7 @@ export default function StartGameScreen() {
       setWaiting({
         sceneName: scene.autoNextScene ?? sceneName,
         endTime: parseInt(storedEndTime),
+        notifyScreenName: scene.notifyScreenName ?? "default",
       });
       setWaitingScreenVisible(true);
 
@@ -455,7 +484,13 @@ export default function StartGameScreen() {
       setOptions(
         scene.options.map((option) => ({
           tekst: option.tekst,
-          akcja: () => {
+          akcja: async () => {
+            console.log("🛠 Wykonuję akcję dla opcji:", option.tekst);
+
+            if (option.akcja) {
+              await option.akcja();
+            }
+
             addMessage("GRACZ", option.tekst);
             handleSceneChange(option.next);
           },
@@ -672,7 +707,8 @@ export default function StartGameScreen() {
 
       <WaitingScreenOverlay
         visible={waitingScreenVisible}
-        timeLeft={remainingTime}
+        timeLeft={remainingTime ?? 0}
+        notifyScreenName={waiting?.notifyScreenName ?? "default"}
       />
 
       <SpecialSceneOverlay

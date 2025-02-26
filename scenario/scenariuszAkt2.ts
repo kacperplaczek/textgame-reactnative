@@ -1,13 +1,13 @@
 import { SceneType } from "@/scenario/types";
 import Storage from "expo-storage";
 
-const savePlayerChoices = async (key: string, value: string) => {
+export const savePlayerChoices = async (key: string, value: string) => {
   await Storage.setItem({ key, value });
 };
 
-const getPlayerEquipment = async () => {
-  const eq = await Storage.getItem({ key: "wybraneZaopatrzenie" });
-  return eq || "Dodatkowy prowiant";
+export const getPlayerEquipment = async () => {
+  const equipment = await Storage.getItem({ key: "wybraneZaopatrzenie" });
+  return equipment;
 };
 
 export const getScenes = (
@@ -28,11 +28,8 @@ export const getScenes = (
   akt2_scen2: {
     npcKey: "flightControlCenter",
     tekst: async () => {
-      const shipClass =
-        (await Storage.getItem({ key: "shipClass" })) || "Venturi";
-      const equipment =
-        (await Storage.getItem({ key: "shipEquipment" })) ||
-        "dodatkowy prowiant";
+      const shipClass = await Storage.getItem({ key: "wybranyStatek" });
+      const equipment = await Storage.getItem({ key: "wybraneZaopatrzenie" });
 
       return translations.akt2Scen2
         .replace("{{statek}}", shipClass)
@@ -138,7 +135,7 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () =>
       "Hibernacja rozpoczęta. Wybudzenie nastąpi w przypadku zagrożenia.",
-    notifyTime: 10, // testowo 10 sekund
+    notifyTime: 100, // testowo 10 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },
@@ -444,12 +441,14 @@ export const getScenes = (
   akt2_dron: {
     npcKey: "flightControlCenter",
     tekst: async () => {
-      const equipment = await getPlayerEquipment();
+      const equipment = await Storage.getItem({ key: "wybraneZaopatrzenie" });
 
-      if (equipment === "Bron i dron zwiadowczy") {
-        return "Dron zwiadowczy wyslany. Wykryl nadajnik na jednym ze szczytow gorskich... Mogę wyladowac najblizej jak to mozliwe - 2 km od zrodla - uwaga, czeka Cie przeprawa po trudnym terenie... Wykonaj procedure ladowania aby zejsc na powierzchnie.";
+      console.log("📌 Sprawdzam wybrane wyposażenie:", equipment); // 🔍 Debugowanie, co zwraca `getPlayerEquipment`
+
+      if (equipment?.trim() === "Broń i dron zwiadowczy") {
+        return "Dron zwiadowczy wysłany. Wykrył nadajnik na jednym ze szczytów górskich... Mogę wylądować najbliżej jak to możliwe - 2 km od źródła - uwaga, czeka Cię przeprawa po trudnym terenie... Wykonaj procedurę lądowania, aby zejść na powierzchnię.";
       } else {
-        return "Nie posiadasz drona zwiadowczego. Nie zabrales/as go w czasie odprawy. Wykonaj procedure ladowania aby zejsc na powierzchnie.";
+        return "Nie posiadasz drona zwiadowczego. Nie zabrałeś go w czasie odprawy. Wykonaj procedurę lądowania, aby zejść na powierzchnię.";
       }
     },
     options: [

@@ -56,15 +56,6 @@ export const getScenes = (
         tekst: translations.pytaniePowitalneOpcja2,
         next: "przejscie_do_misji_nie_interes",
       },
-
-      // {
-      //   tekst: translations.pytaniePowitalneOpcja1,
-      //   next: "akt2_scen_waiting",
-      // },
-      // {
-      //   tekst: translations.pytaniePowitalneOpcja2,
-      //   next: "akt2_scen_waiting",
-      // },
     ],
   },
 
@@ -200,7 +191,8 @@ export const getScenes = (
   oczekiwanie_na_rozpatrzenie: {
     npcKey: "officer",
     tekst: () => translations.oczekiwanieStart,
-    waitTime: 10,
+    notifyTime: 10,
+    notifyScreenName: "rekrutacja_oficer",
     autoNextScene: "rozpatrzenie_wynik",
   },
   rozpatrzenie_wynik: {
@@ -211,6 +203,14 @@ export const getScenes = (
       { tekst: translations.rozpatrzenieOpcja2, next: "dzwoni_officer" },
     ],
   },
+
+  rozpocznij_od_nowa: {
+    // npcKey: "officer",
+    tekst: () => "",
+    autoNextScene: "dzwoni_officer",
+    clearHistory: true,
+  },
+
   end_of_act: {
     npcKey: "officer",
     tekst: () => translations.endActCompleted,
