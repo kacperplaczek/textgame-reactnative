@@ -31,7 +31,7 @@ export const getScenes = (
       const shipClass = await Storage.getItem({ key: "wybranyStatek" });
       const equipment = await Storage.getItem({ key: "wybraneZaopatrzenie" });
 
-      return translations.akt2Scen2
+      return translations[`akt2Scen2_${plec || "pan"}`]
         .replace("{{statek}}", shipClass)
         .replace("{{wyposazenie}}", equipment);
     },
@@ -287,7 +287,7 @@ export const getScenes = (
   akt2_niewidzialnosc: {
     npcKey: "flightControlCenter",
     tekst: () => "Cholera! Nic nie widzę!",
-    enableDarknessUI: true,
+    enableDarknessUI: true, // ? Włączanie trybu ciemności...
     options: [
       { tekst: "Kliknij, aby kontynuować", next: "akt2_wymiar_niemożliwy" },
     ],
@@ -357,7 +357,7 @@ export const getScenes = (
       { tekst: "Potrząśnij kryształem", next: "death_explosion" }, // 💀 Śmierć, powrót do checkpointu
       { tekst: "Ok. Sprawdź", next: "akt2_powrot_do_normy" },
     ],
-    disableDarknessUI: true,
+    disableDarknessUI: true, // ? Wyłączenie ciemności UI
   },
 
   // 🔥 DIALOG (P) – POWRÓT DO NORMALNOŚCI
@@ -727,6 +727,12 @@ export const getScenes = (
     npcKey: "rozbitek",
     deathScreen: "spadlesZUrwiska",
     tekst: () => "Spadłeś z Urwiska...",
+  },
+
+  death_explosion: {
+    npcKey: "rozbitek",
+    deathScreen: "explosionDeathScreen",
+    tekst: () => "Wybuchłeś...",
   },
 
   // ? Start ścieżki przełęcza

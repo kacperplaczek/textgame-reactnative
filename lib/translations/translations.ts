@@ -74,8 +74,10 @@ export const translations = {
     rozpoczecieAkt2: "...3...7... Halo?! Czy mnie słychać? Odbiór!",
     akt2Odp1: "Głośno i wyraźnie",
     akt2Odp2: "Mogło być lepiej",
-    akt2Scen2:
-      "Przed Tobą ostatnie procedury startowe. System wskazuje, że wybrałeś/aś statek klasy {{statek}}, a dodatkowe wyposażenie statku stanowi: {{wyposazenie}}. Potwierdzasz?",
+    akt2Scen2_pan:
+      "Przed Tobą ostatnie procedury startowe. System wskazuje, że wybrałeś statek klasy {{statek}}, a dodatkowe wyposażenie statku stanowi: {{wyposazenie}}. Potwierdzasz?",
+    akt2Scen2_pani:
+      "Przed Tobą ostatnie procedury startowe. System wskazuje, że wybrałaś statek klasy {{statek}}, a dodatkowe wyposażenie statku stanowi: {{wyposazenie}}. Potwierdzasz?",
     akt2Odp3: "Tak, jak od linijki",
     akt2Odp4: "Nie, chce coś zmienić",
     akt2Scen3: "Ile osób liczy załoga?",

@@ -15,13 +15,15 @@ type SceneType = {
   autoNextDelay?: number;
   waitTime?: number;
   enableNotification?: boolean;
-  endAct?: string;
-  nextAct?: string;
+  endAct?: string; // Informacja jaki akt został zakończony
+  nextAct?: string; // Informacja jaki akt ma być następny
   waitTimeScreen?: boolean;
   akcja?: () => Promise<void>; // ✅ Teraz poprawne
   waitTimeScreenName?: string;
   sound?: string;
   soundPlayLoop?: boolean;
+
+  // Służy do ekranów informujących o połączeniach przychodzących.
   specialScreen?: {
     npcKey?: string;
     title: string;
@@ -31,6 +33,7 @@ type SceneType = {
     requireWait?: boolean;
     requireWaitTime?: number;
   };
+
   instantResponse?: string;
   notifyTime?: number; // ⏳ Czas oczekiwania w sekundach
   notifyScreen?: boolean; // 🖥️ Czy pokazać ekran oczekiwania?
@@ -40,4 +43,6 @@ type SceneType = {
   // W obu przypadkach użyj tylko 'true' lub w ogóle nie oddawaj tego do kodu...
   enableDarknessUI?: boolean; // Czy ma w danej scenie odpalić całkowitą ciemność w UI?
   disableDarknessUI?: boolean; // Czy ma w danej scenie usunąć zapis o całkowitej ciemności i tym samym wyłączyć całkowitą ciemność ?
+
+  clearHistory?: boolean; // Czyszczenie poprzednich wiadomości z okna dialogowego, daj na true lub w ogóle nie ustawiaj.
 };

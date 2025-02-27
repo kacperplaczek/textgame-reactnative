@@ -79,6 +79,7 @@ export default function StartGameScreen() {
   } | null>(null);
   const [darknessUI, setDarknessUI] = useState(false);
   const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
+  const getStyles = () => (darknessUI ? stylesDarkness : styles);
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
@@ -125,6 +126,18 @@ export default function StartGameScreen() {
       console.error("Błąd zapisu historii dialogów:", error);
     }
   };
+
+  useEffect(() => {
+    const checkDarknessUI = async () => {
+      const storedValue = await Storage.getItem({ key: "darknessUI" });
+
+      console.log("🌑 Sprawdzam DarknessUI w Storage:", storedValue);
+
+      setDarknessUI(storedValue === "true"); // 🔥 Zapewniamy, że ustawiamy poprawnie true/false
+    };
+
+    checkDarknessUI();
+  }, [refreshKey]); // 🔄 UI się odświeży po zmianie `refreshKey`
 
   const playSound = async (soundKey: string, loop: boolean) => {
     try {
@@ -433,13 +446,16 @@ export default function StartGameScreen() {
 
     if (scene.enableDarknessUI) {
       await Storage.setItem({ key: "darknessUI", value: "true" });
-      console.log("\u2728 Darkness UI enabled!");
+      console.log("🌑 Darkness UI włączone!");
+      setDarknessUI(true);
+      setRefreshKey((prev) => prev + 1); // 🔄 Wymusza odświeżenie UI
     }
 
     if (scene.disableDarknessUI) {
       await Storage.removeItem({ key: "darknessUI" });
-      console.log("\u274c Darkness UI disabled!");
-      setRefreshKey((prev) => prev + 1); // Wymusza odświeżenie UI
+      console.log("☀️ Darkness UI wyłączone!");
+      setDarknessUI(false);
+      setRefreshKey((prev) => prev + 1); // 🔄 Wymusza odświeżenie UI
     }
 
     // ❗️Dodaj krótki timeout, żeby ScrollView miał czas na aktualizację
@@ -584,7 +600,7 @@ export default function StartGameScreen() {
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
+      <View style={getStyles().loadingContainer}>
         <ActivityIndicator color="limegreen" />
       </View>
     );
@@ -616,10 +632,95 @@ export default function StartGameScreen() {
     );
   }
 
-  return (
+  return darknessUI ? (
+    <View style={getStyles().background}>
+      <StatusBar hidden />
+      <GameMenu />
+
+      <WaitingScreenOverlay
+        visible={waitingScreenVisible}
+        timeLeft={remainingTime ?? 0}
+        notifyScreenName={waiting?.notifyScreenName ?? "default"}
+      />
+
+      <SpecialSceneOverlay
+        visible={specialSceneVisible}
+        title={specialSceneContent?.title ?? ""}
+        subtitle={specialSceneContent?.subtitle}
+        npcKey={specialSceneContent?.npcKey}
+        background={specialSceneContent?.background}
+        autoNextDelay={specialSceneContent?.autoNextDelay}
+        requireWait={specialSceneContent?.requireWait}
+        requireWaitTime={specialSceneContent?.requireWaitTime}
+        onClose={() => {
+          setSpecialSceneVisible(false);
+          handleSceneChange(specialSceneContent?.nextScene || "startgame");
+        }}
+      />
+
+      <View style={getStyles().contentContainer}>
+        <View style={getStyles().dialogueContainer}>
+          <ScrollView ref={scrollRef}>
+            {dialogue.map((msg, index) => (
+              <View
+                key={index}
+                style={[
+                  getStyles().messageBlock,
+                  msg.autor === "GRACZ" && getStyles().playerMessageBlock,
+                ]}
+              >
+                {msg.autor === "NPC" && msg.npcKey && npcData[msg.npcKey] && (
+                  <View style={getStyles().messageHeader}>
+                    <Image
+                      source={npcData[msg.npcKey].avatar}
+                      style={getStyles().avatar}
+                    />
+                    <Text style={getStyles().messageTitle}>
+                      {
+                        translations[jezyk][
+                          npcData[msg.npcKey]
+                            .nameKey as keyof (typeof translations)[jezyk]
+                        ]
+                      }
+                    </Text>
+                  </View>
+                )}
+                <Text
+                  style={[
+                    getStyles().messageText,
+                    msg.autor === "GRACZ" && getStyles().playerMessageText,
+                  ]}
+                >
+                  {msg.tekst}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+          {waiting && remainingTime !== null && (
+            <Text style={getStyles().waitingText}>
+              Oczekiwanie: {Math.floor(remainingTime / 60)}m{" "}
+              {remainingTime % 60}s
+            </Text>
+          )}
+        </View>
+
+        <View style={getStyles().optionsContainer}>
+          {options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={option.akcja}
+              style={getStyles().choiceButton}
+            >
+              <Text style={getStyles().choiceButtonText}>{option.tekst}</Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+    </View>
+  ) : (
     <ImageBackground
       source={require("../../../assets/images/bg_komputer.png")}
-      style={styles.background}
+      style={getStyles().background}
       resizeMode="cover"
     >
       <StatusBar hidden />
@@ -635,7 +736,7 @@ export default function StartGameScreen() {
         visible={specialSceneVisible}
         title={specialSceneContent?.title ?? ""}
         subtitle={specialSceneContent?.subtitle}
-        npcKey={specialSceneContent?.npcKey} // ✅ Teraz przekazujemy npcKey!
+        npcKey={specialSceneContent?.npcKey}
         background={specialSceneContent?.background}
         autoNextDelay={specialSceneContent?.autoNextDelay}
         requireWait={specialSceneContent?.requireWait}
@@ -646,24 +747,24 @@ export default function StartGameScreen() {
         }}
       />
 
-      <View style={styles.contentContainer}>
-        <View style={styles.dialogueContainer}>
+      <View style={getStyles().contentContainer}>
+        <View style={getStyles().dialogueContainer}>
           <ScrollView ref={scrollRef}>
             {dialogue.map((msg, index) => (
               <View
                 key={index}
                 style={[
-                  styles.messageBlock,
-                  msg.autor === "GRACZ" && styles.playerMessageBlock,
+                  getStyles().messageBlock,
+                  msg.autor === "GRACZ" && getStyles().playerMessageBlock,
                 ]}
               >
                 {msg.autor === "NPC" && msg.npcKey && npcData[msg.npcKey] && (
-                  <View style={styles.messageHeader}>
+                  <View style={getStyles().messageHeader}>
                     <Image
                       source={npcData[msg.npcKey].avatar}
-                      style={styles.avatar}
+                      style={getStyles().avatar}
                     />
-                    <Text style={styles.messageTitle}>
+                    <Text style={getStyles().messageTitle}>
                       {
                         translations[jezyk][
                           npcData[msg.npcKey]
@@ -675,8 +776,8 @@ export default function StartGameScreen() {
                 )}
                 <Text
                   style={[
-                    styles.messageText,
-                    msg.autor === "GRACZ" && styles.playerMessageText,
+                    getStyles().messageText,
+                    msg.autor === "GRACZ" && getStyles().playerMessageText,
                   ]}
                 >
                   {msg.tekst}
@@ -685,21 +786,21 @@ export default function StartGameScreen() {
             ))}
           </ScrollView>
           {waiting && remainingTime !== null && (
-            <Text style={styles.waitingText}>
+            <Text style={getStyles().waitingText}>
               Oczekiwanie: {Math.floor(remainingTime / 60)}m{" "}
               {remainingTime % 60}s
             </Text>
           )}
         </View>
 
-        <View style={styles.optionsContainer}>
+        <View style={getStyles().optionsContainer}>
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
               onPress={option.akcja}
-              style={styles.choiceButton}
+              style={getStyles().choiceButton}
             >
-              <Text style={styles.choiceButtonText}>{option.tekst}</Text>
+              <Text style={getStyles().choiceButtonText}>{option.tekst}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -709,6 +810,114 @@ export default function StartGameScreen() {
 }
 
 const { width, height } = Dimensions.get("window");
+const stylesDarkness = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "black",
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "black",
+  },
+
+  // Pojemnik na cały kontent pod menu
+  contentContainer: {
+    flex: 1,
+    justifyContent: "space-between",
+    paddingTop: 50,
+  },
+
+  // Kontener na dialogi
+  dialogueContainer: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 10,
+    marginHorizontal: 10,
+    marginBottom: 10,
+  },
+
+  // Wiadomości NPC / GRACZ
+  messageBlock: { marginBottom: 12 },
+
+  playerMessageBlock: {
+    backgroundColor: "#219653",
+    padding: 8,
+    borderRadius: 10,
+  },
+
+  playerMessageText: {
+    color: "black",
+    fontFamily: "VT323Regular",
+    fontSize: 16,
+  },
+
+  messageHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 4,
+  },
+  avatar: { width: 28, height: 28, borderRadius: 4, marginRight: 8 },
+
+  messageTitle: {
+    color: "#219653",
+    fontFamily: "VT323Regular",
+    fontSize: 18,
+  },
+
+  messageText: {
+    color: "#219653",
+    fontFamily: "VT323Regular",
+    fontSize: 16,
+  },
+
+  // Oczekiwanie na czas
+  waitingText: {
+    marginTop: 10,
+    textAlign: "center",
+    color: "#219653",
+    fontFamily: "VT323Regular",
+    fontSize: 18,
+  },
+
+  // Opcje odpowiedzi
+  optionsContainer: {
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+
+  choiceButton: {
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    backgroundColor: "black",
+    borderColor: "black",
+    borderWidth: 2,
+    borderRadius: 8,
+    marginBottom: 8,
+    alignItems: "center",
+  },
+
+  choiceButtonText: {
+    color: "#219653",
+    fontFamily: "VT323Regular",
+    fontSize: 18,
+  },
+
+  // Przycisk MENU – nad wszystkim!
+  menuContainer: {
+    position: "absolute",
+    top: 10,
+    right: 10,
+    zIndex: 10,
+  },
+});
+
 const styles = StyleSheet.create({
   background: { flex: 1, width: "100%", height: "100%" },
   loadingContainer: {
