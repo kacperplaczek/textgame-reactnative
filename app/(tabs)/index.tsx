@@ -91,14 +91,14 @@ const styles = StyleSheet.create({
     color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
-    marginTop: 40,
+    marginTop: 64,
   },
   subtitle: {
-    fontSize: 24,
+    fontSize: 30,
     color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
-    marginBottom: 30,
+    marginBottom: 48,
   },
   spacer: {
     flex: 1,

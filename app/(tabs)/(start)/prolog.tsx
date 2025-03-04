@@ -152,19 +152,19 @@ const styles = StyleSheet.create({
     title: {
         color: '#219653',
         fontFamily: 'VT323Regular',
-        fontSize: 24,
+        fontSize: 34,
         marginBottom: 12,
     },
     text: {
         color: '#219653',
         fontFamily: 'VT323Regular',
-        fontSize: 16,
-        lineHeight: 22,
+        fontSize: 26,
+        lineHeight: 30,
     },
     tapText: {
         color: '#219653',
         fontFamily: 'VT323Regular',
-        fontSize: 16,
+        fontSize: 30,
         textAlign: 'center',
     },
 });

@@ -59,7 +59,7 @@ export default function GameMenu({ onReset }: MenuProps) {
 const styles = StyleSheet.create({
     menuButton: {
         position: 'absolute',
-        top: 10,
+        top: 20,
         right: 10,
         flexDirection: 'row',
         alignItems: 'center',
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     menuText: {
         color: '#219653',
         fontFamily: 'VT323Regular',
-        fontSize: 18,
+        fontSize: 31,
         marginRight: 5,
     },
 });

@@ -13,7 +13,7 @@ import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
 import { translations } from "@/lib/translations/translations";
 
 // ✅ Domyślne tło
-const DefaultBgImage = require("../../assets/images/bg_ufo.png");
+const DefaultBgImage = require("../../assets/images/bg_intro.png");
 // ✅ Statyczny obraz na dole
 const BottomImage = require("../../assets/images/panel_komputera.png");
 
@@ -133,8 +133,9 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.9)", // 📌 Przyciemnienie dla czytelności
     alignItems: "center",
     justifyContent: "space-between",
-    borderWidth: 1,
-    borderColor: "limegreen",
+    borderWidth: 3,
+    borderRadius: 20,
+    borderColor: "#219653",
   },
   // 🔼 GÓRNY TEKST
   topContainer: {
@@ -143,8 +144,8 @@ const styles = StyleSheet.create({
     marginTop: 40,
   },
   title: {
-    fontSize: 22,
-    color: "#22ff22",
+    fontSize: 30,
+    color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
     textTransform: "uppercase",
@@ -167,8 +168,8 @@ const styles = StyleSheet.create({
     borderColor: "#219653",
   },
   npcName: {
-    fontSize: 20,
-    color: "#22ff22",
+    fontSize: 26,
+    color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
     textShadowColor: "#000",
@@ -182,8 +183,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   subtitle: {
-    fontSize: 18,
-    color: "#22ff22",
+    fontSize: 24,
+    color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
     textShadowColor: "#000",

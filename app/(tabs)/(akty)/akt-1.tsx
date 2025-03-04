@@ -115,7 +115,8 @@ export default function StartGameScreen() {
     }
   };
 
-  const saveDialogue = async (dialogue: typeof dialogue) => {
+  //? Zapisywanie dialogów
+  const saveDialogue = async (dialogue: void) => {
     try {
       const aktKey = "akt1";
       await Storage.setItem({
@@ -127,6 +128,7 @@ export default function StartGameScreen() {
     }
   };
 
+  //? Sprawdzanie kolorystyki UI.
   useEffect(() => {
     const checkDarknessUI = async () => {
       const storedValue = await Storage.getItem({ key: "darknessUI" });
