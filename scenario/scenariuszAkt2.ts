@@ -554,7 +554,7 @@ export const getScenes = (
     npcKey: "rozbitek",
     tekst: () => "Telefon dzwoni...",
     specialScreen: {
-      title: "DZWONI OFICER REKRUTUJĄCY",
+      title: "DZWONI ROZBITEK",
       subtitle: "Kliknij w ekran by odebrać...",
       image: "@/assets/images/bg_ufo.png",
       background: "@/assets/images/bg_ufo.png",

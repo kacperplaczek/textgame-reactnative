@@ -838,9 +838,9 @@ const stylesDarkness = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
-    borderColor: "black",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 10,
+    marginTop: 40,
     marginHorizontal: 10,
     marginBottom: 10,
   },
@@ -857,7 +857,7 @@ const stylesDarkness = StyleSheet.create({
   playerMessageText: {
     color: "black",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 24,
   },
 
   messageHeader: {
@@ -870,13 +870,13 @@ const stylesDarkness = StyleSheet.create({
   messageTitle: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 25,
   },
 
   messageText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 25,
   },
 
   // Oczekiwanie na czas
@@ -899,7 +899,7 @@ const stylesDarkness = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "black",
     borderColor: "black",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 8,
     marginBottom: 8,
     alignItems: "center",
@@ -908,7 +908,7 @@ const stylesDarkness = StyleSheet.create({
   choiceButtonText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 24,
   },
 
   // Przycisk MENU – nad wszystkim!
@@ -942,8 +942,9 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
     borderColor: "#219653",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 10,
+    marginTop: 40,
     marginHorizontal: 10,
     marginBottom: 10,
   },
@@ -960,7 +961,7 @@ const styles = StyleSheet.create({
   playerMessageText: {
     color: "black",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 24,
   },
 
   messageHeader: {
@@ -973,13 +974,13 @@ const styles = StyleSheet.create({
   messageTitle: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 25,
   },
 
   messageText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 25,
   },
 
   // Oczekiwanie na czas
@@ -1002,7 +1003,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "black",
     borderColor: "#219653",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 8,
     marginBottom: 8,
     alignItems: "center",
@@ -1011,7 +1012,7 @@ const styles = StyleSheet.create({
   choiceButtonText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 24,
   },
 
   // Przycisk MENU – nad wszystkim!
