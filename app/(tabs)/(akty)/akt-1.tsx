@@ -392,16 +392,14 @@ export default function StartGameScreen() {
 
     if (scene.notifyTime) {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
-      const now = Math.floor(Date.now() / 1000);
+      const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
         const remaining = endTime - now;
 
         if (remaining <= 0) {
-          console.log(
-            "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
-          );
+          console.log("✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę...");
           await Storage.removeItem({ key: "waitingEndTime" });
           await Storage.removeItem({ key: "waitingScene" });
 
@@ -413,9 +411,7 @@ export default function StartGameScreen() {
           return handleSceneChange(scene.autoNextScene);
         }
 
-        console.log(
-          `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
-        );
+        console.log(`⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`);
         setWaiting({ sceneName: scene.autoNextScene, endTime });
         setWaitingScreenVisible(true);
         setRemainingTime(remaining);
@@ -439,12 +435,13 @@ export default function StartGameScreen() {
         // 🔄 Ustawiamy ekran oczekiwania
         setWaiting({
           sceneName: scene.autoNextScene ?? sceneName,
-          endTime: parseInt(storedEndTime),
-          notifyScreenName: scene.notifyScreenName ?? "default",
+          endTime: endTime,
         });
         setWaitingScreenVisible(true);
+        setRemainingTime(scene.notifyTime);
       }
     }
+
 
     if (scene.enableDarknessUI) {
       await Storage.setItem({ key: "darknessUI", value: "true" });
@@ -891,7 +888,7 @@ const stylesDarkness = StyleSheet.create({
   // Opcje odpowiedzi
   optionsContainer: {
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 30,
   },
 
   choiceButton: {
@@ -995,7 +992,7 @@ const styles = StyleSheet.create({
   // Opcje odpowiedzi
   optionsContainer: {
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 30,
   },
 
   choiceButton: {

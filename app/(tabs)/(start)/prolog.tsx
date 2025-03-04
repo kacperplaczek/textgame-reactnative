@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ImageBackground, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, ImageBackground, ActivityIndicator, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 import Storage from 'expo-storage';
 import { StatusBar } from 'expo-status-bar';
@@ -56,7 +56,6 @@ export default function PrologScreen() {
         }
     }, [isTyping, fullText]);
 
-
     const stopAllSounds = async () => {
         try {
             console.log("⏹️ Zatrzymuję wszystkie dźwięki przed przejściem...");
@@ -67,7 +66,6 @@ export default function PrologScreen() {
             console.error("❌ Błąd zatrzymywania dźwięków:", e);
         }
     };
-    
 
     const handleScreenChange = async () => {
         if (isTyping) {
@@ -76,7 +74,7 @@ export default function PrologScreen() {
             setIsTyping(false);
             return;
         }
-    
+
         if (currentScreen === 'intro') {
             console.log("📜 Przechodzę do prologu...");
             setCurrentScreen('prolog');
@@ -88,8 +86,6 @@ export default function PrologScreen() {
             router.replace('/startgame');
         }
     };
-    
-    
 
     return (
         <ImageBackground
@@ -110,7 +106,11 @@ export default function PrologScreen() {
                     <Text style={styles.title}>
                         {currentScreen === 'intro' ? translations[jezyk].introTitle : translations[jezyk].prologTitle}
                     </Text>
-                    <Text style={styles.text}>{displayedText}</Text>
+
+                    {/* Scrollowany tekst */}
+                    <ScrollView style={styles.textContainer} contentContainerStyle={{ flexGrow: 1 }}>
+                        <Text style={styles.text}>{displayedText}</Text>
+                    </ScrollView>
 
                     {isSaving && <ActivityIndicator color="#219653" style={{ marginTop: 20 }} />}
                 </View>
@@ -125,6 +125,8 @@ export default function PrologScreen() {
         </ImageBackground>
     );
 }
+
+const scaleFont = (size) => (size * width) / 375;
 
 const styles = StyleSheet.create({
     background: {
@@ -145,6 +147,10 @@ const styles = StyleSheet.create({
         marginTop: height * 0.2, // Przesuwamy treść mniej więcej na środek ekranu
         paddingHorizontal: width * 0.05,
     },
+    textContainer: {
+        maxHeight: height * 0.4, // Ograniczenie wysokości
+        marginBottom: 20, // Odstęp od dolnych elementów
+    },
     bottomWrapper: {
         paddingBottom: height * 0.05,
         alignItems: 'center',
@@ -158,7 +164,7 @@ const styles = StyleSheet.create({
     text: {
         color: '#219653',
         fontFamily: 'VT323Regular',
-        fontSize: 26,
+        fontSize: scaleFont(22),
         lineHeight: 30,
     },
     tapText: {

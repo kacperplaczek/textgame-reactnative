@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     marginTop: 64,
   },
   subtitle: {
-    fontSize: 30,
+    fontSize: 25,
     color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
