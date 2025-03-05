@@ -345,6 +345,7 @@ export default function StartGameScreen() {
   };
 
   const handleSceneChange = async (sceneName: string) => {
+    const plec = (await Storage.getItem({ key: "plec" })) || "pan";
     const scenes = getScenes(translations[jezyk], plec);
     const scene = scenes[sceneName];
 
@@ -865,7 +866,6 @@ const styles = StyleSheet.create({
   optionsContainer: {
     paddingHorizontal: 10,
     marginBottom: 30,
-
   },
 
   choiceButton: {

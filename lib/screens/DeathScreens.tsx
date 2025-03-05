@@ -50,4 +50,12 @@ export const deathScreensMap: Record<
       onRetry={onRetry}
     />
   ),
+
+  wpadlesWCzarnaDziure: ({ onRetry }) => (
+    <DeathScreen
+      title="Rozszrpują cię siły pływowe czarnej dziury"
+      image={require("@/assets/images/spadles_z_urwiska.png")}
+      onRetry={onRetry}
+    />
+  ),
 };

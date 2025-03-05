@@ -9,6 +9,8 @@ export const translations = {
     rozbitekTitle: "Rozbitek",
     captainTitle: "Kapitan Statku",
     flightControlCenterTitle: "Centrum Kontroli Lotów",
+    echoTitle: "ECHO",
+    dowodcaTitle: "Dowódca",
 
     // Ekrany śmierci
 
@@ -91,6 +93,10 @@ export const translations = {
       "Nikt Ci nie powiedział? Niestety ich prom uległ awarii poszycia i skończyło się to ... źle! Przygotuj się do startu. Włącz silniki i ustaw ciąg minimalny.",
     akt2Odp7: "Lecę tylko Ja",
     akt2Odp8: "Nie wiem. Gdzie moi ludzie?",
+
+    // Scenariusz 3
+    akt3odptestowa_pan: "Prawie umarłem",
+    akt3odptestowa_pani: "Prawie umarłam",
 
     // Intro / Prolog
     introTitle: "WSTĘP",

@@ -13,15 +13,6 @@ export const getScenes = (
   translations: any,
   plec: "pan" | "pani" | null
 ): Record<string, SceneType> => ({
-  //   dzwoni_officer: {
-  //     npcKey: "officer",
-  //     tekst: () => translations.dzwoniOfficer,
-  //     options: [
-  //       { tekst: translations.odbierzPolaczenie, next: "pytanie_powitalne" },
-  //     ],
-  //     sound: "callphone",
-  //     soundPlayLoop: true,
-  //   },
   dzwoni_officer: {
     npcKey: "officer",
     tekst: () => "Telefon dzwoni...",
@@ -58,17 +49,6 @@ export const getScenes = (
       },
     ],
   },
-
-  // ? PRZYKŁADOWA SCENA Z EKRANEM OCZEKIWANIA
-  // akt2_scen_waiting: {
-  //   npcKey: "flightControlCenter",
-  //   tekst: () => "Przygotowujemy statek do startu... To potrwa chwilę.",
-  //   notifyTime: 100, // 10 sekund
-  //   notifyScreen: true, // Pokazujemy ekran oczekiwania
-  //   notifyScreenName: "statek_przygotowanie", // Nazwa ekranu oczekiwania
-  //   enableNotification: true, // Wysłanie powiadomienia, jeśli aplikacja jest wyłączona
-  //   autoNextScene: "pytanie_o_powody", // Po 10 sekundach przejście do kolejnej sceny
-  // },
 
   przejscie_do_misji_powody: {
     npcKey: "officer",
