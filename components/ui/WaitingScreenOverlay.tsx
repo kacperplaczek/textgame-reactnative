@@ -11,7 +11,7 @@ import {
 // 🔹 Definiujemy ekrany + ich tła
 const waitingScreens = {
   hibernacja_w_toku: {
-    title: "❄️ Hibernacja w toku...",
+    title: "HIBERNACJA W TOKU",
     subtitle: "Twoje ciało przechodzi w stan hibernacji.",
     color: "#219653",
     background: require("@/assets/images/bg_ufo.png"),
@@ -34,11 +34,18 @@ const waitingScreens = {
     color: "#219653",
     background: require("@/assets/images/bg_ufo.png"),
   },
+
+  powrot_na_statek: {
+    title: "Wracasz na STATEK",
+    subtitle: "Oczekiwanie na powrót na Statek.",
+    color: "#219653",
+    background: require("@/assets/images/end_of_act_bg.png"),
+  },
 };
 
 // 🔹 Domyślny ekran (jeśli `notifyScreenName` nie pasuje)
 const defaultScreen = {
-  title: "⌛ Oczekiwanie...",
+  title: "PROSZĘ CZEKAĆ",
   subtitle: "Przygotowania w toku...",
   color: "#219653",
   background: require("@/assets/images/bg_ufo.png"),
@@ -93,7 +100,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)", // 🔹 Przyciemnienie, żeby poprawić czytelność tekstu
+    backgroundColor: "rgba(0, 0, 0, 0.1)", // 🔹 Przyciemnienie, żeby poprawić czytelność tekstu
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 20,
@@ -113,6 +120,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     textAlign: "center",
     fontFamily: "VT323Regular",
+    textShadowColor: "rgba(0,0,0,1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   subtitle: {
     color: "#219653",
@@ -120,6 +130,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     textAlign: "center",
     fontFamily: "VT323Regular",
+    textShadowColor: "rgba(0,0,0,1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   timeText: {
     color: "limegreen",
@@ -127,5 +140,8 @@ const styles = StyleSheet.create({
     marginTop: 10,
     textAlign: "center",
     fontFamily: "VT323Regular",
+    textShadowColor: "rgba(0,0,0,1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });

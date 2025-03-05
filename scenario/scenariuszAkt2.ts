@@ -135,7 +135,7 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () =>
       "Hibernacja rozpoczęta. Wybudzenie nastąpi w przypadku zagrożenia.",
-    notifyTime: 8700, // testowo 10 sekund
+    notifyTime: 100, // testowo 10 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },

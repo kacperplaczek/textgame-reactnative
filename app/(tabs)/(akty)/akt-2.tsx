@@ -18,7 +18,7 @@ import { translations, Language } from "@/lib/translations/translations";
 import { DialogueController } from "@/lib/dialogue/DialogueController";
 import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { getScenes } from "@/scenario/scenariuszAkt2";
+import { getScenes } from "@/scenario/scenariuszAkt3";
 import { calculateRemainingTime } from "@/lib/dialogue/SceneUtils";
 import { scheduleNotification } from "@/lib/notifications/NotificationUtils";
 import { deathScreensMap } from "@/lib/screens/DeathScreens";
@@ -115,7 +115,8 @@ export default function StartGameScreen() {
     }
   };
 
-  const saveDialogue = async (dialogue: typeof dialogue) => {
+  //? Zapisywanie dialogów
+  const saveDialogue = async (dialogue: void) => {
     try {
       const aktKey = "akt1";
       await Storage.setItem({
@@ -127,6 +128,7 @@ export default function StartGameScreen() {
     }
   };
 
+  //? Sprawdzanie kolorystyki UI.
   useEffect(() => {
     const checkDarknessUI = async () => {
       const storedValue = await Storage.getItem({ key: "darknessUI" });
@@ -201,10 +203,10 @@ export default function StartGameScreen() {
     }
 
     // 🟢 Jeśli nie ma zapisanego `storedScene` lub pochodzi z innego aktu – zaczynamy nowy akt
-    if (!storedScene || !storedScene.startsWith("akt2_")) {
-      console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_akt2");
-      setCurrentScene("rozpoczecie_akt2");
-      handleSceneChange("rozpoczecie_akt2");
+    if (!storedScene || !storedScene.startsWith("akt3_")) {
+      console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_aktu");
+      setCurrentScene("rozpoczecie_aktu");
+      handleSceneChange("rozpoczecie_aktu");
     } else {
       // 🟢 Jeśli `storedScene` istnieje i należy do nowego aktu, kontynuujemy
       console.log("📌 Przywracam zapisaną scenę:", storedScene);
@@ -322,10 +324,10 @@ export default function StartGameScreen() {
       setDeadScreen(null);
       setDialogue([]);
       setOptions([]);
-      setCurrentScene("rozpoczecie_akt2");
+      setCurrentScene("rozpoczecie_aktu");
 
       setTimeout(() => {
-        handleSceneChange("rozpoczecie_akt2");
+        handleSceneChange("rozpoczecie_aktu");
       }, 200);
     }
   };
@@ -390,7 +392,7 @@ export default function StartGameScreen() {
 
     if (scene.notifyTime) {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
-      const now = Math.floor(Date.now() / 1000);
+      const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
@@ -407,42 +409,107 @@ export default function StartGameScreen() {
           setWaitingScreenVisible(false);
           setRemainingTime(null);
 
-          // ❗️BLOKADA – nie uruchamiamy notifyTime ponownie!
           return handleSceneChange(scene.autoNextScene);
         }
 
         console.log(
           `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
         );
-        setWaiting({ sceneName: scene.autoNextScene, endTime });
+
+        setWaiting({
+          sceneName: scene.autoNextScene ?? sceneName,
+          endTime: parseInt(storedEndTime),
+          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+        });
+
         setWaitingScreenVisible(true);
         setRemainingTime(remaining);
         return;
       }
 
-      // ❗️ZMIANA: Nowy czas ustawiamy TYLKO, jeśli `waitingEndTime` nie istniało przed wywołaniem funkcji!
-      if (!storedEndTime) {
-        const endTime = now + scene.notifyTime;
-        await Storage.setItem({
-          key: "waitingEndTime",
-          value: endTime.toString(),
-        });
-        await Storage.setItem({
-          key: "waitingScene",
-          value: scene.autoNextScene,
-        });
+      const endTime = now + scene.notifyTime;
+      await Storage.setItem({
+        key: "waitingEndTime",
+        value: endTime.toString(),
+      });
+      await Storage.setItem({
+        key: "waitingScene",
+        value: scene.autoNextScene,
+      });
 
-        console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+      console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
 
-        // 🔄 Ustawiamy ekran oczekiwania
-        setWaiting({
-          sceneName: scene.autoNextScene ?? sceneName,
-          endTime: parseInt(storedEndTime),
-          notifyScreenName: scene.notifyScreenName ?? "default",
-        });
-        setWaitingScreenVisible(true);
-      }
+      setWaiting({
+        sceneName: scene.autoNextScene ?? sceneName,
+        endTime: endTime,
+        notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+      });
+
+      setWaitingScreenVisible(true);
+      setRemainingTime(scene.notifyTime);
     }
+
+    // if (scene.notifyTime) {
+    //   const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+    //   const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
+
+    //   if (storedEndTime) {
+    //     const endTime = parseInt(storedEndTime, 10);
+    //     const remaining = endTime - now;
+
+    //     if (remaining <= 0) {
+    //       console.log(
+    //         "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
+    //       );
+    //       await Storage.removeItem({ key: "waitingEndTime" });
+    //       await Storage.removeItem({ key: "waitingScene" });
+
+    //       setWaiting(null);
+    //       setWaitingScreenVisible(false);
+    //       setRemainingTime(null);
+
+    //       // ❗️BLOKADA – nie uruchamiamy notifyTime ponownie!
+    //       return handleSceneChange(scene.autoNextScene);
+    //     }
+
+    //     console.log(
+    //       `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
+    //     );
+
+    //     setWaiting({
+    //       sceneName: scene.autoNextScene ?? sceneName,
+    //       endTime: parseInt(storedEndTime),
+    //       notifyScreenName: scene.notifyScreenName ?? "default",
+    //     });
+
+    //     setWaitingScreenVisible(true);
+    //     setRemainingTime(remaining);
+    //     return;
+    //   }
+
+    //   // ❗️ZMIANA: Nowy czas ustawiamy TYLKO, jeśli `waitingEndTime` nie istniało przed wywołaniem funkcji!
+    //   if (!storedEndTime) {
+    //     const endTime = now + scene.notifyTime;
+    //     await Storage.setItem({
+    //       key: "waitingEndTime",
+    //       value: endTime.toString(),
+    //     });
+    //     await Storage.setItem({
+    //       key: "waitingScene",
+    //       value: scene.autoNextScene,
+    //     });
+
+    //     console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+
+    //     // 🔄 Ustawiamy ekran oczekiwania
+    //     setWaiting({
+    //       sceneName: scene.autoNextScene ?? sceneName,
+    //       endTime: endTime,
+    //     });
+    //     setWaitingScreenVisible(true);
+    //     setRemainingTime(scene.notifyTime);
+    //   }
+    // }
 
     if (scene.enableDarknessUI) {
       await Storage.setItem({ key: "darknessUI", value: "true" });
@@ -836,9 +903,9 @@ const stylesDarkness = StyleSheet.create({
     flex: 1,
     padding: 10,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
-    borderColor: "black",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 10,
+    marginTop: 40,
     marginHorizontal: 10,
     marginBottom: 10,
   },
@@ -855,7 +922,7 @@ const stylesDarkness = StyleSheet.create({
   playerMessageText: {
     color: "black",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 24,
   },
 
   messageHeader: {
@@ -868,13 +935,13 @@ const stylesDarkness = StyleSheet.create({
   messageTitle: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 25,
   },
 
   messageText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 25,
   },
 
   // Oczekiwanie na czas
@@ -889,7 +956,7 @@ const stylesDarkness = StyleSheet.create({
   // Opcje odpowiedzi
   optionsContainer: {
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 30,
   },
 
   choiceButton: {
@@ -897,7 +964,7 @@ const stylesDarkness = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "black",
     borderColor: "black",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 8,
     marginBottom: 8,
     alignItems: "center",
@@ -906,7 +973,7 @@ const stylesDarkness = StyleSheet.create({
   choiceButtonText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 24,
   },
 
   // Przycisk MENU – nad wszystkim!
@@ -940,8 +1007,9 @@ const styles = StyleSheet.create({
     padding: 10,
     backgroundColor: "rgba(0, 0, 0, 0.9)",
     borderColor: "#219653",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 10,
+    marginTop: 40,
     marginHorizontal: 10,
     marginBottom: 10,
   },
@@ -958,7 +1026,7 @@ const styles = StyleSheet.create({
   playerMessageText: {
     color: "black",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 24,
   },
 
   messageHeader: {
@@ -971,13 +1039,13 @@ const styles = StyleSheet.create({
   messageTitle: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 25,
   },
 
   messageText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 16,
+    fontSize: 25,
   },
 
   // Oczekiwanie na czas
@@ -992,7 +1060,7 @@ const styles = StyleSheet.create({
   // Opcje odpowiedzi
   optionsContainer: {
     paddingHorizontal: 10,
-    marginBottom: 10,
+    marginBottom: 30,
   },
 
   choiceButton: {
@@ -1000,7 +1068,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: "black",
     borderColor: "#219653",
-    borderWidth: 2,
+    borderWidth: 4,
     borderRadius: 8,
     marginBottom: 8,
     alignItems: "center",
@@ -1009,7 +1077,7 @@ const styles = StyleSheet.create({
   choiceButtonText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 18,
+    fontSize: 24,
   },
 
   // Przycisk MENU – nad wszystkim!
