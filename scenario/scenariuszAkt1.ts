@@ -31,8 +31,17 @@ export const getScenes = (
     npcKey: "officer",
     tekst: () => translations.welcome,
     options: [
-      { tekst: translations.pan, next: "pytanie_o_powody" },
-      { tekst: translations.pani, next: "pytanie_o_powody" },
+      {
+        tekst: translations.pan,
+        next: "pytanie_o_powody",
+        akcja: async () => await Storage.setItem({ key: "plec", value: "pan" }),
+      },
+      {
+        tekst: translations.pani,
+        next: "pytanie_o_powody",
+        akcja: async () =>
+          await Storage.setItem({ key: "plec", value: "pani" }),
+      },
     ],
   },
   pytanie_o_powody: {

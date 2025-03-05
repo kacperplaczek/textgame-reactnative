@@ -20,17 +20,15 @@ export const getScenes = (
     tekst: () => "Oczekiwanie...",
     notifyTime: 10,
     notifyScreenName: "powrot_na_statek",
-    autoNextScene: "akt3_start",
+    autoNextScene: "akt3_checkpoint",
   },
 
   // ? DO KOPIOWANIA
-  akt3_: {
-    npcKey: "flightControlCenter",
+  akt3_checkpoint: {
     tekst: () => "",
-    options: [
-      { tekst: "", next: "" },
-      { tekst: "", next: "" },
-    ],
+    autoNextScene: "akt3_start",
+    autoNextDelay: 100,
+    checkpoint: true,
   },
 
   akt3_start: {
