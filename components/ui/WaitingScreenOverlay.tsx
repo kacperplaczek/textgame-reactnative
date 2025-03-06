@@ -14,7 +14,7 @@ const waitingScreens = {
     title: "HIBERNACJA W TOKU",
     subtitle: "Twoje ciało przechodzi w stan hibernacji.",
     color: "#219653",
-    background: require("@/assets/images/bg_ufo.png"),
+    background: require("@/assets/images/hibernacja.png"),
   },
   odpoczynek: {
     title: "😴 Odpoczynek...",
@@ -40,6 +40,13 @@ const waitingScreens = {
     subtitle: "Oczekiwanie na powrót na Statek.",
     color: "#219653",
     background: require("@/assets/images/end_of_act_bg.png"),
+  },
+
+  boom: {
+    title: "",
+    subtitle: "Proszę czekać...",
+    color: "#219653",
+    background: require("@/assets/images/boom.png"),
   },
 };
 

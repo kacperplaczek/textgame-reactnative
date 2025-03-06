@@ -977,7 +977,7 @@ export const getScenes = (
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
 
-  // ! Dodać osbługę "wspinaczki czekanami"
+  // TODO: Dodać osbługę "wspinaczki czekanami"
   akt2_przelecze_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => "Przeprawa w toku...",

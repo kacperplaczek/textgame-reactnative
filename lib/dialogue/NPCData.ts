@@ -24,6 +24,7 @@ export type NpcKey =
   | "rozbitek"
   | "captain"
   | "dowodca"
+  | "kosmita_harunkal"
   | "echo";
 
 type NpcData = {
@@ -54,6 +55,10 @@ export const npcData: Record<NpcKey, NpcData> = {
   },
   dowodca: {
     nameKey: "dowodcaTitle",
-    avatar: require("@/assets/images/avatar/echo_avatar.png"),
+    avatar: require("@/assets/images/avatar/kapitan_statku.png"),
+  },
+  kosmita_harunkal: {
+    nameKey: "harunKalTitle",
+    avatar: require("@/assets/images/avatar/alien_avatar.png"),
   },
 };
