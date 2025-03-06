@@ -58,4 +58,20 @@ export const deathScreensMap: Record<
       onRetry={onRetry}
     />
   ),
+
+  zatrucieGazem: ({ onRetry }) => (
+    <DeathScreen
+      title="GAZ CIĘ ZABIJA"
+      image={require("@/assets/images/zatrucie_gazem.png")}
+      onRetry={onRetry}
+    />
+  ),
+
+  zimnoZabija: ({ onRetry }) => (
+    <DeathScreen
+      title="ZIMNO CIĘ ZABIJA"
+      image={require("@/assets/images/zimno_zabija.png")}
+      onRetry={onRetry}
+    />
+  ),
 };

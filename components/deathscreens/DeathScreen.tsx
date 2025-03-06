@@ -44,17 +44,23 @@ const styles = StyleSheet.create({
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
   },
   title: {
     color: "#219653",
     fontSize: 42,
     fontFamily: "VT323Regular",
     textAlign: "center",
+    textShadowColor: "rgba(0,0,0,1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   tapText: {
     color: "#219653",
     fontSize: 18,
     fontFamily: "VT323Regular",
+    textShadowColor: "rgba(0,0,0,1)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
 });
