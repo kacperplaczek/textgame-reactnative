@@ -11,6 +11,7 @@ export const translations = {
     flightControlCenterTitle: "Centrum Kontroli Lotów",
     echoTitle: "ECHO",
     dowodcaTitle: "Dowódca",
+    harunKalTitle: "Ħarûn'kal",
 
     // Ekrany śmierci
 
@@ -97,6 +98,30 @@ export const translations = {
     // Scenariusz 3
     akt3odptestowa_pan: "Prawie umarłem",
     akt3odptestowa_pani: "Prawie umarłam",
+    akt3_scen1213123_pan:
+      "Nie miałeś wpływu na jego decyzję. Kapitan Exploratora wybrał swój los. Musimy jednak kontynuować misję.",
+    akt3_scen1213123_pani:
+      "Nie miałaś wpływu na jego decyzję. Kapitan Exploratora wybrał swój los. Musimy jednak kontynuować misję.",
+    akt3_scen121314_pan:
+      "Zdecydowanie coś tu nie gra. Cisza jest niemal złowroga. Czy jesteś pewien, że chcesz wejść na pokład?",
+    akt3_scen121314_pani:
+      "Zdecydowanie coś tu nie gra. Cisza jest niemal złowroga. Czy jesteś pewien, że chcesz wejść na pokład?",
+    akt3_scen121315_pan:
+      "Wybrałeś drogę w prawo. To prowadzi do sekcji magazynowej statku. Czuję, jak powietrze tutaj jest nienaturalnie zimne. Systemy podtrzymywania życia wydają się być wyłączone od lat.",
+    akt3_scen121315_pani:
+      "Wybrałaś drogę w prawo. To prowadzi do sekcji magazynowej statku. Czuję, jak powietrze tutaj jest nienaturalnie zimne. Systemy podtrzymywania życia wydają się być wyłączone od lat.",
+    akt3_scen121316_pan:
+      "Zdecydowałeś się iść dalej. Ale mamy problem — pojawiła się blokada. To rodzaj mechanicznego zamka z symbolem.",
+    akt3_scen121316_pani:
+      "Zdecydowałaś się iść dalej. Ale mamy problem — pojawiła się blokada. To rodzaj mechanicznego zamka z symbolem.",
+    akt3_scen121317_pan: "Dlaczego zostałeś tu zamknięty?",
+    akt3_scen121317_pani: "Dlaczego zostałaś tu zamknięty?",
+    akt3_scen121318_pan: "Czy ty wysłałeś sygnał?",
+    akt3_scen121318_pani: "Czy ty wysłałaś sygnał?",
+    akt3_scen121319_pan:
+      "Systemy statku są na krawędzi awarii. Musimy działać szybko, zanim wszystko się zawali. Jesteś gotów?",
+    akt3_scen121319_pani:
+      "Systemy statku są na krawędzi awarii. Musimy działać szybko, zanim wszystko się zawali. Jesteś gotowa?",
 
     // Intro / Prolog
     introTitle: "WSTĘP",
