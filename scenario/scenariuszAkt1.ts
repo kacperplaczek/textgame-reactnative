@@ -15,10 +15,8 @@ export const getScenes = (
 ): Record<string, SceneType> => ({
   dzwoni_officer: {
     npcKey: "officer",
-    tekst: () => "Telefon dzwoni...",
+    tekst: () => translations.AIPL_dzwoni_officer_text,
     specialScreen: {
-      title: "DZWONI OFICER REKRUTUJĄCY",
-      subtitle: "Kliknij w ekran by odebrać...",
       image: "@/assets/images/bg_ufo.png",
       background: "@/assets/images/bg_ufo.png",
     },

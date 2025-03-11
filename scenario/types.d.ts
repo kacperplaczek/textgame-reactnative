@@ -26,7 +26,7 @@ type SceneType = {
   // Służy do ekranów informujących o połączeniach przychodzących.
   specialScreen?: {
     npcKey?: string;
-    title: string;
+    title?: string;
     subtitle?: string;
     image?: string;
     background?: string;
