@@ -17,7 +17,7 @@ export const getScenes = (
   // 🔥 SCENA 1: Początek komunikacji
   rozpoczecie_aktu: {
     npcKey: "flightControlCenter",
-    tekst: () => "Oczekiwanie...",
+    tekst: () => translations.AIPL_akt3_rozpoczecie_aktu,
     notifyTime: 10,
     notifyScreenName: "powrot_na_statek",
     autoNextScene: "akt3_checkpoint",
@@ -33,9 +33,12 @@ export const getScenes = (
 
   akt3_start: {
     npcKey: "flightControlCenter",
-    tekst: () => "Co myślisz o tym, co się stało na planecie?",
+    tekst: () => translations.AIPL_akt3_start,
     options: [
-      { tekst: "Nie mogę przestać myśleć o...", next: "akt3_twojeemocje_1" },
+      {
+        tekst: translations.AIPL_akt3_start_option1,
+        next: "akt3_twojeemocje_1",
+      },
       {
         tekst: plec
           ? translations[`akt3odptestowa_${plec}`]
@@ -47,20 +50,31 @@ export const getScenes = (
 
   akt3_twojeemocje_1: {
     npcKey: "flightControlCenter",
-    tekst: () => "Twoje emocje są zrozumiałe. Musisz jednak zachować spokój.",
+    tekst: () => translations.AIPL_akt3_twoje_emocje1,
     options: [
-      { tekst: "Po tym? Trudno o spokój.", next: "akt3_scena2" },
-      { tekst: "Masz rację. Muszę się skupić.", next: "akt3_scena2" },
+      {
+        tekst: translations.AIPL_akt3_twoje_emocje1_option1,
+        next: "akt3_scena2",
+      },
+      {
+        tekst: translations.AIPL_akt3_twoje_emocje1_option2,
+        next: "akt3_scena2",
+      },
     ],
   },
 
   akt3_scena2: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Widzę, że jesteś pod wpływem silnego stresu. Moim zadaniem jest zapewnić pomoc i ochronę. Przywołuje ECHO.",
+    tekst: () => translations.AIPL_akt3_scena2,
     options: [
-      { tekst: "Kto to ECHO?", next: "akt3_scena2_echo_1" },
-      { tekst: "Nie ma takiej potrzeby.", next: "akt3_scena3_echo_1" },
+      {
+        tekst: translations.AIPL_akt3_scena2_option1,
+        next: "akt3_scena2_echo_1",
+      },
+      {
+        tekst: translations.AIPL_akt3_scena2_option2,
+        next: "akt3_scena3_echo_1",
+      },
     ],
   },
 
@@ -68,18 +82,23 @@ export const getScenes = (
 
   akt3_scena2_echo_1: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To zaawansowane AI zajmujące się ludzką naturą. Uwierz mi, potrafi pomóc.",
+    tekst: () => translations.AIPL_akt3_scena2_echo_1,
     autoNextDelay: 3000,
     autoNextScene: "akt3_scena2_echo_2",
   },
 
   akt3_scena2_echo_2: {
     npcKey: "echo",
-    tekst: () => "Witaj. Jestem ECHO. Jak mogę Ci służyć?",
+    tekst: () => translations.AIPL_akt3_scena2_echo_2,
     options: [
-      { tekst: "Czy to w ogóle ma sens?", next: "akt3_scena4" },
-      { tekst: "Nie wiem czy mogę kontynuować!", next: "akt3_scena4" },
+      {
+        tekst: translations.AIPL_akt3_scena2_echo_2_option1,
+        next: "akt3_scena4",
+      },
+      {
+        tekst: translations.AIPL_akt3_scena2_echo_2_option2,
+        next: "akt3_scena4",
+      },
     ],
   },
 
@@ -87,17 +106,23 @@ export const getScenes = (
 
   akt3_scena3_echo_1: {
     npcKey: "flightControlCenter",
-    tekst: () => "Nie Ty o tym decydujesz. Siadaj i skup się.",
+    tekst: () => translations.AIPL_akt3_scena3_echo_1,
     autoNextDelay: 3000,
     autoNextScene: "akt3_scena2_echo_2",
   },
 
   akt3_scena3_echo_2: {
     npcKey: "echo",
-    tekst: () => "Witaj. Jestem ECHO. Jak mogę Ci służyć?",
+    tekst: () => translations.AIPL_akt3_scena3_echo_2,
     options: [
-      { tekst: "Czy to w ogóle ma sens?", next: "akt3_scena4" },
-      { tekst: "Nie wiem czy mogę kontynuować!", next: "akt3_scena4" },
+      {
+        tekst: translations.AIPL_akt3_scena3_echo_2_option1,
+        next: "akt3_scena4",
+      },
+      {
+        tekst: translations.AIPL_akt3_scena3_echo_2_option2,
+        next: "akt3_scena4",
+      },
     ],
   },
 
@@ -105,116 +130,156 @@ export const getScenes = (
 
   akt3_scena4: {
     npcKey: "echo",
-    tekst: () =>
-      "Twoje pytanie jest istotne ale w tej chwili istotniejsze jest Twoje przetrwanie. Skieruj swoje myśli w tę stronę.",
+    tekst: () => translations.AIPL_akt3_scena4,
     options: [
-      { tekst: "Czyli gdzie dokładnie?", next: "akt3_pytanie_miejsca" },
-      { tekst: "Chce tylko wrócić do domu.", next: "akt3_pytanie_miejsca" },
+      {
+        tekst: translations.AIPL_akt3_scena4_option1,
+        next: "akt3_pytanie_miejsca",
+      },
+      {
+        tekst: translations.AIPL_akt3_scena4_option2,
+        next: "akt3_pytanie_miejsca",
+      },
     ],
   },
 
   akt3_pytanie_miejsca: {
     npcKey: "flightControlCenter",
-    tekst: () => "Uwaga! Wykryto nowy obiekt na kursie kolizyjnym!",
+    tekst: () => translations.AIPL_akt3_pytanie_miejsca,
     options: [
-      { tekst: "Co to za obiekt?", next: "akt3_identyfikacja_obiektu" },
-      { tekst: "Spróbujmy go uniknąć!", next: "akt3_unik_obiektu" },
+      {
+        tekst: translations.AIPL_akt3_pytanie_miejsca_option1,
+        next: "akt3_identyfikacja_obiektu",
+      },
+      {
+        tekst: translations.AIPL_akt3_pytanie_miejsca_option2,
+        next: "akt3_unik_obiektu",
+      },
     ],
   },
 
   akt3_identyfikacja_obiektu: {
     npcKey: "flightControlCenter",
-    tekst: () => "To statek podobny do naszego. Spróbuję nawiązać kontakt.",
+    tekst: () => translations.AIPL_akt3_identyfikacja_obiektu,
     autoNextScene: "akt3_kontakt_dowodca",
     autoNextDelay: 3000,
   },
 
   akt3_unik_obiektu: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Wiesz co na to protokół. To statek podobny do naszego. Spróbuję nawiązać kontakt.",
+    tekst: () => translations.AIPL_akt3_unik_obiektu,
     autoNextScene: "akt3_kontakt_dowodca",
     autoNextDelay: 3000,
   },
 
   akt3_kontakt_dowodca: {
     npcKey: "dowodca",
-    tekst: () => "Tu dowódca statku Explorator. Kim jesteście?",
+    tekst: () => translations.AIPL_akt3_kontakt_dowodca,
     options: [
-      { tekst: "Ekspedycją naukową.", next: "akt3_czarna_dziura" },
-      { tekst: "Co tu robisz?", next: "akt3_czarna_dziura" },
+      {
+        tekst: translations.AIPL_akt3_kontakt_dowodca_option1,
+        next: "akt3_czarna_dziura",
+      },
+      {
+        tekst: translations.AIPL_akt3_kontakt_dowodca_option2,
+        next: "akt3_czarna_dziura",
+      },
     ],
   },
 
   akt3_czarna_dziura: {
     npcKey: "dowodca",
-    tekst: () =>
-      "Tkwimy tutaj! Nie zbliżajcie się! Utknęliśmy w polu grawitacyjnym czarnej dziury!",
+    tekst: () => translations.AIPL_akt3_czarna_dziura,
     options: [
-      { tekst: "Długo tutaj jesteś?", next: "akt3_deathscreen_czarna_dziura" },
-      { tekst: "Manewr unikowy! TERAZ!", next: "akt3_unik_czarnej_dziury" },
+      {
+        tekst: translations.AIPL_akt3_czarna_dziura_option1,
+        next: "akt3_deathscreen_czarna_dziura",
+      },
+      {
+        tekst: translations.AIPL_akt3_czarna_dziura_option2,
+        next: "akt3_unik_czarnej_dziury",
+      },
     ],
   },
 
   akt3_unik_czarnej_dziury: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "W ostatniej chwili udało uniknąć się tego pola grawitacyjnego! Nie powiem, było gorąco!",
+    tekst: () => translations.AIPL_akt3_unik_czarnej_dziury,
     options: [
       {
-        tekst: "Jak długo tutaj jesteś?",
+        tekst: translations.AIPL_akt3_unik_czarnej_dziury_option1,
         next: "akt3_deathscreen_czarna_dziura",
       },
-      { tekst: "Masz zapasy?", next: "akt3_zapasy" },
+      {
+        tekst: translations.AIPL_akt3_unik_czarnej_dziury_option2,
+        next: "akt3_zapasy",
+      },
     ],
   },
 
   akt3_deathscreen_czarna_dziura: {
     npcKey: "dowodca",
     deathScreen: "wpadlesWCzarnaDziure",
-    tekst: () => "Wasz statek przekroczył horyzont zdarzeń... To koniec...",
+    tekst: () => translations.AIPL_akt3_deathscreen_czarna_dziura,
   },
 
   akt3_zapasy: {
     npcKey: "dowodca",
-    tekst: () =>
-      "Wszystko się już skończyło. Wczoraj zjadłem potrawkę z butów. Moja jedyna nadzieja to czarna dziura. Nie chciałbym nikogo stawiać przed takim dylematem, ale dla mnie wybór jest oczywisty.",
+    tekst: () => translations.AIPL_akt3_zapasy,
     options: [
-      { tekst: "Horyzont zdarzeń to śmierć.", next: "akt3_decyzja_ucieczka" },
-      { tekst: "Jedyna szansa...", next: "akt3_decyzja_ucieczka" },
+      {
+        tekst: translations.AIPL_akt3_zapasy_option1,
+        next: "akt3_decyzja_ucieczka",
+      },
+      {
+        tekst: translations.AIPL_akt3_zapasy_option2,
+        next: "akt3_decyzja_ucieczka",
+      },
     ],
   },
 
   akt3_decyzja_ucieczka: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Rekomenduję zakończenie komunikacji. Obiekt jest generalnie niestabilny i jeszcze możemy podzielić ten los.",
+    tekst: () => translations.AIPL_akt3_decyzja_ucieczka,
     options: [
       {
-        tekst: "Jest szansa uratować kapitana.",
+        tekst: translations.AIPL_akt3_decyzja_ucieczka_option1,
         next: "akt3_deathscreen_czarna_dziura",
       },
-      { tekst: "Uciekamy!", next: "akt3_ucieczka_udana" },
+      {
+        tekst: translations.AIPL_akt3_decyzja_ucieczka_option2,
+        next: "akt3_ucieczka_udana",
+      },
     ],
   },
 
   akt3_ucieczka_udana: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Udało nam się oddalić od czarnej dziury. Nasze systemy wykazały niezwykle silne zakłócenia grawitacyjne. Jak się trzymasz?",
+    tekst: () => translations.AIPL_akt3_ucieczka_udana,
     options: [
-      { tekst: "Oszaleję.", next: "akt3_echo_kapitan" },
-      { tekst: "Ten człowiek?", next: "akt3_echo_kapitan" },
+      {
+        tekst: translations.AIPL_akt3_ucieczka_udana_option1,
+        next: "akt3_echo_kapitan",
+      },
+      {
+        tekst: translations.AIPL_akt3_ucieczka_udana_option2,
+        next: "akt3_echo_kapitan",
+      },
     ],
   },
 
   akt3_echo_kapitan: {
     npcKey: "echo",
-    tekst: () =>
-      "Twoje reakcje są zrozumiałe. Widok kapitana Exploratora, który zginął, rzucając się w pola pływowe, musiał być traumatyczny.",
+    tekst: () => translations.AIPL_akt3_echo_kapitan,
     options: [
-      { tekst: "Nie dało się nic zrobić.", next: "akt3_misja_kontynuacja" },
-      { tekst: "Kiedyś o tym zapomnę?", next: "akt3_misja_kontynuacja" },
+      {
+        tekst: translations.AIPL_akt3_echo_kapitan_option1,
+        next: "akt3_misja_kontynuacja",
+      },
+      {
+        tekst: translations.AIPL_akt3_echo_kapitan_option2,
+        next: "akt3_misja_kontynuacja",
+      },
     ],
   },
 
@@ -229,18 +294,22 @@ export const getScenes = (
 
   akt3_hibernacja: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Dość już wrażeń. Wracam na kurs, a Tobie proponuję udać się do komory hibernacyjnej.",
+    tekst: () => translations.AIPL_akt3_hibernacja,
     options: [
-      { tekst: "Chyba nie mam wyjścia.", next: "akt3_hibernacja_start" },
-      { tekst: "Tak, odpocznę.", next: "akt3_hibernacja_start" },
+      {
+        tekst: translations.AIPL_akt3_hibernacja_option1,
+        next: "akt3_hibernacja_start",
+      },
+      {
+        tekst: translations.AIPL_akt3_hibernacja_option2,
+        next: "akt3_hibernacja_start",
+      },
     ],
   },
 
   akt3_hibernacja_start: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Rozpoczynam procedurę hibernacji. Do zobaczenia po przebudzeniu.",
+    tekst: () => translations.AIPL_akt3_hibernacja_start,
     notifyTime: 100,
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt3_pobudka",
@@ -249,44 +318,53 @@ export const getScenes = (
 
   akt3_pobudka: {
     npcKey: "flightControlCenter",
-    tekst: () => "Uwaga! Wykryto kolejną jednostkę na kursie!",
+    tekst: () => translations.AIPL_akt3_pobudka,
     options: [
-      { tekst: "Zeskanuj go.", next: "akt3_skanowanie" },
-      { tekst: "Wchodzimy na pokład.", next: "akt3_dokowanie" },
+      {
+        tekst: translations.AIPL_akt3_pobudka_option1,
+        next: "akt3_skanowanie",
+      },
+      { tekst: translations.AIPL_akt3_pobudka_option2, next: "akt3_dokowanie" },
     ],
   },
-
   akt3_skanowanie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Skanowanie w toku... Ten statek nie wykazuje żadnych oznak życia. Strukturalnie jest nienaruszony, ale systemy energetyczne są martwe.",
+    tekst: () => translations.AIPL_akt3_skanowanie,
     options: [
-      { tekst: "Podejrzane.", next: "akt3_zblizenie" },
-      { tekst: "Nic dziwnego.", next: "akt3_zblizenie" },
+      {
+        tekst: translations.AIPL_akt3_skanowanie_option1,
+        next: "akt3_zblizenie",
+      },
+      {
+        tekst: translations.AIPL_akt3_skanowanie_option2,
+        next: "akt3_zblizenie",
+      },
     ],
   },
 
   akt3_zblizenie: {
     npcKey: "flightControlCenter",
-    tekst: () => "Proponuję zbliżyć się do statku.",
+    tekst: () => translations.AIPL_akt3_zblizenie,
     autoNextScene: "akt3_dokowanie",
     autoNextDelay: 3000,
   },
 
   akt3_dokowanie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Przygotowuję się na manewr dokujący. Za kilka minut będziemy przy statku.",
+    tekst: () => translations.AIPL_akt3_dokowanie,
     autoNextScene: "akt3_dokowanie_klik",
     autoNextDelay: 3000,
   },
 
   akt3_dokowanie_klik: {
     npcKey: "flightControlCenter",
-    tekst: () => "Dokowanie",
+    tekst: () => translations.AIPL_akt3_dokowanie_klik,
     checkpoint: true,
     options: [
-      { tekst: "Kliknij, aby kontynuować", next: "akt3_wejscie_na_poklad" },
+      {
+        tekst: translations.AIPL_akt3_dokowanie_klik_option1,
+        next: "akt3_wejscie_na_poklad",
+      },
     ],
   },
 
@@ -303,128 +381,147 @@ export const getScenes = (
 
   akt3_nie_mozna_uciec: {
     npcKey: "flightControlCenter",
-    tekst: () => "Chyba już trochę za późno. Weź się w garść!",
+    tekst: () => translations.AIPL_akt3_nie_mozna_uciec,
     autoNextScene: "akt3_wejscie_procedura",
     autoNextDelay: 3000,
   },
 
   akt3_wejscie_procedura: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Inicjuję procedurę wejścia. Bądź przygotowany na wszelkie niespodzianki.",
+    tekst: () => translations.AIPL_akt3_wejscie_procedura,
     autoNextScene: "akt3_sluzowanie",
     autoNextDelay: 3000,
   },
 
   akt3_sluzowanie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Śluza otwarta. Atmosfera jest stabilna, ale ciemność w środku jest przytłaczająca. Włącz latarki.",
+    tekst: () => translations.AIPL_akt3_sluzowanie,
     autoNextScene: "akt3_odczucie_ciszy",
     autoNextDelay: 3000,
   },
 
   akt3_odczucie_ciszy: {
     npcKey: "echo",
-    tekst: () =>
-      "Czuję, jakbyśmy przekraczali granicę czegoś nieznanego. Czy czujesz to samo?",
+    tekst: () => translations.AIPL_akt3_odczucie_ciszy,
     options: [
-      { tekst: "Czuję... Ciszę...", next: "akt3_skanowanie_pokladu" },
-      { tekst: "Mrok...", next: "akt3_skanowanie_pokladu" },
+      {
+        tekst: translations.AIPL_akt3_odczucie_ciszy_option1,
+        next: "akt3_skanowanie_pokladu",
+      },
+      {
+        tekst: translations.AIPL_akt3_odczucie_ciszy_option2,
+        next: "akt3_skanowanie_pokladu",
+      },
     ],
   },
 
   akt3_skanowanie_pokladu: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Skanowanie pokładu. Nie ma tu żadnych form życia. Wszystkie systemy są wyłączone, a załoga... zniknęła.",
+    tekst: () => translations.AIPL_akt3_skanowanie_pokladu,
     autoNextScene: "akt3_dec_podroz",
     autoNextDelay: 3000,
   },
 
   akt3_dec_podroz: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To niemożliwe, aby statek tak po prostu opuścić. Musimy odkryć, co się stało. Co chcesz zrobić?",
+    tekst: () => translations.AIPL_akt3_dec_podroz,
     options: [
-      { tekst: "Kantyna. Załoga", next: "akt3_kantyna" },
-      { tekst: "Mostek. Dzienniki pokładowe.", next: "akt3_mostek" },
+      {
+        tekst: translations.AIPL_akt3_dec_podroz_option1,
+        next: "akt3_kantyna",
+      },
+      { tekst: translations.AIPL_akt3_dec_podroz_option2, next: "akt3_mostek" },
     ],
   },
 
   akt3_kantyna: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Nie odbieram oznak życia, ale jak chcesz, możemy tam zajrzeć.",
+    tekst: () => translations.AIPL_akt3_kantyna,
     autoNextScene: "akt3_puste_sciany",
     autoNextDelay: 3000,
   },
 
   akt3_puste_sciany: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Jak mówiłam. Nic tutaj nie ma. Puste, martwe ściany. Idziemy na mostek.",
+    tekst: () => translations.AIPL_akt3_puste_sciany,
     autoNextScene: "akt3_mostek",
     autoNextDelay: 3000,
   },
 
   akt3_mostek: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Wchodzisz na mostek. Jak tutaj spokojnie. Podłączę się do interfejsu statku. Zobaczę, co się uda wyciągnąć.",
+    tekst: () => translations.AIPL_akt3_mostek,
     autoNextScene: "akt3_dzienniki_pokladowe",
     autoNextDelay: 3000,
   },
 
   akt3_dzienniki_pokladowe: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Znalazłam dzienniki pokładowe. Ostatnie wpisy są przerażające. Mówią o tajemniczym sygnale, który doprowadził do ... szaleństwa całej załogi. [Koło, Kwadrat, Krzyż] [Północ, Wschód, Południe]",
+    tekst: () => translations.AIPL_akt3_dzienniki_pokladowe,
     options: [
-      { tekst: "Jaki sygnał?", next: "akt3_skanowanie_sygnalu" },
-      { tekst: "Czeka nas to samo?", next: "akt3_skanowanie_sygnalu" },
+      {
+        tekst: translations.AIPL_akt3_dzienniki_pokladowe_option1,
+        next: "akt3_skanowanie_sygnalu",
+      },
+      {
+        tekst: translations.AIPL_akt3_dzienniki_pokladowe_option2,
+        next: "akt3_skanowanie_sygnalu",
+      },
     ],
   },
 
   akt3_skanowanie_sygnalu: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Sygnały mogą wpływać na umysł w sposób, którego nie rozumiemy. Musimy to zbadać, ale ostrożnie.",
+    tekst: () => translations.AIPL_akt3_skanowanie_sygnalu,
     options: [
-      { tekst: "Zlokalizuj sygnał.", next: "akt3_zlokalizowanie" },
-      { tekst: "Chyba pora się zabierać.", next: "akt3_zlokalizowanie" },
+      {
+        tekst: translations.AIPL_akt3_skanowanie_sygnalu_option1,
+        next: "akt3_zlokalizowanie",
+      },
+      {
+        tekst: translations.AIPL_akt3_skanowanie_sygnalu_option2,
+        next: "akt3_zlokalizowanie",
+      },
     ],
   },
 
   akt3_zlokalizowanie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Lokalizowanie sygnału... Jest bardzo słaby, ale zdaje się pochodzić z głębi statku. Musimy zejść niżej.",
+    tekst: () => translations.AIPL_akt3_zlokalizowanie,
     options: [
-      { tekst: "Ruszajmy.", next: "akt3_rozwidlenie" },
-      { tekst: "Mam obawy.", next: "akt3_rozwidlenie" },
+      {
+        tekst: translations.AIPL_akt3_zlokalizowanie_option1,
+        next: "akt3_rozwidlenie",
+      },
+      {
+        tekst: translations.AIPL_akt3_zlokalizowanie_option2,
+        next: "akt3_rozwidlenie",
+      },
     ],
   },
 
   akt3_rozwidlenie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Zbliżamy się do rozwidlenia. Musisz podjąć decyzję, którą drogą chcesz iść.",
+    tekst: () => translations.AIPL_akt3_rozwidlenie,
     autoNextScene: "akt3_droga_wybor",
     autoNextDelay: 3000,
   },
 
   akt3_droga_wybor: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Droga w lewo prowadzi w stronę pomieszczeń technicznych. Czuję zakłócenia w systemach. Uważaj.",
+    tekst: () => translations.AIPL_akt3_droga_wybor,
     options: [
-      { tekst: "W lewo.", next: "akt3_ryzyko_wlewo1" },
-      { tekst: "Zaryzykuję w prawo.", next: "akt3_ryzyko_wprawo" },
+      {
+        tekst: translations.AIPL_akt3_droga_wybor_option1,
+        next: "akt3_ryzyko_wlewo1",
+      },
+      {
+        tekst: translations.AIPL_akt3_droga_wybor_option2,
+        next: "akt3_ryzyko_wprawo",
+      },
     ],
   },
 
-  // ? Dialogi dla odpowiedzi : Zaryzykuję w prawo.
   akt3_ryzyko_wprawo: {
     npcKey: "flightControlCenter",
     tekst: plec
@@ -436,15 +533,14 @@ export const getScenes = (
 
   akt3_ryzyko_wprawo2: {
     npcKey: "echo",
-    tekst: () =>
-      "Coś tutaj nie gra. Powietrze jest gęste i chłodne, jakbyśmy byli głęboko pod wodą. Czy też to czujesz?",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo2,
     options: [
       {
-        tekst: "To tylko klimat statku. Kontynuujmy.",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo2_option1,
         next: "akt3_ryzyko_wprawo2_smierc",
       },
       {
-        tekst: "Tak, coś tu jest... nienaturalne.",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo2_option2,
         next: "akt3_ryzyko_wprawo3",
       },
     ],
@@ -454,40 +550,34 @@ export const getScenes = (
 
   akt3_ryzyko_wprawo2_smierc: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Nie przemyśleliśmy tego. Zimno staje się przytłaczające, systemu podtrzymywania życia tego nie dźwigną...",
-
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo2_smierc,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wprawo2_smierc_deathscreen",
   },
 
   akt3_ryzyko_wprawo2_smierc_deathscreen: {
     npcKey: "flightControlCenter",
-    tekst: () => "Giniesz...",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo2_smierc_deathscreen,
     deathScreen: "zimnoZabija",
   },
 
-  // ? W PRAWO - KONTYNUACJA
-
   akt3_ryzyko_wprawo3: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Wykrywam blokadę magnetyczną. Potrzebujemy specjalnego klucza do jej otwarcia.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo3,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wprawo4",
   },
 
   akt3_ryzyko_wprawo4: {
     npcKey: "echo",
-    tekst: () =>
-      "To musi być zagadka. Czasami statki tego typu mają zabezpieczenia oparte na logice. Może znajdziemy odpowiedź, jeśli skupimy się na wcześniejszych informacjach.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo4,
     options: [
       {
-        tekst: "Przeoczyliśmy coś?",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo4_option1,
         next: "akt3_ryzyko_wprawo5",
       },
       {
-        tekst: "Może to coś prostego.",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo4_option2,
         next: "akt3_ryzyko_wprawo5",
       },
     ],
@@ -495,66 +585,56 @@ export const getScenes = (
 
   akt3_ryzyko_wprawo5: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Znajdujesz panel z układem magnetycznym, który wymaga ustawienia trzech kluczy w odpowiedniej kolejności.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo5,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wprawo6",
   },
 
   akt3_ryzyko_wprawo6: {
     npcKey: "echo",
-    tekst: () =>
-      "Ten mechanizm wygląda znajomo... To jakby układ nawigacyjny. Pamiętasz te wskazówki z dziennika pokładowego?",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo6,
     options: [
       {
-        tekst: "Zachód, Wschód, Północ.",
-        next: "kt3_ryzyko_wprawo7_smierc",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo6_option1,
+        next: "akt3_ryzyko_wprawo7_smierc",
       },
       {
-        tekst: "Północ, Wschód, Południe",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo6_option2,
         next: "akt3_ryzyko_wprawo8",
       },
     ],
   },
 
-  // ? W PRAWO ŚMIERĆ 2
-
   akt3_ryzyko_wprawo7_smierc: {
     npcKey: "echo",
-    tekst: () =>
-      "Nie przemyśleliśmy tego. Zimno staje się przytłaczające, systemu podtrzymywania życia tego nie dźwigną...",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo7_smierc,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wprawo7_smierc_Death",
   },
 
-  // ! Zrobić ekran śmierci "ZAMARZASZ NA MIEJSCU"
   akt3_ryzyko_wprawo7_smierc_Death: {
     npcKey: "echo",
-    tekst: () => "Giniesz...",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo7_smierc_Death,
     deathScreen: "zimnoZabija",
   },
 
-  // ? KONIEC ŚMIERCI LECIMY DALEJ
-
   akt3_ryzyko_wprawo8: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Dobrze, mechanizm zaakceptował układ. Blokada się otwiera, droga jest wolna. Ale uważaj, to miejsce jest coraz bardziej niestabilne.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo8,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wprawo9",
   },
 
   akt3_ryzyko_wprawo9: {
     npcKey: "echo",
-    tekst: () =>
-      "Czy czujesz, jak energia w tym miejscu staje się coraz bardziej chaotyczna? To, co tu się dzieje, nie jest naturalne. Musimy być ostrożni.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo9,
     options: [
       {
-        tekst: "Musimy to rozwiązać.",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo9_option1,
         next: "akt3_ryzyko_wprawo10",
       },
       {
-        tekst: "Powoli. Ruszajmy.",
+        tekst: translations.AIPL_akt3_ryzyko_wprawo9_option2,
         next: "akt3_ryzyko_wprawo10",
       },
     ],
@@ -562,33 +642,28 @@ export const getScenes = (
 
   akt3_ryzyko_wprawo10: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Zbliżamy się do źródła sygnału. To już niedaleko. Skanery wykrywają silne zakłócenia elektromagnetyczne, ale możemy kontynuować.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wprawo10,
     autoNextDelay: 3000,
     autoNextScene: "akt3_scena0001",
   },
 
-  // ? Dialogi dla odpowiedzi : W lewo.
-
   akt3_ryzyko_wlewo1: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Zbliżamy się do źródła sygnału. Znajdujemy się w korytarzu technicznym, ale coś jest nie tak. Atmosfera staje się ciężka.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo1,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wlewo2",
   },
 
   akt3_ryzyko_wlewo2: {
     npcKey: "echo",
-    tekst: () =>
-      "Czujesz to? Powietrze tutaj jest nienaturalnie gęste... jakby coś chciało nas zatrzymać.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo2,
     options: [
       {
-        tekst: "Może powinniśmy zawrócić?",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo2_option1,
         next: "akt3_ryzyko_wlewo5_smierc",
       },
       {
-        tekst: "Tak, czuję to. Musimy iść dalej.",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo2_option2,
         next: "akt3_ryzyko_wlewo3",
       },
     ],
@@ -596,15 +671,14 @@ export const getScenes = (
 
   akt3_ryzyko_wlewo2_smierc: {
     npcKey: "echo",
-    tekst: () =>
-      "Czujesz to? Powietrze tutaj jest nienaturalnie gęste... jakby coś chciało nas zatrzymać.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo2_smierc,
     options: [
       {
-        tekst: "Może powinniśmy zawrócić?",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo2_option1,
         next: "akt3_ryzyko_wlewo3",
       },
       {
-        tekst: "Tak, czuję to. Musimy iść dalej.",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo2_option2,
         next: "akt3_ryzyko_wlewo3",
       },
     ],
@@ -612,8 +686,7 @@ export const getScenes = (
 
   akt3_ryzyko_wlewo2_smierc_death: {
     npcKey: "echo",
-    tekst: () =>
-      "Czujesz to? Powietrze tutaj jest nienaturalnie gęste... jakby coś chciało nas zatrzymać.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo2_smierc_death,
     deathScreen: "zatrucieGazem",
   },
 
@@ -624,11 +697,11 @@ export const getScenes = (
       : translations.akt3_scen121316,
     options: [
       {
-        tekst: "Figury geometryczne?",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo3_option1,
         next: "akt3_ryzyko_wlewo4",
       },
       {
-        tekst: "Znaki logiczne ...",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo3_option2,
         next: "akt3_ryzyko_wlewo4",
       },
     ],
@@ -636,62 +709,56 @@ export const getScenes = (
 
   akt3_ryzyko_wlewo4: {
     npcKey: "echo",
-    tekst: () =>
-      "Widzieliśmy ten symbol wcześniej. To przypomina to, co czytaliśmy w dziennikach pokładowych. Jest to mechanizm zabezpieczający. Potrzebujemy kodu.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo4,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wlewo5",
   },
 
   akt3_ryzyko_wlewo5: {
     npcKey: "flightControlCenter",
-    tekst: () => "Wprowadź sekwencję. Pamiętasz, co było w dzienniku?",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo5,
     options: [
       {
-        tekst: "Koło, Trójkąt, Kwadrat.",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo5_option1,
         next: "akt3_ryzyko_wlewo5_smierc",
       },
       {
-        tekst: "Koło, Kwadrat, Krzyż.",
+        tekst: translations.AIPL_akt3_ryzyko_wlewo5_option2,
         next: "akt3_ryzyko_wlewo4",
       },
     ],
   },
 
-  // ? ŚMIERĆ (W LEWO) 2 START
   akt3_ryzyko_wlewo5_smierc: {
     npcKey: "echo",
-    tekst: () => "Ta mgła to jakiś gaz ... system podtrzymywania życia ...",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo5_smierc,
     autoNextDelay: 3000,
     autoNextScene: "akt3_ryzyko_wlewo5_smierc_death",
   },
 
   akt3_ryzyko_wlewo5_smierc_death: {
     npcKey: "echo",
-    tekst: () => "Giniesz",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo5_smierc_death,
     deathScreen: "zatrucieGazem",
   },
-  // ? ŚMIERĆ (W LEWO) 2 STOP
 
   akt3_ryzyko_wlewo6: {
     npcKey: "echo",
-    tekst: () =>
-      "Sekwencja zaakceptowana. Mechanizm się otwiera, a my jesteśmy coraz bliżej źródła sygnału.",
+    tekst: () => translations.AIPL_akt3_ryzyko_wlewo6,
     autoNextDelay: 3000,
     autoNextScene: "akt3_scena0001",
-    // ! KONIEC dialogów dla DROGI W LEWO.
   },
 
   akt3_scena0001: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Coś tu jest. Czuję to. To nie jest zwykły statek. Coś bardziej niepokojącego dzieje się wokół nas",
+    tekst: () => translations.AIPL_akt3_scena0001,
     options: [
       {
-        tekst: "Musimy sprawdzić źródło sygnału.",
+        tekst: translations.AIPL_akt3_scena0001_option1,
         next: "akt3_centralna_komora",
       },
       {
-        tekst: "To miejsce wydaje się... martwe.",
+        tekst: translations.AIPL_akt3_scena0001_option2,
         next: "akt3_centralna_komora",
       },
     ],
@@ -699,24 +766,21 @@ export const getScenes = (
 
   akt3_centralna_komora: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Centralna komora jest przed nami. Zablokowana, ale mogę ją otworzyć ręcznie. Otwieram... uważaj.",
+    tekst: () => translations.AIPL_akt3_centralna_komora,
     autoNextScene: "akt3_spotkanie_harunkal",
     autoNextDelay: 3000,
   },
 
   akt3_spotkanie_harunkal: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Nie powinniście tu być. To miejsce było zamknięte... by chronić was przed tym, co tu jest.",
+    tekst: () => translations.AIPL_akt3_spotkanie_harunkal,
     autoNextScene: "akt3_zrodlo_sygnalu",
     autoNextDelay: 3000,
   },
 
   akt3_zrodlo_sygnalu: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To on. Znaleźliśmy źródło sygnału. Kim jesteś? Dlaczego nas ostrzegasz?",
+    tekst: () => translations.AIPL_akt3_zrodlo_sygnalu,
     autoNextScene: "akt3_wiezien_mocy",
     autoNextDelay: 3000,
   },
@@ -743,113 +807,122 @@ export const getScenes = (
 
   akt3_sygnal_ostrzezenie: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Sygnał... miał być ostrzeżeniem. Moja natura jest poza moją kontrolą. Jeśli mnie uwolnisz, możesz wywołać coś, czego nie jesteś w stanie zrozumieć.",
+    tekst: () => translations.AIPL_akt3_sygnal_ostrzezenie,
     autoNextScene: "akt3_statek_reaguje",
     autoNextDelay: 3000,
   },
 
   akt3_statek_reaguje: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Jego energia jest niestabilna. Systemy statku zaczynają reagować na jego obecność. Musimy zdecydować, co dalej.",
+    tekst: () => translations.AIPL_akt3_statek_reaguje,
     autoNextScene: "akt3_energia_nieznana",
     autoNextDelay: 3000,
   },
 
   akt3_energia_nieznana: {
     npcKey: "echo",
-    tekst: () =>
-      "On mówi, że nie kontroluje swoich mocy. Ale musimy dowiedzieć się więcej. Coś jest tu nie tak.",
+    tekst: () => translations.AIPL_akt3_energia_nieznana,
     options: [
-      { tekst: "Jaka natura? Co się tu dzieje?", next: "akt3_wymiary" },
-      { tekst: "Czy możemy ci pomóc?", next: "akt3_wymiary" },
+      {
+        tekst: translations.AIPL_akt3_energia_nieznana_option1,
+        next: "akt3_wymiary",
+      },
+      {
+        tekst: translations.AIPL_akt3_energia_nieznana_option2,
+        next: "akt3_wymiary",
+      },
     ],
   },
 
   akt3_wymiary: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Nie wiem, czy jest jakikolwiek sposób, by to zatrzymać. Moja rasa... badała wymiary. Statki, które wysyłaliśmy, wracały z czymś więcej niż tylko informacjami. Teraz nie mogę tego zatrzymać.",
+    tekst: () => translations.AIPL_akt3_wymiary,
     autoNextScene: "akt3_statek_anomalie",
     autoNextDelay: 3000,
   },
 
   akt3_statek_anomalie: {
     npcKey: "flightControlCenter",
-    tekst: () => "Statki... wracały z czymś więcej? Jakie było ich zadanie?",
+    tekst: () => translations.AIPL_akt3_statek_anomalie,
     autoNextScene: "akt3_misja_wymiary",
     autoNextDelay: 3000,
   },
 
   akt3_misja_wymiary: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Naszym celem było zgłębianie innych rzeczywistości, ale nie byliśmy przygotowani na to, co zaczęliśmy zbierać. Statki wracały z anomaliami, które zmieniały rzeczywistość.",
+    tekst: () => translations.AIPL_akt3_misja_wymiary,
     autoNextScene: "akt3_anomalie_zagrozenie",
     autoNextDelay: 3000,
   },
 
   akt3_anomalie_zagrozenie: {
     npcKey: "echo",
-    tekst: () =>
-      "Anomalie? Jakie zagrożenie one stanowią? Dlaczego te statki wracały?",
+    tekst: () => translations.AIPL_akt3_anomalie_zagrozenie,
     options: [
-      { tekst: "Było więcej baz?", next: "akt3_bazy" },
-      { tekst: "Dlaczego nie przerwaliście misji?", next: "akt3_bazy" },
+      {
+        tekst: translations.AIPL_akt3_anomalie_zagrozenie_option1,
+        next: "akt3_bazy",
+      },
+      {
+        tekst: translations.AIPL_akt3_anomalie_zagrozenie_option2,
+        next: "akt3_bazy",
+      },
     ],
   },
 
   akt3_bazy: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Nie mogliśmy przerwać cyklu. Bazy, które zbudowaliśmy, były rozproszone po wszechświecie. Jedną z kluczowych jest baza na waszym Księżycu.",
+    tekst: () => translations.AIPL_akt3_bazy,
     autoNextScene: "akt3_znajoma_baza",
     autoNextDelay: 3000,
   },
 
   akt3_znajoma_baza: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To brzmi znajomo. Statki, którymi podróżowaliśmy z Księżyca, mogą być częścią tego samego cyklu. To by wyjaśniało wiele.",
+    tekst: () => translations.AIPL_akt3_znajoma_baza,
     autoNextScene: "akt3_ksiezyc_wyjasnienie",
     autoNextDelay: 3000,
   },
 
   akt3_ksiezyc_wyjasnienie: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Księżyc... to tylko jeden z węzłów. Statki wracają tam z misji w innych wymiarach. Każdy powrót może przynieść coś nieprzewidywalnego.",
+    tekst: () => translations.AIPL_akt3_ksiezyc_wyjasnienie,
     autoNextScene: "akt3_statek_tajemnica",
     autoNextDelay: 3000,
   },
 
   akt3_statek_tajemnica: {
     npcKey: "echo",
-    tekst: () =>
-      "To dlatego statki, którymi teraz lecimy, są tak dziwne. Wracają z czymś, czego nie możemy kontrolować. Co teraz?",
+    tekst: () => translations.AIPL_akt3_statek_tajemnica,
     options: [
-      { tekst: "Musimy dowiedzieć się więcej.", next: "akt3_wiecej_info" },
-      { tekst: "Musimy się wydostać.", next: "akt3_wiecej_info" },
+      {
+        tekst: translations.AIPL_akt3_statek_tajemnica_option1,
+        next: "akt3_wiecej_info",
+      },
+      {
+        tekst: translations.AIPL_akt3_statek_tajemnica_option2,
+        next: "akt3_wiecej_info",
+      },
     ],
   },
 
   akt3_wiecej_info: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Statki, którymi teraz podróżujemy, mogą być częścią tego cyklu. Jeśli to prawda, nie tylko my jesteśmy zagrożeni – to może wpłynąć na cały świat.",
+    tekst: () => translations.AIPL_akt3_wiecej_info,
     autoNextScene: "akt3_ksiezyc_zagrozenie",
     autoNextDelay: 3000,
   },
 
   akt3_ksiezyc_zagrozenie: {
     npcKey: "echo",
-    tekst: () =>
-      "Czy baza na Księżycu to miejsce, gdzie wracają wszystkie statki? Jakie zagrożenie one przenoszą?",
+    tekst: () => translations.AIPL_akt3_ksiezyc_zagrozenie,
     options: [
-      { tekst: "Możemy to zatrzymać?", next: "akt3_kontrola_statkow" },
       {
-        tekst: "Czy te statki są poza kontrolą?",
+        tekst: translations.AIPL_akt3_ksiezyc_zagrozenie_option1,
+        next: "akt3_kontrola_statkow",
+      },
+      {
+        tekst: translations.AIPL_akt3_ksiezyc_zagrozenie_option2,
         next: "akt3_kontrola_statkow",
       },
     ],
@@ -857,82 +930,85 @@ export const getScenes = (
 
   akt3_kontrola_statkow: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Nie wiem, jak można to zatrzymać. Statki są częścią cyklu, który działa niezależnie od naszej woli. Ale wiem jedno – każdy powrót przynosi coś, co może zmienić waszą rzeczywistość.",
+    tekst: () => translations.AIPL_akt3_kontrola_statkow,
     autoNextScene: "akt3_statek_rozpad",
     autoNextDelay: 3000,
   },
 
   akt3_statek_rozpad: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Musimy działać szybko. Systemy tego statku zaczynają się rozpadać. Obcy mówi, że jego moce mogą nas zniszczyć, ale jeśli go zostawimy...",
+    tekst: () => translations.AIPL_akt3_statek_rozpad,
     autoNextScene: "akt3_harunkal_cykl",
     autoNextDelay: 3000,
   },
 
   akt3_harunkal_cykl: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Nie mogę kontrolować tego, co się dzieje. Ale jeśli mnie tu zostawisz, cykl będzie trwał. Statki będą wracać, a to, co przyniosą, będzie katastrofalne.",
+    tekst: () => translations.AIPL_akt3_harunkal_cykl,
     options: [
-      { tekst: "Pomóżmy mu się stąd wydostać.", next: "akt3_pomoc_harunkal" },
-      { tekst: "To zbyt ryzykowne.", next: "akt3_odmowa_harunkal" },
+      {
+        tekst: translations.AIPL_akt3_harunkal_cykl_option1,
+        next: "akt3_pomoc_harunkal",
+      },
+      {
+        tekst: translations.AIPL_akt3_harunkal_cykl_option2,
+        next: "akt3_odmowa_harunkal",
+      },
     ],
   },
 
   akt3_pomoc_harunkal: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Jeśli mu pomożemy, może nam pomóc zrozumieć, co dzieje się z bazą księżycową i statkami. Ale ryzykujemy nieprzewidywalne konsekwencje.",
+    tekst: () => translations.AIPL_akt3_pomoc_harunkal,
     autoNextScene: "akt3_decyzja_harunkal",
     autoNextDelay: 3000,
   },
 
   akt3_odmowa_harunkal: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To ogromne ryzyko. Jego moce są nieprzewidywalne. Jeśli go uwolnimy, możemy nie mieć kontroli nad tym, co się stanie.",
+    tekst: () => translations.AIPL_akt3_odmowa_harunkal,
     autoNextScene: "akt3_decyzja_harunkal",
     autoNextDelay: 3000,
   },
 
   akt3_decyzja_harunkal: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "To Twoja decyzja. Jeśli mnie zostawisz, może być za późno. Jeśli spróbujesz mi pomóc, razem możemy wydostać się z tego statku i zrozumieć, co nadchodzi.",
+    tekst: () => translations.AIPL_akt3_decyzja_harunkal,
     autoNextScene: "akt3_statek_awaria",
     autoNextDelay: 3000,
   },
 
   akt3_statek_awaria: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Systemy statku zaczynają się rozpadać. Jeśli mamy pomóc obcemu, musimy to zrobić teraz.",
+    tekst: () => translations.AIPL_akt3_statek_awaria,
     autoNextScene: "akt3_echo_ryzyko",
     autoNextDelay: 3000,
   },
 
   akt3_echo_ryzyko: {
     npcKey: "echo",
-    tekst: () =>
-      "Jeśli zaryzykujemy i pomożemy mu, możemy odkryć prawdę o statkach. Ale jeśli coś pójdzie nie tak, możemy stracić wszystko.",
+    tekst: () => translations.AIPL_akt3_echo_ryzyko,
     options: [
-      { tekst: "Pomogę Ci.", next: "akt3_pomoc_statek" },
-      { tekst: "Na mnie nie licz.", next: "akt3_deathscreen_explosion" },
+      {
+        tekst: translations.AIPL_akt3_echo_ryzyko_option1,
+        next: "akt3_pomoc_statek",
+      },
+      {
+        tekst: translations.AIPL_akt3_echo_ryzyko_option2,
+        next: "akt3_deathscreen_explosion",
+      },
     ],
   },
 
   akt3_deathscreen_explosion: {
     npcKey: "flightControlCenter",
     deathScreen: "explosionDeathScreen",
-    tekst: () => "Statek się rozpada ...",
+    tekst: () => translations.AIPL_akt3_deathscreen_explosion,
   },
 
   akt3_pomoc_statek: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Nie wiem, czy to się uda, ale musimy spróbować. Musimy wydostać się stąd, zanim ten statek się rozpadnie.",
+    tekst: () => translations.AIPL_akt3_pomoc_statek,
     autoNextScene: "akt3_gotowosc_ucieczka",
     autoNextDelay: 3000,
   },
@@ -943,27 +1019,34 @@ export const getScenes = (
       ? translations[`akt3_scen121319_${plec}`]
       : translations.akt3_scen121319,
     options: [
-      { tekst: "Znajdźmy drogę wyjścia.", next: "akt3_sekcja_techniczna" },
-      { tekst: "Musimy być ostrożni.", next: "akt3_sekcja_techniczna" },
+      {
+        tekst: translations.AIPL_akt3_gotowosc_ucieczka_option1,
+        next: "akt3_sekcja_techniczna",
+      },
+      {
+        tekst: translations.AIPL_akt3_gotowosc_ucieczka_option2,
+        next: "akt3_sekcja_techniczna",
+      },
     ],
   },
 
   akt3_sekcja_techniczna: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Ścieżki w tym statku są złożone. Może znajdziemy alternatywną drogę przez sekcję techniczną.",
+    tekst: () => translations.AIPL_akt3_sekcja_techniczna,
     autoNextScene: "akt3_przestroga_harunkal",
     autoNextDelay: 3000,
   },
 
   akt3_przestroga_harunkal: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Ten statek... był więzieniem. Są tu miejsca, splątane z innymi miejscami w innych czasach i rzeczywistościach. Musimy unikać stref zamkniętych...",
+    tekst: () => translations.AIPL_akt3_przestroga_harunkal,
     options: [
-      { tekst: "Unikajmy tych stref.", next: "akt3_sekcja_techniczna_ryzyko" },
       {
-        tekst: "Zaryzykujmy ale ostrożnie.",
+        tekst: translations.AIPL_akt3_przestroga_harunkal_option1,
+        next: "akt3_sekcja_techniczna_ryzyko",
+      },
+      {
+        tekst: translations.AIPL_akt3_przestroga_harunkal_option2,
         next: "akt3_sekcja_techniczna_ryzyko",
       },
     ],
@@ -971,114 +1054,130 @@ export const getScenes = (
 
   akt3_sekcja_techniczna_ryzyko: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Zlokalizowałem sekcję techniczną. To najkrótsza droga, ale jej systemy mogą być niestabilne. Przejście przez nią będzie ryzykowne.",
+    tekst: () => translations.AIPL_akt3_sekcja_techniczna_ryzyko,
     autoNextScene: "akt3_obecnosc_statek",
     autoNextDelay: 3000,
   },
 
   akt3_obecnosc_statek: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Sekcja techniczna zaczyna tracić zasilanie. Część systemów jest wyłączona, ale wykrywam ruch... coś tu jest.",
+    tekst: () => translations.AIPL_akt3_obecnosc_statek,
     options: [
-      { tekst: "Musimy to sprawdzić. Gotowy?", next: "akt3_systemy_obronne" },
-      { tekst: "Lepiej się ukryjmy.", next: "akt3_systemy_obronne" },
+      {
+        tekst: translations.AIPL_akt3_obecnosc_statek_option1,
+        next: "akt3_systemy_obronne",
+      },
+      {
+        tekst: translations.AIPL_akt3_obecnosc_statek_option2,
+        next: "akt3_systemy_obronne",
+      },
     ],
   },
 
   akt3_systemy_obronne: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "To wygląda jak systemy obronne statku. Próbują zapobiec ucieczce.",
+    tekst: () => translations.AIPL_akt3_systemy_obronne,
     autoNextScene: "akt3_harunkal_zaklocenie",
     autoNextDelay: 3000,
   },
 
   akt3_harunkal_zaklocenie: {
     npcKey: "kosmita_harunkal",
-    tekst: () => "...mogę spróbować je zakłócić, zanim się zbliżymy.",
+    tekst: () => translations.AIPL_akt3_harunkal_zaklocenie,
     autoNextScene: "akt3_zaklocenie_ryzyko",
     autoNextDelay: 3000,
   },
 
   akt3_zaklocenie_ryzyko: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Zakłócenie systemów może destabilizować statek. To ryzyko, ale może nam dać szansę na przejście.",
+    tekst: () => translations.AIPL_akt3_zaklocenie_ryzyko,
     options: [
-      { tekst: "Spróbuj zakłócić systemy.", next: "akt3_zaklocenie_podjete" },
-      { tekst: "Nie, zróbmy to po cichu.", next: "akt3_zaklocenie_spoznione" },
+      {
+        tekst: translations.AIPL_akt3_zaklocenie_ryzyko_option1,
+        next: "akt3_zaklocenie_podjete",
+      },
+      {
+        tekst: translations.AIPL_akt3_zaklocenie_ryzyko_option2,
+        next: "akt3_zaklocenie_spoznione",
+      },
     ],
   },
 
   akt3_zaklocenie_podjete: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Dobrze, spróbuję zakłócić system. To może nas przepuścić, ale nie wiem, jakie będą konsekwencje.",
+    tekst: () => translations.AIPL_akt3_zaklocenie_podjete,
     autoNextScene: "akt3_statek_destabilizacja",
     autoNextDelay: 3000,
   },
 
   akt3_zaklocenie_spoznione: {
     npcKey: "kosmita_harunkal",
-    tekst: () => "... za późno ... zaczynam zakłócanie",
+    tekst: () => translations.AIPL_akt3_zaklocenie_spoznione,
     autoNextScene: "akt3_statek_destabilizacja",
     autoNextDelay: 3000,
   },
 
   akt3_statek_destabilizacja: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Systemy zaczynają się destabilizować. Statek wpada w wibracje. Musimy się pośpieszyć.",
+    tekst: () => translations.AIPL_akt3_statek_destabilizacja,
     autoNextScene: "akt3_harunkal_traci_panowanie",
     autoNextDelay: 3000,
   },
 
   akt3_harunkal_traci_panowanie: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Możemy się pośpieszyć. Zaczyna mną rzucać i tracę panowanie...",
+    tekst: () => translations.AIPL_akt3_harunkal_traci_panowanie,
     options: [
-      { tekst: "Szybciej, musimy uciekać!", next: "akt3_sektor_zawalenie" },
-      { tekst: "Nie poddawaj się.", next: "akt3_sektor_zawalenie" },
+      {
+        tekst: translations.AIPL_akt3_harunkal_traci_panowanie_option1,
+        next: "akt3_sektor_zawalenie",
+      },
+      {
+        tekst: translations.AIPL_akt3_harunkal_traci_panowanie_option2,
+        next: "akt3_sektor_zawalenie",
+      },
     ],
   },
 
   akt3_sektor_zawalenie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Mamy kilka sekund, zanim ten sektor się zawali. Możemy przejść, ale musimy biec.",
+    tekst: () => translations.AIPL_akt3_sektor_zawalenie,
     autoNextScene: "akt3_tunel_decyzja",
     autoNextDelay: 3000,
   },
 
   akt3_tunel_decyzja: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Ścieżka na prawo, prowadzi prosto do wyjścia. To nasza jedyna szansa...",
+    tekst: () => translations.AIPL_akt3_tunel_decyzja,
     options: [
-      { tekst: "Biegnijmy tam!", next: "akt3_tunel_przejscie" },
-      { tekst: "Ħarûn'kal, trzymaj się!", next: "akt3_tunel_przejscie" },
+      {
+        tekst: translations.AIPL_akt3_tunel_decyzja_option1,
+        next: "akt3_tunel_przejscie",
+      },
+      {
+        tekst: translations.AIPL_akt3_tunel_decyzja_option2,
+        next: "akt3_tunel_przejscie",
+      },
     ],
   },
 
   akt3_tunel_przejscie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Sekcja przed nami się zawaliła, ale wykrywam inny wąski tunel po lewej stronie.",
+    tekst: () => translations.AIPL_akt3_tunel_przejscie,
     autoNextScene: "akt3_tunel_wybor",
     autoNextDelay: 3000,
   },
 
   akt3_tunel_wybor: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Ten tunel... może być naszą jedyną drogą. Ale nie wiem, jak długo dam radę to kontrolować.",
+    tekst: () => translations.AIPL_akt3_tunel_wybor,
     options: [
-      { tekst: "Spróbujmy, to jedyna opcja.", next: "akt3_tunel_wyjscie" },
       {
-        tekst: "Jeśli jest zbyt niebezpiecznie...",
+        tekst: translations.AIPL_akt3_tunel_wybor_option1,
+        next: "akt3_tunel_wyjscie",
+      },
+      {
+        tekst: translations.AIPL_akt3_tunel_wybor_option2,
         next: "akt3_tunel_wyjscie",
       },
     ],
@@ -1086,34 +1185,36 @@ export const getScenes = (
 
   akt3_tunel_wyjscie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Tunel jest wąski, ale wygląda na stabilny. Jeśli to nasza jedyna szansa, musimy spróbować.",
+    tekst: () => translations.AIPL_akt3_tunel_wyjscie,
     autoNextScene: "akt3_sekcja_zewnetrzna",
     autoNextDelay: 3000,
   },
 
   akt3_sekcja_zewnetrzna: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Prowadzi do zewnętrznej sekcji statku. Z tej strony możemy dostać się na mostek i stamtąd próbować wrócić do twojego statku.",
+    tekst: () => translations.AIPL_akt3_sekcja_zewnetrzna,
     autoNextScene: "akt3_mostek_plan",
     autoNextDelay: 3000,
   },
 
   akt3_mostek_plan: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Jeśli dostaniemy się na mostek, może uda mi się otworzyć wyjście.",
+    tekst: () => translations.AIPL_akt3_mostek_plan,
     options: [
-      { tekst: "Dobrze, idźmy na mostek.", next: "akt3_systemy_obronne2" },
-      { tekst: "Zróbmy to, ale bądź ostrożny.", next: "akt3_systemy_obronne2" },
+      {
+        tekst: translations.AIPL_akt3_mostek_plan_option1,
+        next: "akt3_systemy_obronne2",
+      },
+      {
+        tekst: translations.AIPL_akt3_mostek_plan_option2,
+        next: "akt3_systemy_obronne2",
+      },
     ],
   },
 
   akt3_systemy_obronne2: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Wykrywam ruch w pobliżu mostka. Systemy obronne statku nadal działają. Będziemy musieli je ominąć.",
+    tekst: () => translations.AIPL_akt3_systemy_obronne2,
     autoNextScene: "akt3_harunkal_eksplozja",
     checkpoint: true,
     autoNextDelay: 3000,
@@ -1121,44 +1222,49 @@ export const getScenes = (
 
   akt3_harunkal_eksplozja: {
     npcKey: "kosmita_harunkal",
-    tekst: () => "Mogę spróbować wywołać eksplozję...",
+    tekst: () => translations.AIPL_akt3_harunkal_eksplozja,
     options: [
-      { tekst: "Wysadzaj!", next: "akt3_wysadzanie" },
-      { tekst: "Omijamy.", next: "akt3_obrona_smierc" },
+      {
+        tekst: translations.AIPL_akt3_harunkal_eksplozja_option1,
+        next: "akt3_wysadzanie",
+      },
+      {
+        tekst: translations.AIPL_akt3_harunkal_eksplozja_option2,
+        next: "akt3_obrona_smierc",
+      },
     ],
   },
 
   akt3_obrona_smierc: {
     npcKey: "flightControlCenter",
-    tekst: () => "Nie będzie łatwo ominąć systemy obronne statku...",
+    tekst: () => translations.AIPL_akt3_obrona_smierc,
     autoNextScene: "akt3_smierc_systemy",
     autoNextDelay: 3000,
   },
 
   akt3_smierc_systemy: {
     npcKey: "flightControlCenter",
-    tekst: () => "Statek skupia się na nas...",
+    tekst: () => translations.AIPL_akt3_smierc_systemy,
     deathScreen: "explosionDeathScreen",
   },
 
   akt3_wysadzanie: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Ryzyko jest duże. Systemy obronne mogą zareagować na nasz ruch. Musimy być szybcy.",
+    tekst: () => translations.AIPL_akt3_wysadzanie,
     autoNextScene: "akt3_eksplozja_inicjacja",
     autoNextDelay: 3000,
   },
 
   akt3_eksplozja_inicjacja: {
     npcKey: "kosmita_harunkal",
-    tekst: () => "Wysadzam!",
+    tekst: () => translations.AIPL_akt3_eksplozja_inicjacja,
     autoNextScene: "akt_eksplozja_oczekiwanie",
     autoNextDelay: 3000,
   },
 
   akt_eksplozja_oczekiwanie: {
     npcKey: "flightControlCenter",
-    tekst: () => "BOOOM!",
+    tekst: () => translations.AIPL_akt_eksplozja_oczekiwanie,
     notifyTime: 5,
     notifyScreenName: "boom",
     autoNextScene: "akt3_dotarcie_mostek",
@@ -1167,93 +1273,94 @@ export const getScenes = (
 
   akt3_dotarcie_mostek: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Dotarliśmy do mostka. Musimy szybko otworzyć wyjście, zanim statek się rozpadnie.",
+    tekst: () => translations.AIPL_akt3_dotarcie_mostek,
     autoNextScene: "akt3_otwieranie_wyjscia",
     autoNextDelay: 3000,
   },
 
   akt3_otwieranie_wyjscia: {
     npcKey: "kosmita_harunkal",
-    tekst: () => "Otwieram wyjście.",
+    tekst: () => translations.AIPL_akt3_otwieranie_wyjscia,
     autoNextScene: "akt3_powrot_na_statek",
     autoNextDelay: 3000,
   },
 
   akt3_powrot_na_statek: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Droga do twojego statku jest wolna. Ħarûn'kal ledwo się trzyma, ale mamy szansę na powrót. Musimy się pośpieszyć.",
+    tekst: () => translations.AIPL_akt3_powrot_na_statek,
     autoNextScene: "akt3_statek_stabilny",
     autoNextDelay: 3000,
   },
 
   akt3_statek_stabilny: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Jesteśmy z powrotem na statku. Wszystkie systemy działają stabilnie. Ħarûn'kal wygląda na wyczerpanego, ale stabilnego.",
+    tekst: () => translations.AIPL_akt3_statek_stabilny,
+    notifyTime: 1800,
+    notifyScreenName: "kosmita_oczekiwanie",
     autoNextScene: "akt3_decyzja_misji",
-    autoNextDelay: 3000,
   },
 
   akt3_decyzja_misji: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Mamy dwie opcje: możemy wrócić do korporacji z Ħarûn'kal i otrzymać ogromną nagrodę. Albo... możemy spróbować znaleźć sposób na zatrzymanie cyklu w bazie księżycowej.",
+    tekst: () => translations.AIPL_akt3_decyzja_misji,
     options: [
-      { tekst: "Co oferuje korporacja?", next: "akt3_korporacja_nagroda" },
-      { tekst: "Czy powinniśmy mu uwierzyć?", next: "akt3_korporacja_nagroda" },
+      {
+        tekst: translations.AIPL_akt3_decyzja_misji_option1,
+        next: "akt3_korporacja_nagroda",
+      },
+      {
+        tekst: translations.AIPL_akt3_decyzja_misji_option2,
+        next: "akt3_korporacja_nagroda",
+      },
     ],
   },
 
   akt3_korporacja_nagroda: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Jeśli oddasz Ħarûn'kal korporacji, zyskasz sławę i majątek. Korporacja ma technologię, aby zrozumieć jego ... naturę. Ale... są też ryzyka.",
+    tekst: () => translations.AIPL_akt3_korporacja_nagroda,
     autoNextScene: "akt3_harunkal_przestroga",
     autoNextDelay: 3000,
   },
 
   akt3_harunkal_przestroga: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Jeśli mnie oddasz, będą próbować mnie kontrolować. Ale to, co nadchodzi, jest większe niż oni mogą pojąć. Cykl się nie zatrzyma, a to, co wraca, zniszczy wasz świat.",
+    tekst: () => translations.AIPL_akt3_harunkal_przestroga,
     options: [
       {
-        tekst: "Dlaczego cykl jest taki groźny?",
+        tekst: translations.AIPL_akt3_harunkal_przestroga_option1,
         next: "akt3_cykl_zagrozenie",
       },
-      { tekst: "Co korporacja z tobą zrobi?", next: "akt3_cykl_zagrozenie" },
+      {
+        tekst: translations.AIPL_akt3_harunkal_przestroga_option2,
+        next: "akt3_cykl_zagrozenie",
+      },
     ],
   },
 
   akt3_cykl_zagrozenie: {
     npcKey: "kosmita_harunkal",
-    tekst: () =>
-      "Korporacja nie rozumie tego, czym naprawdę są te statki. Będą myśleć, że to tylko technologia do zdobycia. Ale każda misja przynosi coś, czego nie można kontrolować. Nie zrozumieją, dopóki nie będzie za późno.",
+    tekst: () => translations.AIPL_akt3_cykl_zagrozenie,
     autoNextScene: "akt3_korporacja_oferta",
     autoNextDelay: 3000,
   },
 
   akt3_korporacja_oferta: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Korporacja zapłaci ci miliony za odkrycie. Mogą próbować kontrolować Ħarûn'kal, ale to cię ustawi na całe życie. Pamiętaj, to może być twoja jedyna szansa.",
+    tekst: () => translations.AIPL_akt3_korporacja_oferta,
     autoNextScene: "akt3_korporacja_ostateczna_decyzja",
     autoNextDelay: 3000,
   },
 
   akt3_korporacja_ostateczna_decyzja: {
     npcKey: "flightControlCenter",
-    tekst: () =>
-      "Odbieram wiadomość od korporacji. Są gotowi zainwestować miliony w twój powrót. Oczekują odpowiedzi.",
+    tekst: () => translations.AIPL_akt3_korporacja_ostateczna_decyzja,
     options: [
       {
-        tekst: "Oddaj obcego w ręce korporacji.",
+        tekst: translations.AIPL_akt3_korporacja_ostateczna_decyzja_option1,
         next: "akt3_korporacja_wybor",
       },
       {
-        tekst: "Połącz siły, aby zatrzymać cykl.",
+        tekst: translations.AIPL_akt3_korporacja_ostateczna_decyzja_option2,
         next: "akt3_korporacja_wybor",
       },
     ],
@@ -1261,6 +1368,6 @@ export const getScenes = (
 
   akt3_korporacja_wybor: {
     npcKey: "flightControlCenter",
-    tekst: () => "Decyzja zapadła, ciąg dalszy historii już wkrótce ...",
+    tekst: () => translations.AIPL_akt3_korporacja_wybor,
   },
 });
