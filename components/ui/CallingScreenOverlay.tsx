@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,21 +7,19 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-
-// ✅ Import NPCData.ts
 import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
 import { translations } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 
-// ✅ Domyślne tło
+// ✅ Domyślne tło i dolny obrazek
 const DefaultBgImage = require("../../assets/images/bg_intro.png");
-// ✅ Statyczny obraz na dole
 const BottomImage = require("../../assets/images/panel_komputera.png");
 
 interface CallingScreenOverlayProps {
   visible: boolean;
-  title: string;
+  title?: string;
   subtitle?: string;
-  npcKey?: NpcKey; // ✅ Pobieramy NPC
+  npcKey?: NpcKey;
   background?: any;
   onClose: () => void;
   autoNextDelay?: number;
@@ -36,12 +34,19 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
   onClose,
   autoNextDelay,
 }) => {
+  const [jezyk, setJezyk] = useState<"pl" | "en">("en");
+
   useEffect(() => {
+    const loadLang = async () => {
+      const lang = await getCurrentLanguage();
+      setJezyk(lang);
+    };
+    loadLang();
+
     if (autoNextDelay) {
       const timeout = setTimeout(() => {
         onClose();
       }, autoNextDelay);
-
       return () => clearTimeout(timeout);
     }
   }, [autoNextDelay]);
@@ -53,11 +58,27 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
   // ✅ Pobieramy dane NPC
   const npcAvatar = npcKey && npcData[npcKey] ? npcData[npcKey].avatar : null;
   const npcName =
-    npcKey && npcData[npcKey]
-      ? translations["pl"][npcData[npcKey].nameKey]
-      : "";
+    npcKey && npcData[npcKey] && translations[jezyk][npcData[npcKey].nameKey]
+      ? translations[jezyk][npcData[npcKey].nameKey]
+      : "Nieznany NPC";
+
+  // ✅ Dynamiczne tłumaczenie tytułu i subtytułu
+  const translatedTitle = title
+    ? translations[jezyk] && translations[jezyk][title]
+      ? translations[jezyk][title]
+      : title
+    : translations[jezyk]?.incomingCallTitle ?? "Incoming Call";
+
+  const translatedSubtitle = subtitle
+    ? translations[jezyk] && translations[jezyk][subtitle]
+      ? translations[jezyk][subtitle]
+      : subtitle
+    : translations[jezyk]?.incomingCallSubtitle ?? "Tap to answer";
 
   console.log("🖼️ Avatar NPC:", npcAvatar);
+  console.log("🔤 Nazwa NPC:", npcName);
+  console.log("🔠 Przetłumaczony tytuł:", translatedTitle);
+  console.log("🔠 Przetłumaczony opis:", translatedSubtitle);
 
   // ✅ Wybór tła
   let backgroundImage = DefaultBgImage;
@@ -81,23 +102,25 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
         <View style={styles.container}>
           {/* 📌 GÓRNY TEKST (Tytuł) */}
           <View style={styles.topContainer}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title}>{translatedTitle}</Text>
           </View>
 
-          {/* 📌 ŚRODKOWA CZĘŚĆ: AVATAR + NAZWA NPC */}
+          {/* 📌 ŚRODKOWA CZĘŚĆ: AVATAR */}
           <View style={styles.middleContainer}>
             {npcAvatar ? (
               <Image source={npcAvatar} style={styles.image} />
             ) : (
               <Text style={{ color: "red" }}>Brak obrazu NPC</Text>
             )}
-
+            {/* 📌 PODPIS NPC (mniejsza czcionka, umieszczony POD obrazkiem) */}
             {npcName && <Text style={styles.npcName}>{npcName}</Text>}
           </View>
 
           {/* 📌 DOLNY TEKST (Kliknij, by odebrać) */}
           <View style={styles.bottomContainer}>
-            {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+            {translatedSubtitle && (
+              <Text style={styles.subtitle}>{translatedSubtitle}</Text>
+            )}
           </View>
         </View>
 
@@ -153,7 +176,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },
-  // 🏙️ ŚRODEK: AVATAR + IMIĘ NPC
+  // 🏙️ ŚRODEK: AVATAR + PODPIS NPC
   middleContainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -161,17 +184,18 @@ const styles = StyleSheet.create({
   image: {
     width: 140,
     height: 140,
-    marginBottom: 10,
+    marginBottom: 5,
     resizeMode: "contain",
     borderRadius: 10,
     borderWidth: 2,
     borderColor: "#219653",
   },
   npcName: {
-    fontSize: 26,
+    fontSize: 24,
     color: "#219653",
     fontFamily: "VT323Regular",
     textAlign: "center",
+    marginTop: 4,
     textShadowColor: "#000",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
@@ -193,16 +217,16 @@ const styles = StyleSheet.create({
   },
   // 🖼️ OBRAZ NA DOLE
   bottomImageContainer: {
-    width: "100%", // ✅ Szerokość taka sama jak kontener!
+    width: "100%",
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
-    bottom: 0, // ✅ Pozycjonujemy go na samym dole ekranu
-    backgroundColor: "rgba(0,0,0,0.7)", // 🔥 Dodajemy delikatne tło, by lepiej wyglądało
+    bottom: 0,
+    backgroundColor: "rgba(0,0,0,0.7)", // 🔥 Delikatne tło dla czytelności
   },
   bottomImage: {
-    width: "100%", // ✅ Obraz dostosowuje się do szerokości kontenera
-    height: 100, // 📌 Możesz zmienić wysokość według potrzeby
+    width: "100%",
+    height: 100,
     resizeMode: "contain",
   },
 });
