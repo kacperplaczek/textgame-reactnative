@@ -180,7 +180,7 @@ export const getScenes = (
   oczekiwanie_na_rozpatrzenie: {
     npcKey: "officer",
     tekst: () => translations.oczekiwanieStart,
-    notifyTime: 10,
+    notifyTime: 10, // !3600
     notifyScreenName: "rekrutacja_oficer",
     autoNextScene: "rozpatrzenie_wynik",
   },
