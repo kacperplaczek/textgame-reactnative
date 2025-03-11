@@ -8,7 +8,6 @@ import {
   ImageBackground,
   ActivityIndicator,
   ScrollView,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { useRouter } from "expo-router";
 import Storage from "expo-storage";
@@ -16,7 +15,7 @@ import { StatusBar } from "expo-status-bar";
 import { translations, Language } from "@/lib/translations/translations";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { Audio } from "expo-av";
-import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
+import { PixelRatio } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -39,16 +38,16 @@ export default function PrologScreen() {
       const lang = await getCurrentLanguage();
       setJezyk(lang);
     };
-
     loadLang();
   }, []);
 
   useEffect(() => {
-    if (currentScreen === "intro") {
-      setFullText(translations[jezyk].introText);
-    } else if (currentScreen === "prolog") {
-      setFullText(translations[jezyk].prologText);
-    }
+    const newText =
+      currentScreen === "intro"
+        ? translations[jezyk].introText
+        : translations[jezyk].prologText;
+
+    setFullText(newText);
     setDisplayedText("");
     setIsTyping(true);
   }, [currentScreen, jezyk]);
@@ -66,7 +65,6 @@ export default function PrologScreen() {
       }, 25);
 
       setTypingInterval(interval);
-
       return () => clearInterval(interval);
     }
   }, [isTyping, fullText]);
@@ -75,8 +73,8 @@ export default function PrologScreen() {
     try {
       console.log("⏹️ Zatrzymuję wszystkie dźwięki przed przejściem...");
       const sound = new Audio.Sound();
-      await sound.stopAsync().catch(() => {}); // Próbuje zatrzymać dźwięk
-      await sound.unloadAsync().catch(() => {}); // Wymusza usunięcie z pamięci
+      await sound.stopAsync().catch(() => {});
+      await sound.unloadAsync().catch(() => {});
     } catch (e) {
       console.error("❌ Błąd zatrzymywania dźwięków:", e);
     }
@@ -113,60 +111,50 @@ export default function PrologScreen() {
       resizeMode="cover"
     >
       <StatusBar hidden />
-      <TouchableWithoutFeedback onPress={handleScreenChange}>
-        <View style={styles.fullscreenTouchable}>
-          <View style={styles.overlay} />
+      <View style={styles.fullscreenTouchable}>
+        <View style={styles.overlay} />
 
-          {/* Tytuł i treść - środek */}
-          <View style={styles.contentWrapper}>
-            <Text style={styles.title}>
-              {currentScreen === "intro"
-                ? translations[jezyk].introTitle
-                : translations[jezyk].prologTitle}
-            </Text>
+        {/* Tytuł */}
+        <Text style={styles.title}>
+          {currentScreen === "intro"
+            ? translations[jezyk].introTitle
+            : translations[jezyk].prologTitle}
+        </Text>
 
-            {/* Scrollowany tekst */}
-            <ScrollView
-              style={styles.textContainer}
-              contentContainerStyle={{ flexGrow: 1 }}
-              scrollEnabled={true}
-              showsVerticalScrollIndicator={false}
-            >
-              <TouchableWithoutFeedback>
-                <AutoSizeText
-                  style={styles.text}
-                  fontSize={22} // Domyślny rozmiar
-                  mode={ResizeTextMode.max_lines}
-                  numberOfLines={10} // Maksymalnie 10 linii przed przewijaniem
-                  minFontSize={26} // Minimalny rozmiar czcionki na małych ekranach
-                >
-                  {displayedText}
-                </AutoSizeText>
-              </TouchableWithoutFeedback>
-            </ScrollView>
+        {/* Scrollowany tekst */}
+        <ScrollView style={styles.textContainer} showsVerticalScrollIndicator>
+          <Text style={styles.text}>{displayedText}</Text>
+        </ScrollView>
 
-            {isSaving && (
-              <ActivityIndicator color="#219653" style={{ marginTop: 20 }} />
-            )}
-          </View>
+        {isSaving && (
+          <ActivityIndicator color="#219653" style={{ marginTop: 20 }} />
+        )}
 
-          {/* Przyciski na dole */}
+        {/* Klikalne "KLIKNIJ ABY KONTYNUOWAĆ" - zawsze na dole ekranu */}
+        {!isSaving && (
           <View style={styles.bottomWrapper}>
-            {!isSaving && !isTyping && (
+            <TouchableOpacity
+              onPress={handleScreenChange}
+              style={styles.tapArea}
+            >
               <Text style={styles.tapText}>
                 {translations[jezyk].clickToContinue}
               </Text>
-            )}
+            </TouchableOpacity>
           </View>
-        </View>
-      </TouchableWithoutFeedback>
+        )}
+      </View>
     </ImageBackground>
   );
 }
 
-// Skaluje czcionkę, ale utrzymuje domyślny 22px
-const scaleFont = (size) => Math.max((size * width) / 375, 16);
+// Skaluje czcionkę w zależności od ekranu
+const scaleFont = (size: number) => {
+  const scale = width / 375; // Punkt odniesienia: iPhone SE (375px szerokości)
+  return Math.round(PixelRatio.getFontScale() * size * scale);
+};
 
+// Stylizacja
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -175,40 +163,47 @@ const styles = StyleSheet.create({
   },
   fullscreenTouchable: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center", // Tekst i tytuł wyrównane do lewej
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
-  contentWrapper: {
-    flex: 1,
-    justifyContent: "flex-start",
-    marginTop: height * 0.2, // Przesuwamy treść mniej więcej na środek ekranu
-    paddingHorizontal: width * 0.05,
-  },
-  textContainer: {
-    maxHeight: height * 0.4, // Ograniczenie wysokości
-    marginBottom: 20, // Odstęp od dolnych elementów
-  },
-  bottomWrapper: {
-    paddingBottom: height * 0.05,
-    alignItems: "center",
-  },
   title: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 34,
+    fontSize: scaleFont(28),
     marginBottom: 12,
+  },
+  textContainer: {
+    flex: 1,
+    maxHeight: height * 0.6, // Maksymalna wysokość na treść
+    paddingHorizontal: 10,
+    marginBottom: 20,
   },
   text: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    textAlign: "justify",
+    textAlign: "left", // Tekst wyrównany do lewej
+    fontSize: scaleFont(24),
+    paddingBottom: 0,
+  },
+  bottomWrapper: {
+    position: "absolute",
+    bottom: height * 0.05, // Stała pozycja na dole ekranu
+    width: "100%",
+    alignItems: "center", // TapText wyśrodkowany
+  },
+  tapArea: {
+    paddingVertical: 10,
+    paddingHorizontal: 30,
   },
   tapText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 30,
+    fontSize: scaleFont(24),
     textAlign: "center",
+    textTransform: "uppercase",
   },
 });

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import {
   View,
   Text,
@@ -30,6 +30,11 @@ import { useFocusEffect } from "@react-navigation/native";
 import SpecialSceneOverlay from "@/components/ui/CallingScreenOverlay";
 import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
 import * as Notifications from "expo-notifications";
+import {
+  BannerAd,
+  BannerAdSize,
+  TestIds,
+} from "react-native-google-mobile-ads";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -79,6 +84,7 @@ export default function StartGameScreen() {
     requireWaitTime?: number;
   } | null>(null);
   const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
+  const optionsBanner = "ca-app-pub-4136563182662861/8460997846";
 
   async function clearStoredTime() {
     try {
@@ -89,6 +95,14 @@ export default function StartGameScreen() {
       console.error("❌ Błąd podczas usuwania zapisanego czasu:", error);
     }
   }
+
+  useEffect(() => {
+    const loadLang = async () => {
+      const lang = await getCurrentLanguage();
+      setJezyk(lang);
+    };
+    loadLang();
+  }, []);
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
@@ -703,8 +717,15 @@ export default function StartGameScreen() {
       style={styles.background}
       resizeMode="cover"
     >
+      <Image
+        source={require("@/assets/images/refleks.png")}
+        resizeMode="contain"
+        style={styles.overlayImage}
+      />
+
       <StatusBar hidden />
-      <GameMenu />
+
+      <GameMenu onReset={""} />
 
       <WaitingScreenOverlay
         visible={waitingScreenVisible}
@@ -739,11 +760,8 @@ export default function StartGameScreen() {
                 ]}
               >
                 {msg.autor === "NPC" && msg.npcKey && npcData[msg.npcKey] && (
-                  <View style={styles.messageHeader}>
-                    <Image
-                      source={npcData[msg.npcKey].avatar}
-                      style={styles.avatar}
-                    />
+                  <View>
+                    {/* Tytuł NPC nad awatarem */}
                     <Text style={styles.messageTitle}>
                       {
                         translations[jezyk][
@@ -752,16 +770,31 @@ export default function StartGameScreen() {
                         ]
                       }
                     </Text>
+
+                    {/* Awatar i tekst w jednej linii */}
+                    <View style={styles.messageContent}>
+                      <Image
+                        source={npcData[msg.npcKey].avatar}
+                        style={styles.avatar}
+                      />
+                      <Text
+                        style={[
+                          styles.messageText,
+                          msg.autor === "GRACZ" && styles.playerMessageText,
+                        ]}
+                      >
+                        {msg.tekst}
+                      </Text>
+                    </View>
                   </View>
                 )}
-                <Text
-                  style={[
-                    styles.messageText,
-                    msg.autor === "GRACZ" && styles.playerMessageText,
-                  ]}
-                >
-                  {msg.tekst}
-                </Text>
+
+                {/* Jeśli wiadomość od gracza – nie ma awatara */}
+                {msg.autor === "GRACZ" && (
+                  <Text style={[styles.messageText, styles.playerMessageText]}>
+                    {msg.tekst}
+                  </Text>
+                )}
               </View>
             ))}
           </ScrollView>
@@ -783,6 +816,11 @@ export default function StartGameScreen() {
               <Text style={styles.choiceButtonText}>{option.tekst}</Text>
             </TouchableOpacity>
           ))}
+
+          <BannerAd
+            unitId={optionsBanner}
+            size={BannerAdSize.ADAPTIVE_BANNER}
+          />
         </View>
       </View>
     </ImageBackground>
@@ -792,6 +830,7 @@ export default function StartGameScreen() {
 const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   background: { flex: 1, width: "100%", height: "100%" },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -804,6 +843,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "space-between",
     paddingTop: 50,
+  },
+
+  overlayImage: {
+    position: "absolute",
+    width: width * 1,
+    height: height * 0.5,
+    zIndex: 1,
   },
 
   // Kontener na dialogi
@@ -820,7 +866,9 @@ const styles = StyleSheet.create({
   },
 
   // Wiadomości NPC / GRACZ
-  messageBlock: { marginBottom: 12 },
+  messageBlock: {
+    marginBottom: 12,
+  },
 
   playerMessageBlock: {
     backgroundColor: "#219653",
@@ -834,23 +882,39 @@ const styles = StyleSheet.create({
     fontSize: 24,
   },
 
+  // Nagłówek wiadomości NPC (Tytuł NPC nad awatarem)
   messageHeader: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: "column", // Tytuł nad awatarem
+    alignItems: "flex-start",
     marginBottom: 4,
   },
-  avatar: { width: 28, height: 28, borderRadius: 4, marginRight: 8 },
 
   messageTitle: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: 28,
+    fontSize: 23,
+    marginBottom: 4, // Dystans między tytułem a awatarem
+  },
+
+  // Awatar i wiadomość w jednej linii
+  messageContent: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+  },
+
+  avatar: {
+    width: 28,
+    height: 28,
+    borderRadius: 4,
+    marginRight: 8, // Dystans między awatarem a tekstem
+    marginTop: 10,
   },
 
   messageText: {
     color: "#219653",
     fontFamily: "VT323Regular",
     fontSize: 25,
+    flexShrink: 1, // Zapobiega "rozciąganiu" i zapewnia lepsze zawijanie tekstu
   },
 
   // Oczekiwanie na czas
@@ -866,9 +930,11 @@ const styles = StyleSheet.create({
   optionsContainer: {
     paddingHorizontal: 10,
     marginBottom: 30,
+    alignItems: "center",
   },
 
   choiceButton: {
+    width: "100%",
     paddingVertical: 12,
     paddingHorizontal: 10,
     backgroundColor: "black",
