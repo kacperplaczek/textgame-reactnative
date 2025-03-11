@@ -2,9 +2,9 @@
   "expo": {
     "name": "No Return",
     "slug": "no-return",
-    "version": "1.1.1",
+    "version": "1.6.3",
     "orientation": "portrait",
-    "icon": "./assets/images/icon/icon.png",
+    "icon": "./assets/images/icon/app-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -17,8 +17,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/icon/app-icon.png",
+        "backgroundColor": "#000000"
       },
       "package": "com.forsolutions.noreturn"
     },
@@ -28,7 +28,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/icon/app-icon.png"
     },
     "plugins": [
       "expo-localization",
@@ -36,13 +36,20 @@
       [
         "expo-splash-screen",
         {
-          "image": "./assets/images/splash-icon.png",
+          "image": "./assets/images/icon/app-icon.png",
           "imageWidth": 200,
           "resizeMode": "contain",
           "backgroundColor": "#ffffff"
         }
       ],
-      "expo-notifications"
+      "expo-notifications",
+      [
+        "react-native-google-mobile-ads",
+        {
+          "androidAppId": "ca-app-pub-4136563182662861~5600922486",
+          "iosAppId": "ca-app-pub-4136563182662861~8354892922"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
