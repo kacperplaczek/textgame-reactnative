@@ -639,6 +639,408 @@ export const translations = {
     akt3_scen121319_pani:
       "Systemy statku są na krawędzi awarii. Musimy działać szybko, zanim wszystko się zawali. Jesteś gotowa?",
 
+    AIPL_akt3_rozpoczecie_aktu: "Oczekiwanie...",
+    AIPL_akt3_start: "Co myślisz o tym, co się stało na planecie?",
+    AIPL_akt3_start_option1: "Nie mogę przestać myśleć o...",
+
+    AIPL_akt3_twoje_emocje1:
+      "Twoje emocje są zrozumiałe. Musisz jednak zachować spokój.",
+    AIPL_akt3_twoje_emocje1_option1: "Po tym? Trudno o spokój.",
+    AIPL_akt3_twoje_emocje1_option2: "Masz rację. Muszę się skupić.",
+
+    AIPL_akt3_scena2:
+      "Widzę, że jesteś pod wpływem silnego stresu. Moim zadaniem jest zapewnić pomoc i ochronę. Przywołuje ECHO.",
+    AIPL_akt3_scena2_option1: "Kto to ECHO?",
+    AIPL_akt3_scena2_option2: "Nie ma takiej potrzeby.",
+    AIPL_akt3_scena2_echo_1:
+      "To zaawansowane AI zajmujące się ludzką naturą. Uwierz mi, potrafi pomóc.",
+    AIPL_akt3_scena2_echo_2: "Witaj. Jestem ECHO. Jak mogę Ci służyć?",
+    AIPL_akt3_scena2_echo_2_option1: "Czy to w ogóle ma sens?",
+    AIPL_akt3_scena2_echo_2_option2: "Nie wiem czy mogę kontynuować!",
+
+    AIPL_akt3_scena3_echo_1: "Nie Ty o tym decydujesz. Siadaj i skup się.",
+    AIPL_akt3_scena3_echo_2: "Witaj. Jestem ECHO. Jak mogę Ci służyć?",
+    AIPL_akt3_scena3_echo_2_option1: "Czy to w ogóle ma sens?",
+    AIPL_akt3_scena3_echo_2_option2: "Nie wiem czy mogę kontynuować!",
+
+    AIPL_akt3_scena4:
+      "Twoje pytanie jest istotne ale w tej chwili istotniejsze jest Twoje przetrwanie. Skieruj swoje myśli w tę stronę.",
+    AIPL_akt3_scena4_option1: "Czyli gdzie dokładnie?",
+    AIPL_akt3_scena4_option2: "Chce tylko wrócić do domu.",
+
+    AIPL_akt3_pytanie_miejsca:
+      "Uwaga! Wykryto nowy obiekt na kursie kolizyjnym!",
+    AIPL_akt3_pytanie_miejsca_option1: "Co to za obiekt?",
+    AIPL_akt3_pytanie_miejsca_option2: "Spróbujmy go uniknąć!",
+    AIPL_akt3_identyfikacja_obiektu:
+      "To statek podobny do naszego. Spróbuję nawiązać kontakt.",
+    AIPL_akt3_unik_obiektu:
+      "Wiesz co na to protokół. To statek podobny do naszego. Spróbuję nawiązać kontakt.",
+
+    AIPL_akt3_kontakt_dowodca: "Tu dowódca statku Explorator. Kim jesteście?",
+    AIPL_akt3_kontakt_dowodca_option1: "Ekspedycją naukową.",
+    AIPL_akt3_kontakt_dowodca_option2: "Co tu robisz?",
+
+    AIPL_akt3_czarna_dziura:
+      "Tkwimy tutaj! Nie zbliżajcie się! Utknęliśmy w polu grawitacyjnym czarnej dziury!",
+    AIPL_akt3_czarna_dziura_option1: "Długo tutaj jesteś?",
+    AIPL_akt3_czarna_dziura_option2: "Manewr unikowy! TERAZ!",
+
+    AIPL_akt3_unik_czarnej_dziury:
+      "W ostatniej chwili udało uniknąć się tego pola grawitacyjnego! Nie powiem, było gorąco!",
+    AIPL_akt3_unik_czarnej_dziury_option1: "Jak długo tutaj jesteś?",
+    AIPL_akt3_unik_czarnej_dziury_option2: "Masz zapasy?",
+
+    AIPL_akt3_deathscreen_czarna_dziura:
+      "Wasz statek przekroczył horyzont zdarzeń... To koniec...",
+
+    AIPL_akt3_zapasy:
+      "Wszystko się już skończyło. Wczoraj zjadłem potrawkę z butów. Moja jedyna nadzieja to czarna dziura. Nie chciałbym nikogo stawiać przed takim dylematem, ale dla mnie wybór jest oczywisty.",
+    AIPL_akt3_zapasy_option1: "Horyzont zdarzeń to śmierć.",
+    AIPL_akt3_zapasy_option2: "Jedyna szansa...",
+    AIPL_akt3_decyzja_ucieczka:
+      "Rekomenduję zakończenie komunikacji. Obiekt jest generalnie niestabilny i jeszcze możemy podzielić ten los.",
+    AIPL_akt3_decyzja_ucieczka_option1: "Jest szansa uratować kapitana.",
+    AIPL_akt3_decyzja_ucieczka_option2: "Uciekamy!",
+
+    AIPL_akt3_ucieczka_udana:
+      "Udało nam się oddalić od czarnej dziury. Nasze systemy wykazały niezwykle silne zakłócenia grawitacyjne. Jak się trzymasz?",
+    AIPL_akt3_ucieczka_udana_option1: "Oszaleję.",
+    AIPL_akt3_ucieczka_udana_option2: "Ten człowiek?",
+
+    AIPL_akt3_echo_kapitan:
+      "Twoje reakcje są zrozumiałe. Widok kapitana Exploratora, który zginął, rzucając się w pola pływowe, musiał być traumatyczny.",
+    AIPL_akt3_echo_kapitan_option1: "Nie dało się nic zrobić.",
+    AIPL_akt3_echo_kapitan_option2: "Kiedyś o tym zapomnę?",
+
+    AIPL_akt3_hibernacja:
+      "Dość już wrażeń. Wracam na kurs, a Tobie proponuję udać się do komory hibernacyjnej.",
+    AIPL_akt3_hibernacja_option1: "Chyba nie mam wyjścia.",
+    AIPL_akt3_hibernacja_option2: "Tak, odpocznę.",
+
+    AIPL_akt3_hibernacja_start:
+      "Rozpoczynam procedurę hibernacji. Do zobaczenia po przebudzeniu.",
+
+    AIPL_akt3_pobudka: "Uwaga! Wykryto kolejną jednostkę na kursie!",
+    AIPL_akt3_pobudka_option1: "Zeskanuj go.",
+    AIPL_akt3_pobudka_option2: "Wchodzimy na pokład.",
+    AIPL_akt3_skanowanie:
+      "Skanowanie w toku... Ten statek nie wykazuje żadnych oznak życia. Strukturalnie jest nienaruszony, ale systemy energetyczne są martwe.",
+    AIPL_akt3_skanowanie_option1: "Podejrzane.",
+    AIPL_akt3_skanowanie_option2: "Nic dziwnego.",
+
+    AIPL_akt3_zblizenie: "Proponuję zbliżyć się do statku.",
+
+    AIPL_akt3_dokowanie:
+      "Przygotowuję się na manewr dokujący. Za kilka minut będziemy przy statku.",
+    AIPL_akt3_dokowanie_klik: "Dokowanie",
+    AIPL_akt3_dokowanie_klik_option1: "Kliknij, aby kontynuować",
+
+    AIPL_akt3_nie_mozna_uciec: "Chyba już trochę za późno. Weź się w garść!",
+
+    AIPL_akt3_wejscie_procedura:
+      "Inicjuję procedurę wejścia. Bądź przygotowany na wszelkie niespodzianki.",
+
+    AIPL_akt3_sluzowanie:
+      "Śluza otwarta. Atmosfera jest stabilna, ale ciemność w środku jest przytłaczająca. Włącz latarki.",
+
+    AIPL_akt3_odczucie_ciszy:
+      "Czuję, jakbyśmy przekraczali granicę czegoś nieznanego. Czy czujesz to samo?",
+    AIPL_akt3_odczucie_ciszy_option1: "Czuję... Ciszę...",
+    AIPL_akt3_odczucie_ciszy_option2: "Mrok...",
+    AIPL_akt3_skanowanie_pokladu:
+      "Skanowanie pokładu. Nie ma tu żadnych form życia. Wszystkie systemy są wyłączone, a załoga... zniknęła.",
+
+    AIPL_akt3_dec_podroz:
+      "To niemożliwe, aby statek tak po prostu opuścić. Musimy odkryć, co się stało. Co chcesz zrobić?",
+    AIPL_akt3_dec_podroz_option1: "Kantyna. Załoga",
+    AIPL_akt3_dec_podroz_option2: "Mostek. Dzienniki pokładowe.",
+
+    AIPL_akt3_kantyna:
+      "Nie odbieram oznak życia, ale jak chcesz, możemy tam zajrzeć.",
+
+    AIPL_akt3_puste_sciany:
+      "Jak mówiłam. Nic tutaj nie ma. Puste, martwe ściany. Idziemy na mostek.",
+
+    AIPL_akt3_mostek:
+      "Wchodzisz na mostek. Jak tutaj spokojnie. Podłączę się do interfejsu statku. Zobaczę, co się uda wyciągnąć.",
+
+    AIPL_akt3_dzienniki_pokladowe:
+      "Znalazłam dzienniki pokładowe. Ostatnie wpisy są przerażające. Mówią o tajemniczym sygnale, który doprowadził do ... szaleństwa całej załogi. [Koło, Kwadrat, Krzyż] [Północ, Wschód, Południe]",
+    AIPL_akt3_dzienniki_pokladowe_option1: "Jaki sygnał?",
+    AIPL_akt3_dzienniki_pokladowe_option2: "Czeka nas to samo?",
+
+    AIPL_akt3_skanowanie_sygnalu:
+      "Sygnały mogą wpływać na umysł w sposób, którego nie rozumiemy. Musimy to zbadać, ale ostrożnie.",
+    AIPL_akt3_skanowanie_sygnalu_option1: "Zlokalizuj sygnał.",
+    AIPL_akt3_skanowanie_sygnalu_option2: "Chyba pora się zabierać.",
+    AIPL_akt3_zlokalizowanie:
+      "Lokalizowanie sygnału... Jest bardzo słaby, ale zdaje się pochodzić z głębi statku. Musimy zejść niżej.",
+    AIPL_akt3_zlokalizowanie_option1: "Ruszajmy.",
+    AIPL_akt3_zlokalizowanie_option2: "Mam obawy.",
+
+    AIPL_akt3_rozwidlenie:
+      "Zbliżamy się do rozwidlenia. Musisz podjąć decyzję, którą drogą chcesz iść.",
+
+    AIPL_akt3_droga_wybor:
+      "Droga w lewo prowadzi w stronę pomieszczeń technicznych. Czuję zakłócenia w systemach. Uważaj.",
+    AIPL_akt3_droga_wybor_option1: "W lewo.",
+    AIPL_akt3_droga_wybor_option2: "Zaryzykuję w prawo.",
+
+    AIPL_akt3_ryzyko_wprawo2:
+      "Coś tutaj nie gra. Powietrze jest gęste i chłodne, jakbyśmy byli głęboko pod wodą. Czy też to czujesz?",
+    AIPL_akt3_ryzyko_wprawo2_option1: "To tylko klimat statku. Kontynuujmy.",
+    AIPL_akt3_ryzyko_wprawo2_option2: "Tak, coś tu jest... nienaturalne.",
+    AIPL_akt3_ryzyko_wprawo2_smierc:
+      "Nie przemyśleliśmy tego. Zimno staje się przytłaczające, system podtrzymywania życia tego nie dźwignie...",
+    AIPL_akt3_ryzyko_wprawo2_smierc_deathscreen: "Giniesz...",
+
+    AIPL_akt3_ryzyko_wprawo3:
+      "Wykrywam blokadę magnetyczną. Potrzebujemy specjalnego klucza do jej otwarcia.",
+
+    AIPL_akt3_ryzyko_wprawo4:
+      "To musi być zagadka. Czasami statki tego typu mają zabezpieczenia oparte na logice. Może znajdziemy odpowiedź, jeśli skupimy się na wcześniejszych informacjach.",
+    AIPL_akt3_ryzyko_wprawo4_option1: "Przeoczyliśmy coś?",
+    AIPL_akt3_ryzyko_wprawo4_option2: "Może to coś prostego.",
+
+    AIPL_akt3_ryzyko_wprawo5:
+      "Znajdujesz panel z układem magnetycznym, który wymaga ustawienia trzech kluczy w odpowiedniej kolejności.",
+
+    AIPL_akt3_ryzyko_wprawo6:
+      "Ten mechanizm wygląda znajomo... To jakby układ nawigacyjny. Pamiętasz te wskazówki z dziennika pokładowego?",
+    AIPL_akt3_ryzyko_wprawo6_option1: "Zachód, Wschód, Północ.",
+    AIPL_akt3_ryzyko_wprawo6_option2: "Północ, Wschód, Południe.",
+    AIPL_akt3_ryzyko_wprawo7_smierc:
+      "Nie przemyśleliśmy tego. Zimno staje się przytłaczające, system podtrzymywania życia tego nie dźwignie...",
+    AIPL_akt3_ryzyko_wprawo7_smierc_Death: "Giniesz...",
+
+    AIPL_akt3_ryzyko_wprawo8:
+      "Dobrze, mechanizm zaakceptował układ. Blokada się otwiera, droga jest wolna. Ale uważaj, to miejsce jest coraz bardziej niestabilne.",
+
+    AIPL_akt3_ryzyko_wprawo9:
+      "Czy czujesz, jak energia w tym miejscu staje się coraz bardziej chaotyczna? To, co tu się dzieje, nie jest naturalne. Musimy być ostrożni.",
+    AIPL_akt3_ryzyko_wprawo9_option1: "Musimy to rozwiązać.",
+    AIPL_akt3_ryzyko_wprawo9_option2: "Powoli. Ruszajmy.",
+
+    AIPL_akt3_ryzyko_wprawo10:
+      "Zbliżamy się do źródła sygnału. To już niedaleko. Skanery wykrywają silne zakłócenia elektromagnetyczne, ale możemy kontynuować.",
+
+    AIPL_akt3_ryzyko_wlewo1:
+      "Zbliżamy się do źródła sygnału. Znajdujemy się w korytarzu technicznym, ale coś jest nie tak. Atmosfera staje się ciężka.",
+    AIPL_akt3_ryzyko_wlewo2:
+      "Czujesz to? Powietrze tutaj jest nienaturalnie gęste... jakby coś chciało nas zatrzymać.",
+    AIPL_akt3_ryzyko_wlewo2_option1: "Może powinniśmy zawrócić?",
+    AIPL_akt3_ryzyko_wlewo2_option2: "Tak, czuję to. Musimy iść dalej.",
+
+    AIPL_akt3_ryzyko_wlewo2_smierc:
+      "Czujesz to? Powietrze tutaj jest nienaturalnie gęste... jakby coś chciało nas zatrzymać.",
+    AIPL_akt3_ryzyko_wlewo2_smierc_death: "Zatrucie gazem... Koniec drogi.",
+
+    AIPL_akt3_ryzyko_wlewo3_option1: "Figury geometryczne?",
+    AIPL_akt3_ryzyko_wlewo3_option2: "Znaki logiczne ...",
+
+    AIPL_akt3_ryzyko_wlewo4:
+      "Widzieliśmy ten symbol wcześniej. To przypomina to, co czytaliśmy w dziennikach pokładowych. Jest to mechanizm zabezpieczający. Potrzebujemy kodu.",
+
+    AIPL_akt3_ryzyko_wlewo5:
+      "Wprowadź sekwencję. Pamiętasz, co było w dzienniku?",
+    AIPL_akt3_ryzyko_wlewo5_option1: "Koło, Trójkąt, Kwadrat.",
+    AIPL_akt3_ryzyko_wlewo5_option2: "Koło, Kwadrat, Krzyż.",
+    AIPL_akt3_ryzyko_wlewo5_smierc:
+      "Ta mgła to jakiś gaz ... system podtrzymywania życia ...",
+    AIPL_akt3_ryzyko_wlewo5_smierc_death: "Giniesz.",
+
+    AIPL_akt3_ryzyko_wlewo6:
+      "Sekwencja zaakceptowana. Mechanizm się otwiera, a my jesteśmy coraz bliżej źródła sygnału.",
+
+    AIPL_akt3_scena0001:
+      "Coś tu jest. Czuję to. To nie jest zwykły statek. Coś bardziej niepokojącego dzieje się wokół nas.",
+    AIPL_akt3_scena0001_option1: "Musimy sprawdzić źródło sygnału.",
+    AIPL_akt3_scena0001_option2: "To miejsce wydaje się... martwe.",
+
+    AIPL_akt3_centralna_komora:
+      "Centralna komora jest przed nami. Zablokowana, ale mogę ją otworzyć ręcznie. Otwieram... uważaj.",
+
+    AIPL_akt3_spotkanie_harunkal:
+      "Nie powinniście tu być. To miejsce było zamknięte... by chronić was przed tym, co tu jest.",
+
+    AIPL_akt3_zrodlo_sygnalu:
+      "To on. Znaleźliśmy źródło sygnału. Kim jesteś? Dlaczego nas ostrzegasz?",
+    AIPL_akt3_sygnal_ostrzezenie:
+      "Sygnał... miał być ostrzeżeniem. Moja natura jest poza moją kontrolą. Jeśli mnie uwolnisz, możesz wywołać coś, czego nie jesteś w stanie zrozumieć.",
+
+    AIPL_akt3_statek_reaguje:
+      "Jego energia jest niestabilna. Systemy statku zaczynają reagować na jego obecność. Musimy zdecydować, co dalej.",
+
+    AIPL_akt3_energia_nieznana:
+      "On mówi, że nie kontroluje swoich mocy. Ale musimy dowiedzieć się więcej. Coś jest tu nie tak.",
+    AIPL_akt3_energia_nieznana_option1: "Jaka natura? Co się tu dzieje?",
+    AIPL_akt3_energia_nieznana_option2: "Czy możemy ci pomóc?",
+
+    AIPL_akt3_wymiary:
+      "Nie wiem, czy jest jakikolwiek sposób, by to zatrzymać. Moja rasa... badała wymiary. Statki, które wysyłaliśmy, wracały z czymś więcej niż tylko informacjami. Teraz nie mogę tego zatrzymać.",
+
+    AIPL_akt3_statek_anomalie:
+      "Statki... wracały z czymś więcej? Jakie było ich zadanie?",
+
+    AIPL_akt3_misja_wymiary:
+      "Naszym celem było zgłębianie innych rzeczywistości, ale nie byliśmy przygotowani na to, co zaczęliśmy zbierać. Statki wracały z anomaliami, które zmieniały rzeczywistość.",
+
+    AIPL_akt3_anomalie_zagrozenie:
+      "Anomalie? Jakie zagrożenie one stanowią? Dlaczego te statki wracały?",
+    AIPL_akt3_anomalie_zagrozenie_option1: "Było więcej baz?",
+    AIPL_akt3_anomalie_zagrozenie_option2: "Dlaczego nie przerwaliście misji?",
+    AIPL_akt3_bazy:
+      "Nie mogliśmy przerwać cyklu. Bazy, które zbudowaliśmy, były rozproszone po wszechświecie. Jedną z kluczowych jest baza na waszym Księżycu.",
+
+    AIPL_akt3_znajoma_baza:
+      "To brzmi znajomo. Statki, którymi podróżowaliśmy z Księżyca, mogą być częścią tego samego cyklu. To by wyjaśniało wiele.",
+
+    AIPL_akt3_ksiezyc_wyjasnienie:
+      "Księżyc... to tylko jeden z węzłów. Statki wracają tam z misji w innych wymiarach. Każdy powrót może przynieść coś nieprzewidywalnego.",
+
+    AIPL_akt3_statek_tajemnica:
+      "To dlatego statki, którymi teraz lecimy, są tak dziwne. Wracają z czymś, czego nie możemy kontrolować. Co teraz?",
+    AIPL_akt3_statek_tajemnica_option1: "Musimy dowiedzieć się więcej.",
+    AIPL_akt3_statek_tajemnica_option2: "Musimy się wydostać.",
+
+    AIPL_akt3_wiecej_info:
+      "Statki, którymi teraz podróżujemy, mogą być częścią tego cyklu. Jeśli to prawda, nie tylko my jesteśmy zagrożeni – to może wpłynąć na cały świat.",
+
+    AIPL_akt3_ksiezyc_zagrozenie:
+      "Czy baza na Księżycu to miejsce, gdzie wracają wszystkie statki? Jakie zagrożenie one przenoszą?",
+    AIPL_akt3_ksiezyc_zagrozenie_option1: "Możemy to zatrzymać?",
+    AIPL_akt3_ksiezyc_zagrozenie_option2: "Czy te statki są poza kontrolą?",
+
+    AIPL_akt3_kontrola_statkow:
+      "Nie wiem, jak można to zatrzymać. Statki są częścią cyklu, który działa niezależnie od naszej woli. Ale wiem jedno – każdy powrót przynosi coś, co może zmienić waszą rzeczywistość.",
+    AIPL_akt3_statek_rozpad:
+      "Musimy działać szybko. Systemy tego statku zaczynają się rozpadać. Obcy mówi, że jego moce mogą nas zniszczyć, ale jeśli go zostawimy...",
+    AIPL_akt3_harunkal_cykl:
+      "Nie mogę kontrolować tego, co się dzieje. Ale jeśli mnie tu zostawisz, cykl będzie trwał. Statki będą wracać, a to, co przyniosą, będzie katastrofalne.",
+    AIPL_akt3_harunkal_cykl_option1: "Pomóżmy mu się stąd wydostać.",
+    AIPL_akt3_harunkal_cykl_option2: "To zbyt ryzykowne.",
+
+    AIPL_akt3_pomoc_harunkal:
+      "Jeśli mu pomożemy, może nam pomóc zrozumieć, co dzieje się z bazą księżycową i statkami. Ale ryzykujemy nieprzewidywalne konsekwencje.",
+    AIPL_akt3_odmowa_harunkal:
+      "To ogromne ryzyko. Jego moce są nieprzewidywalne. Jeśli go uwolnimy, możemy nie mieć kontroli nad tym, co się stanie.",
+
+    AIPL_akt3_decyzja_harunkal:
+      "To Twoja decyzja. Jeśli mnie zostawisz, może być za późno. Jeśli spróbujesz mi pomóc, razem możemy wydostać się z tego statku i zrozumieć, co nadchodzi.",
+    AIPL_akt3_statek_awaria:
+      "Systemy statku zaczynają się rozpadać. Jeśli mamy pomóc obcemu, musimy to zrobić teraz.",
+
+    AIPL_akt3_echo_ryzyko:
+      "Jeśli zaryzykujemy i pomożemy mu, możemy odkryć prawdę o statkach. Ale jeśli coś pójdzie nie tak, możemy stracić wszystko.",
+    AIPL_akt3_echo_ryzyko_option1: "Pomogę Ci.",
+    AIPL_akt3_echo_ryzyko_option2: "Na mnie nie licz.",
+
+    AIPL_akt3_deathscreen_explosion: "Statek się rozpada ...",
+    AIPL_akt3_pomoc_statek:
+      "Nie wiem, czy to się uda, ale musimy spróbować. Musimy wydostać się stąd, zanim ten statek się rozpadnie.",
+
+    AIPL_akt3_sekcja_techniczna:
+      "Ścieżki w tym statku są złożone. Może znajdziemy alternatywną drogę przez sekcję techniczną.",
+    AIPL_akt3_przestroga_harunkal:
+      "Ten statek... był więzieniem. Są tu miejsca, splątane z innymi miejscami w innych czasach i rzeczywistościach. Musimy unikać stref zamkniętych...",
+    AIPL_akt3_przestroga_harunkal_option1: "Unikajmy tych stref.",
+    AIPL_akt3_przestroga_harunkal_option2: "Zaryzykujmy ale ostrożnie.",
+
+    AIPL_akt3_sekcja_techniczna_ryzyko:
+      "Zlokalizowałem sekcję techniczną. To najkrótsza droga, ale jej systemy mogą być niestabilne. Przejście przez nią będzie ryzykowne.",
+    AIPL_akt3_obecnosc_statek:
+      "Sekcja techniczna zaczyna tracić zasilanie. Część systemów jest wyłączona, ale wykrywam ruch... coś tu jest.",
+    AIPL_akt3_obecnosc_statek_option1: "Musimy to sprawdzić. Gotowy?",
+    AIPL_akt3_obecnosc_statek_option2: "Lepiej się ukryjmy.",
+
+    AIPL_akt3_systemy_obronne:
+      "To wygląda jak systemy obronne statku. Próbują zapobiec ucieczce.",
+    AIPL_akt3_harunkal_zaklocenie:
+      "...mogę spróbować je zakłócić, zanim się zbliżymy.",
+    AIPL_akt3_zaklocenie_ryzyko:
+      "Zakłócenie systemów może destabilizować statek. To ryzyko, ale może nam dać szansę na przejście.",
+    AIPL_akt3_zaklocenie_ryzyko_option1: "Spróbuj zakłócić systemy.",
+    AIPL_akt3_zaklocenie_ryzyko_option2: "Nie, zróbmy to po cichu.",
+
+    AIPL_akt3_zaklocenie_podjete:
+      "Dobrze, spróbuję zakłócić system. To może nas przepuścić, ale nie wiem, jakie będą konsekwencje.",
+    AIPL_akt3_gotowosc_ucieczka:
+      "Musimy działać szybko. Ten statek się rozpada, ale jeśli dobrze wybierzemy trasę, możemy się stąd wydostać.",
+    AIPL_akt3_gotowosc_ucieczka_option1: "Znajdźmy drogę wyjścia.",
+    AIPL_akt3_gotowosc_ucieczka_option2: "Musimy być ostrożni.",
+    AIPL_akt3_zaklocenie_spoznione: "... za późno ... zaczynam zakłócanie",
+    AIPL_akt3_statek_destabilizacja:
+      "Systemy zaczynają się destabilizować. Statek wpada w wibracje. Musimy się pośpieszyć.",
+    AIPL_akt3_harunkal_traci_panowanie:
+      "Możemy się pośpieszyć. Zaczyna mną rzucać i tracę panowanie...",
+    AIPL_akt3_sektor_zawalenie:
+      "Mamy kilka sekund, zanim ten sektor się zawali. Możemy przejść, ale musimy biec.",
+    AIPL_akt3_tunel_decyzja:
+      "Ścieżka na prawo, prowadzi prosto do wyjścia. To nasza jedyna szansa...",
+    AIPL_akt3_tunel_przejscie:
+      "Sekcja przed nami się zawaliła, ale wykrywam inny wąski tunel po lewej stronie.",
+    AIPL_akt3_tunel_wybor:
+      "Ten tunel... może być naszą jedyną drogą. Ale nie wiem, jak długo dam radę to kontrolować.",
+    AIPL_akt3_tunel_wyjscie:
+      "Tunel jest wąski, ale wygląda na stabilny. Jeśli to nasza jedyna szansa, musimy spróbować.",
+    AIPL_akt3_sekcja_zewnetrzna:
+      "Prowadzi do zewnętrznej sekcji statku. Z tej strony możemy dostać się na mostek i stamtąd próbować wrócić do twojego statku.",
+    AIPL_akt3_mostek_plan:
+      "Jeśli dostaniemy się na mostek, może uda mi się otworzyć wyjście.",
+
+    AIPL_akt3_harunkal_traci_panowanie_option1: "Szybciej, musimy uciekać!",
+    AIPL_akt3_harunkal_traci_panowanie_option2: "Nie poddawaj się.",
+    AIPL_akt3_tunel_decyzja_option1: "Biegnijmy tam!",
+    AIPL_akt3_tunel_decyzja_option2: "Ħarûn'kal, trzymaj się!",
+    AIPL_akt3_tunel_wybor_option1: "Spróbujmy, to jedyna opcja.",
+    AIPL_akt3_tunel_wybor_option2: "Jeśli jest zbyt niebezpiecznie...",
+    AIPL_akt3_mostek_plan_option1: "Dobrze, idźmy na mostek.",
+    AIPL_akt3_mostek_plan_option2: "Zróbmy to, ale bądź ostrożny.",
+    AIPL_akt3_systemy_obronne2:
+      "Wykrywam ruch w pobliżu mostka. Systemy obronne statku nadal działają. Będziemy musieli je ominąć.",
+    AIPL_akt3_harunkal_eksplozja: "Mogę spróbować wywołać eksplozję...",
+    AIPL_akt3_obrona_smierc:
+      "Nie będzie łatwo ominąć systemy obronne statku...",
+    AIPL_akt3_smierc_systemy: "Statek skupia się na nas...",
+    AIPL_akt3_wysadzanie:
+      "Ryzyko jest duże. Systemy obronne mogą zareagować na nasz ruch. Musimy być szybcy.",
+    AIPL_akt3_eksplozja_inicjacja: "Wysadzam!",
+    AIPL_akt_eksplozja_oczekiwanie: "BOOOM!",
+    AIPL_akt3_dotarcie_mostek:
+      "Dotarliśmy do mostka. Musimy szybko otworzyć wyjście, zanim statek się rozpadnie.",
+    AIPL_akt3_otwieranie_wyjscia: "Otwieram wyjście.",
+    AIPL_akt3_powrot_na_statek:
+      "Droga do twojego statku jest wolna. Ħarûn'kal ledwo się trzyma, ale mamy szansę na powrót. Musimy się pośpieszyć.",
+    AIPL_akt3_statek_stabilny:
+      "Jesteśmy z powrotem na statku. Wszystkie systemy działają stabilnie. Ħarûn'kal wygląda na wyczerpanego, ale stabilnego.",
+    AIPL_akt3_decyzja_misji:
+      "Mamy dwie opcje: możemy wrócić do korporacji z Ħarûn'kal i otrzymać ogromną nagrodę. Albo... możemy spróbować znaleźć sposób na zatrzymanie cyklu w bazie księżycowej.",
+    AIPL_akt3_korporacja_nagroda:
+      "Jeśli oddasz Ħarûn'kal korporacji, zyskasz sławę i majątek. Korporacja ma technologię, aby zrozumieć jego ... naturę. Ale... są też ryzyka.",
+
+    AIPL_akt3_harunkal_eksplozja_option1: "Wysadzaj!",
+    AIPL_akt3_harunkal_eksplozja_option2: "Omijamy.",
+    AIPL_akt3_decyzja_misji_option1: "Co oferuje korporacja?",
+    AIPL_akt3_decyzja_misji_option2: "Czy powinniśmy mu uwierzyć?",
+    AIPL_akt3_harunkal_przestroga:
+      "Jeśli mnie oddasz, będą próbować mnie kontrolować. Ale to, co nadchodzi, jest większe niż oni mogą pojąć. Cykl się nie zatrzyma, a to, co wraca, zniszczy wasz świat.",
+    AIPL_akt3_cykl_zagrozenie:
+      "Korporacja nie rozumie tego, czym naprawdę są te statki. Będą myśleć, że to tylko technologia do zdobycia. Ale każda misja przynosi coś, czego nie można kontrolować. Nie zrozumieją, dopóki nie będzie za późno.",
+    AIPL_akt3_korporacja_oferta:
+      "Korporacja zapłaci ci miliony za odkrycie. Mogą próbować kontrolować Ħarûn'kal, ale to cię ustawi na całe życie. Pamiętaj, to może być twoja jedyna szansa.",
+    AIPL_akt3_korporacja_ostateczna_decyzja:
+      "Odbieram wiadomość od korporacji. Są gotowi zainwestować miliony w twój powrót. Oczekują odpowiedzi.",
+    AIPL_akt3_korporacja_wybor:
+      "Decyzja zapadła, ciąg dalszy historii już wkrótce ...",
+
+    AIPL_akt3_harunkal_przestroga_option1: "Dlaczego cykl jest taki groźny?",
+    AIPL_akt3_harunkal_przestroga_option2: "Co korporacja z tobą zrobi?",
+    AIPL_akt3_korporacja_ostateczna_decyzja_option1:
+      "Oddaj obcego w ręce korporacji.",
+    AIPL_akt3_korporacja_ostateczna_decyzja_option2:
+      "Połącz siły, aby zatrzymać cykl.",
+
     // Intro / Prolog
     introTitle: "WSTĘP",
     prologTitle: "PROLOG",
@@ -1314,6 +1716,411 @@ export const translations = {
     prologText:
       "Focused on gazing into the farthest reaches of the universe, humanity had forgotten about its closest satellite—the Moon. Eventually, on its dark side, an ancient base of a long-lost alien civilization was discovered, filled with countless interstellar ships... The question 'Where do we come from?' became more relevant than ever, but the only thing that could be determined was how to activate the ships—ships that traveled to unknown destinations and did not always return... A special corps was formed, open to anyone regardless of social status, allowing them to join a crew of fellow adventurers and embark on a journey 'With No Return'...",
     clickToContinue: "CLICK TO CONTINUE",
+    AIPL_akt3_rozpoczecie_aktu: "Waiting...",
+    AIPL_akt3_start: "What do you think about what happened on the planet?",
+    AIPL_akt3_start_option1: "I can't stop thinking about...",
+
+    AIPL_akt3_twoje_emocje1:
+      "Your emotions are understandable. However, you must remain calm.",
+    AIPL_akt3_twoje_emocje1_option1: "After this? It's hard to stay calm.",
+    AIPL_akt3_twoje_emocje1_option2: "You're right. I need to focus.",
+
+    AIPL_akt3_scena2:
+      "I see that you are under intense stress. My task is to provide assistance and protection. Summoning ECHO.",
+    AIPL_akt3_scena2_option1: "Who is ECHO?",
+    AIPL_akt3_scena2_option2: "There is no need for that.",
+    AIPL_akt3_scena2_echo_1:
+      "This is an advanced AI focused on human nature. Trust me, it can help.",
+    AIPL_akt3_scena2_echo_2: "Hello. I am ECHO. How may I assist you?",
+    AIPL_akt3_scena2_echo_2_option1: "Does this even make sense?",
+    AIPL_akt3_scena2_echo_2_option2: "I don't know if I can continue!",
+
+    AIPL_akt3_scena3_echo_1:
+      "You don't get to decide that. Sit down and focus.",
+    AIPL_akt3_scena3_echo_2: "Hello. I am ECHO. How may I assist you?",
+    AIPL_akt3_scena3_echo_2_option1: "Does this even make sense?",
+    AIPL_akt3_scena3_echo_2_option2: "I don't know if I can continue!",
+
+    AIPL_akt3_scena4:
+      "Your question is important, but right now your survival is more critical. Focus on that.",
+    AIPL_akt3_scena4_option1: "Where exactly?",
+    AIPL_akt3_scena4_option2: "I just want to go home.",
+
+    AIPL_akt3_pytanie_miejsca:
+      "Warning! A new object has been detected on a collision course!",
+    AIPL_akt3_pytanie_miejsca_option1: "What is this object?",
+    AIPL_akt3_pytanie_miejsca_option2: "Let's try to avoid it!",
+    AIPL_akt3_identyfikacja_obiektu:
+      "It’s a ship similar to ours. I’ll try to establish contact.",
+    AIPL_akt3_unik_obiektu:
+      "You know what the protocol says. It’s a ship similar to ours. I’ll try to establish contact.",
+
+    AIPL_akt3_kontakt_dowodca:
+      "This is the commander of the Explorator ship. Who are you?",
+    AIPL_akt3_kontakt_dowodca_option1: "A scientific expedition.",
+    AIPL_akt3_kontakt_dowodca_option2: "What are you doing here?",
+
+    AIPL_akt3_czarna_dziura:
+      "We are stuck here! Don’t come closer! We are trapped in the gravitational pull of a black hole!",
+    AIPL_akt3_czarna_dziura_option1: "How long have you been here?",
+    AIPL_akt3_czarna_dziura_option2: "Evasive maneuver! NOW!",
+
+    AIPL_akt3_unik_czarnej_dziury:
+      "We barely escaped that gravitational pull! I won’t lie, that was close!",
+    AIPL_akt3_unik_czarnej_dziury_option1: "How long have you been here?",
+    AIPL_akt3_unik_czarnej_dziury_option2: "Do you have supplies?",
+
+    AIPL_akt3_deathscreen_czarna_dziura:
+      "Your ship has crossed the event horizon... It’s over...",
+
+    AIPL_akt3_zapasy:
+      "It’s all over. Yesterday, I ate stew made from my boots. My only hope is the black hole. I wouldn’t want anyone to face such a dilemma, but for me, the choice is obvious.",
+    AIPL_akt3_zapasy_option1: "The event horizon means death.",
+    AIPL_akt3_zapasy_option2: "The only chance...",
+    AIPL_akt3_decyzja_ucieczka:
+      "I recommend ending communication. The object is generally unstable, and we might share the same fate.",
+    AIPL_akt3_decyzja_ucieczka_option1: "There’s a chance to save the captain.",
+    AIPL_akt3_decyzja_ucieczka_option2: "We’re escaping!",
+
+    AIPL_akt3_ucieczka_udana:
+      "We managed to get away from the black hole. Our systems detected extremely strong gravitational disturbances. How are you holding up?",
+    AIPL_akt3_ucieczka_udana_option1: "I’m going insane.",
+    AIPL_akt3_ucieczka_udana_option2: "That man?",
+
+    AIPL_akt3_echo_kapitan:
+      "Your reactions are understandable. Seeing the captain of the Explorator perish by throwing himself into the tidal forces must have been traumatic.",
+    AIPL_akt3_echo_kapitan_option1: "There was nothing we could do.",
+    AIPL_akt3_echo_kapitan_option2: "Will I ever forget this?",
+
+    AIPL_akt3_hibernacja:
+      "Enough excitement. I’m returning to course, and I suggest you head to the hibernation chamber.",
+    AIPL_akt3_hibernacja_option1: "I guess I have no choice.",
+    AIPL_akt3_hibernacja_option2: "Yes, I’ll rest.",
+
+    AIPL_akt3_hibernacja_start:
+      "Initiating hibernation procedure. See you after waking up.",
+
+    AIPL_akt3_pobudka: "Warning! Another vessel detected on our course!",
+    AIPL_akt3_pobudka_option1: "Scan it.",
+    AIPL_akt3_pobudka_option2: "We’re boarding.",
+    AIPL_akt3_skanowanie:
+      "Scanning in progress... This ship shows no signs of life. Structurally intact, but the power systems are dead.",
+    AIPL_akt3_skanowanie_option1: "Suspicious.",
+    AIPL_akt3_skanowanie_option2: "Not surprising.",
+
+    AIPL_akt3_zblizenie: "I suggest we move closer to the ship.",
+
+    AIPL_akt3_dokowanie:
+      "Preparing for docking maneuver. In a few minutes, we will be alongside the ship.",
+    AIPL_akt3_dokowanie_klik: "Docking",
+    AIPL_akt3_dokowanie_klik_option1: "Click to continue",
+
+    AIPL_akt3_nie_mozna_uciec:
+      "I think it’s a little too late for that. Get yourself together!",
+
+    AIPL_akt3_wejscie_procedura:
+      "Initiating entry procedure. Be prepared for any surprises.",
+
+    AIPL_akt3_sluzowanie:
+      "Airlock open. Atmosphere is stable, but the darkness inside is overwhelming. Turn on your flashlights.",
+
+    AIPL_akt3_odczucie_ciszy:
+      "I feel like we're crossing the boundary of something unknown. Do you feel the same?",
+    AIPL_akt3_odczucie_ciszy_option1: "I feel... Silence...",
+    AIPL_akt3_odczucie_ciszy_option2: "Darkness...",
+    AIPL_akt3_skanowanie_pokladu:
+      "Scanning the deck. No signs of life. All systems are offline, and the crew... has disappeared.",
+
+    AIPL_akt3_dec_podroz:
+      "It's impossible for a crew to just leave a ship like this. We need to find out what happened. What do you want to do?",
+    AIPL_akt3_dec_podroz_option1: "Canteen. Crew.",
+    AIPL_akt3_dec_podroz_option2: "Bridge. Ship logs.",
+
+    AIPL_akt3_kantyna:
+      "I'm not detecting any life signs, but if you want, we can check.",
+
+    AIPL_akt3_puste_sciany:
+      "As I said. There's nothing here. Empty, dead walls. Let's head to the bridge.",
+
+    AIPL_akt3_mostek:
+      "You're stepping onto the bridge. It feels eerily quiet. I'll connect to the ship's interface and see what I can extract.",
+
+    AIPL_akt3_dzienniki_pokladowe:
+      "I found the ship's logs. The last entries are terrifying. They speak of a mysterious signal that led to... the entire crew going insane. [Circle, Square, Cross] [North, East, South]",
+    AIPL_akt3_dzienniki_pokladowe_option1: "What signal?",
+    AIPL_akt3_dzienniki_pokladowe_option2: "Are we facing the same fate?",
+
+    AIPL_akt3_skanowanie_sygnalu:
+      "Signals can affect the mind in ways we don't understand. We must investigate, but cautiously.",
+    AIPL_akt3_skanowanie_sygnalu_option1: "Locate the signal.",
+    AIPL_akt3_skanowanie_sygnalu_option2: "Maybe it's time to leave.",
+    AIPL_akt3_zlokalizowanie:
+      "Locating the signal... It's very weak, but it seems to be coming from deep inside the ship. We need to go lower.",
+    AIPL_akt3_zlokalizowanie_option1: "Let's go.",
+    AIPL_akt3_zlokalizowanie_option2: "I have concerns.",
+
+    AIPL_akt3_rozwidlenie:
+      "We're approaching a fork in the path. You must decide which way to go.",
+
+    AIPL_akt3_droga_wybor:
+      "The left path leads to the technical rooms. I'm detecting system interference. Be careful.",
+    AIPL_akt3_droga_wybor_option1: "Left.",
+    AIPL_akt3_droga_wybor_option2: "I'll take my chances to the right.",
+
+    AIPL_akt3_ryzyko_wprawo2:
+      "Something isn't right here. The air is dense and cold, as if we're deep underwater. Do you feel it too?",
+    AIPL_akt3_ryzyko_wprawo2_option1:
+      "It's just the ship's atmosphere. Let's keep going.",
+    AIPL_akt3_ryzyko_wprawo2_option2: "Yes, something here feels... unnatural.",
+    AIPL_akt3_ryzyko_wprawo2_smierc:
+      "We didn't think this through. The cold is overwhelming, and the life support system can't handle it...",
+    AIPL_akt3_ryzyko_wprawo2_smierc_deathscreen: "You perish...",
+
+    AIPL_akt3_ryzyko_wprawo3:
+      "Detecting a magnetic lock. We need a special key to open it.",
+
+    AIPL_akt3_ryzyko_wprawo4:
+      "This must be a puzzle. Sometimes ships of this type have logic-based security. Maybe we’ll find the answer if we focus on earlier clues.",
+    AIPL_akt3_ryzyko_wprawo4_option1: "Did we miss something?",
+    AIPL_akt3_ryzyko_wprawo4_option2: "Maybe it's something simple.",
+
+    AIPL_akt3_ryzyko_wprawo5:
+      "You find a panel with a magnetic system that requires three keys to be set in the correct order.",
+
+    AIPL_akt3_ryzyko_wprawo6:
+      "This mechanism looks familiar... It's like a navigation system. Do you remember those journal hints?",
+    AIPL_akt3_ryzyko_wprawo6_option1: "West, East, North.",
+    AIPL_akt3_ryzyko_wprawo6_option2: "North, East, South.",
+    AIPL_akt3_ryzyko_wprawo7_smierc:
+      "We didn't think this through. The cold is overwhelming, and the life support system can't handle it...",
+    AIPL_akt3_ryzyko_wprawo7_smierc_Death: "You perish...",
+
+    AIPL_akt3_ryzyko_wprawo8:
+      "Good, the mechanism has accepted the sequence. The lock is opening, and the path is clear. But be careful, this place is becoming increasingly unstable.",
+
+    AIPL_akt3_ryzyko_wprawo9:
+      "Do you feel how the energy in this place is becoming more chaotic? Whatever is happening here is unnatural. We must be cautious.",
+    AIPL_akt3_ryzyko_wprawo9_option1: "We need to solve this.",
+    AIPL_akt3_ryzyko_wprawo9_option2: "Slowly. Let's move.",
+
+    AIPL_akt3_ryzyko_wprawo10:
+      "We're approaching the signal source. It's close now. Scanners detect strong electromagnetic interference, but we can proceed.",
+
+    AIPL_akt3_ryzyko_wlewo1:
+      "We are approaching the signal source. We are in a technical corridor, but something feels off. The atmosphere is getting heavy.",
+    AIPL_akt3_ryzyko_wlewo2:
+      "Do you feel it? The air here is unnaturally dense... as if something is trying to stop us.",
+    AIPL_akt3_ryzyko_wlewo2_option1: "Maybe we should turn back?",
+    AIPL_akt3_ryzyko_wlewo2_option2: "Yes, I feel it too. We must go further.",
+
+    AIPL_akt3_ryzyko_wlewo2_smierc:
+      "Do you feel it? The air here is unnaturally dense... as if something is trying to stop us.",
+    AIPL_akt3_ryzyko_wlewo2_smierc_death:
+      "Poisoned by gas... The journey ends here.",
+
+    AIPL_akt3_ryzyko_wlewo3_option1: "Geometric shapes?",
+    AIPL_akt3_ryzyko_wlewo3_option2: "Logical symbols...",
+
+    AIPL_akt3_ryzyko_wlewo4:
+      "We've seen this symbol before. It resembles something from the ship's logs. It's a security mechanism. We need a code.",
+
+    AIPL_akt3_ryzyko_wlewo5:
+      "Enter the sequence. Do you remember what was in the log?",
+    AIPL_akt3_ryzyko_wlewo5_option1: "Circle, Triangle, Square.",
+    AIPL_akt3_ryzyko_wlewo5_option2: "Circle, Square, Cross.",
+    AIPL_akt3_ryzyko_wlewo5_smierc:
+      "This mist... it's some kind of gas... life support systems failing...",
+    AIPL_akt3_ryzyko_wlewo5_smierc_death: "You are dying.",
+
+    AIPL_akt3_ryzyko_wlewo6:
+      "Sequence accepted. The mechanism opens, and we are getting closer to the signal source.",
+
+    AIPL_akt3_scena0001:
+      "Something is here. I can feel it. This is no ordinary ship. Something more disturbing is happening around us.",
+    AIPL_akt3_scena0001_option1: "We need to check the signal source.",
+    AIPL_akt3_scena0001_option2: "This place feels... dead.",
+
+    AIPL_akt3_centralna_komora:
+      "The central chamber is ahead. It's locked, but I can open it manually. Opening... be careful.",
+
+    AIPL_akt3_spotkanie_harunkal:
+      "You shouldn't be here. This place was sealed... to protect you from what lies within.",
+
+    AIPL_akt3_zrodlo_sygnalu:
+      "It's him. We've found the signal source. Who are you? Why are you warning us?",
+    AIPL_akt3_sygnal_ostrzezenie:
+      "The signal... was meant as a warning. My nature is beyond my control. If you set me free, you may unleash something you cannot comprehend.",
+
+    AIPL_akt3_statek_reaguje:
+      "His energy is unstable. The ship's systems are reacting to his presence. We must decide what to do next.",
+
+    AIPL_akt3_energia_nieznana:
+      "He says he cannot control his powers. But we must learn more. Something is not right here.",
+    AIPL_akt3_energia_nieznana_option1: "What nature? What is happening here?",
+    AIPL_akt3_energia_nieznana_option2: "Can we help you?",
+
+    AIPL_akt3_wymiary:
+      "I don't know if there is any way to stop this. My race... studied dimensions. The ships we sent returned with more than just information. Now I cannot stop it.",
+
+    AIPL_akt3_statek_anomalie:
+      "The ships... came back with something else? What was their mission?",
+
+    AIPL_akt3_misja_wymiary:
+      "Our goal was to explore other realities, but we were not prepared for what we started collecting. The ships returned with anomalies that altered reality.",
+
+    AIPL_akt3_anomalie_zagrozenie:
+      "Anomalies? What kind of threat do they pose? Why did those ships return?",
+    AIPL_akt3_anomalie_zagrozenie_option1: "Were there more bases?",
+    AIPL_akt3_anomalie_zagrozenie_option2: "Why didn’t you stop the mission?",
+    AIPL_akt3_bazy:
+      "We couldn't break the cycle. The bases we built were scattered throughout the universe. One of the key ones is the base on your Moon.",
+
+    AIPL_akt3_znajoma_baza:
+      "That sounds familiar. The ships we traveled on from the Moon may be part of the same cycle. That would explain a lot.",
+
+    AIPL_akt3_ksiezyc_wyjasnienie:
+      "The Moon... is just one of the nodes. Ships return there from missions in other dimensions. Each return may bring something unpredictable.",
+
+    AIPL_akt3_statek_tajemnica:
+      "That's why the ships we are now traveling on are so strange. They return with something we cannot control. What now?",
+    AIPL_akt3_statek_tajemnica_option1: "We need to learn more.",
+    AIPL_akt3_statek_tajemnica_option2: "We need to get out.",
+
+    AIPL_akt3_wiecej_info:
+      "The ships we are now traveling on may be part of this cycle. If this is true, not only are we at risk – it could affect the entire world.",
+
+    AIPL_akt3_ksiezyc_zagrozenie:
+      "Is the base on the Moon the place where all ships return? What threat do they carry?",
+    AIPL_akt3_ksiezyc_zagrozenie_option1: "Can we stop it?",
+    AIPL_akt3_ksiezyc_zagrozenie_option2: "Are these ships beyond control?",
+
+    AIPL_akt3_kontrola_statkow:
+      "I don’t know how this can be stopped. The ships are part of a cycle that operates independently of our will. But I do know one thing – each return brings something that could change your reality.",
+    AIPL_akt3_statek_rozpad:
+      "We need to act quickly. The ship's systems are beginning to break down. The alien says his powers may destroy us, but if we leave him...",
+    AIPL_akt3_harunkal_cykl:
+      "I cannot control what is happening. But if you leave me here, the cycle will continue. The ships will return, and what they bring will be catastrophic.",
+    AIPL_akt3_harunkal_cykl_option1: "Let's help him get out of here.",
+    AIPL_akt3_harunkal_cykl_option2: "It's too risky.",
+
+    AIPL_akt3_pomoc_harunkal:
+      "If we help him, he may help us understand what's happening with the lunar base and the ships. But we risk unpredictable consequences.",
+    AIPL_akt3_odmowa_harunkal:
+      "This is a huge risk. His powers are unpredictable. If we release him, we may have no control over what happens.",
+
+    AIPL_akt3_decyzja_harunkal:
+      "It’s your decision. If you leave me, it may be too late. If you try to help me, together we may escape this ship and understand what is coming.",
+    AIPL_akt3_statek_awaria:
+      "The ship's systems are beginning to break down. If we are going to help the alien, we need to do it now.",
+
+    AIPL_akt3_echo_ryzyko:
+      "If we take the risk and help him, we may discover the truth about the ships. But if something goes wrong, we could lose everything.",
+    AIPL_akt3_echo_ryzyko_option1: "I’ll help you.",
+    AIPL_akt3_echo_ryzyko_option2: "Don't count on me.",
+
+    AIPL_akt3_deathscreen_explosion: "The ship is falling apart...",
+    AIPL_akt3_pomoc_statek:
+      "I don’t know if this will work, but we have to try. We need to get out of here before this ship collapses.",
+    AIPL_akt3_sekcja_techniczna:
+      "The ship's pathways are complex. We might find an alternative route through the technical section.",
+    AIPL_akt3_przestroga_harunkal:
+      "This ship... was a prison. There are places here, tangled with other places in different times and realities. We must avoid restricted zones...",
+    AIPL_akt3_przestroga_harunkal_option1: "Let's avoid these zones.",
+    AIPL_akt3_przestroga_harunkal_option2: "Let's take a risk but carefully.",
+
+    AIPL_akt3_sekcja_techniczna_ryzyko:
+      "I've located the technical section. It's the shortest route, but its systems may be unstable. Going through it will be risky.",
+    AIPL_akt3_obecnosc_statek:
+      "The technical section is losing power. Some systems are offline, but I detect movement... something is here.",
+    AIPL_akt3_obecnosc_statek_option1: "We have to check it out. Ready?",
+    AIPL_akt3_obecnosc_statek_option2: "Let's hide.",
+
+    AIPL_akt3_systemy_obronne:
+      "This looks like the ship’s defense systems. They are trying to prevent an escape.",
+    AIPL_akt3_harunkal_zaklocenie:
+      "...I might be able to disrupt them before we get too close.",
+    AIPL_akt3_zaklocenie_ryzyko:
+      "Disrupting the systems might destabilize the ship. It's risky, but it might give us a chance to get through.",
+    AIPL_akt3_zaklocenie_ryzyko_option1: "Try to disrupt the systems.",
+    AIPL_akt3_zaklocenie_ryzyko_option2: "No, let's do this quietly.",
+
+    AIPL_akt3_zaklocenie_podjete:
+      "Alright, I'll try to disrupt the system. It might let us through, but I don’t know what the consequences will be.",
+    AIPL_akt3_gotowosc_ucieczka:
+      "We need to act quickly. This ship is falling apart, but if we choose the right path, we can escape.",
+    AIPL_akt3_gotowosc_ucieczka_option1: "Let's find an exit.",
+    AIPL_akt3_gotowosc_ucieczka_option2: "We must be cautious.",
+    AIPL_akt3_zaklocenie_spoznione: "... too late ... initiating interference",
+    AIPL_akt3_statek_destabilizacja:
+      "Systems are destabilizing. The ship is vibrating. We need to hurry.",
+    AIPL_akt3_harunkal_traci_panowanie: "We can hurry. I'm losing control...",
+    AIPL_akt3_sektor_zawalenie:
+      "We have a few seconds before this sector collapses. We can make it, but we must run.",
+    AIPL_akt3_tunel_decyzja:
+      "The path to the right leads straight to the exit. This is our only chance...",
+    AIPL_akt3_tunel_przejscie:
+      "The section ahead has collapsed, but I detect another narrow tunnel on the left.",
+    AIPL_akt3_tunel_wybor:
+      "This tunnel... might be our only way out. But I don't know how long I can control this.",
+    AIPL_akt3_tunel_wyjscie:
+      "The tunnel is narrow but looks stable. If this is our only chance, we must try.",
+    AIPL_akt3_sekcja_zewnetrzna:
+      "It leads to the ship's outer section. From here, we can get to the bridge and try to return to your ship.",
+    AIPL_akt3_mostek_plan:
+      "If we reach the bridge, I might be able to open the exit.",
+
+    AIPL_akt3_harunkal_traci_panowanie_option1: "Faster, we must escape!",
+    AIPL_akt3_harunkal_traci_panowanie_option2: "Don't give up.",
+    AIPL_akt3_tunel_decyzja_option1: "Let's run there!",
+    AIPL_akt3_tunel_decyzja_option2: "Ħarûn'kal, hold on!",
+    AIPL_akt3_tunel_wybor_option1: "Let's try, it's our only option.",
+    AIPL_akt3_tunel_wybor_option2: "If it's too dangerous...",
+    AIPL_akt3_mostek_plan_option1: "Alright, let's go to the bridge.",
+    AIPL_akt3_mostek_plan_option2: "Let's do this, but be careful.",
+    AIPL_akt3_systemy_obronne2:
+      "I detect movement near the bridge. The ship's defense systems are still active. We'll have to avoid them.",
+    AIPL_akt3_harunkal_eksplozja: "I can try to trigger an explosion...",
+    AIPL_akt3_obrona_smierc:
+      "It won’t be easy to bypass the ship’s defense systems...",
+    AIPL_akt3_smierc_systemy: "The ship is focusing on us...",
+    AIPL_akt3_wysadzanie:
+      "The risk is high. The defense systems might react to our movement. We have to be quick.",
+    AIPL_akt3_eksplozja_inicjacja: "Detonating!",
+    AIPL_akt_eksplozja_oczekiwanie: "BOOOM!",
+    AIPL_akt3_dotarcie_mostek:
+      "We've reached the bridge. We need to open the exit quickly before the ship collapses.",
+    AIPL_akt3_otwieranie_wyjscia: "Opening the exit.",
+    AIPL_akt3_powrot_na_statek:
+      "The path to your ship is clear. Ħarûn'kal is barely holding on, but we have a chance to return. We must hurry.",
+    AIPL_akt3_statek_stabilny:
+      "We're back on the ship. All systems are stable. Ħarûn'kal looks exhausted, but stable.",
+    AIPL_akt3_decyzja_misji:
+      "We have two options: we can return to the corporation with Ħarûn'kal and receive a huge reward. Or... we can try to find a way to stop the cycle at the lunar base.",
+    AIPL_akt3_korporacja_nagroda:
+      "If you hand Ħarûn'kal over to the corporation, you will gain fame and fortune. The corporation has the technology to understand his... nature. But... there are risks.",
+
+    AIPL_akt3_harunkal_eksplozja_option1: "Blow it up!",
+    AIPL_akt3_harunkal_eksplozja_option2: "Let’s bypass it.",
+    AIPL_akt3_decyzja_misji_option1: "What does the corporation offer?",
+    AIPL_akt3_decyzja_misji_option2: "Should we trust him?",
+    AIPL_akt3_harunkal_przestroga:
+      "If you hand me over, they will try to control me. But what is coming is greater than they can comprehend. The cycle won’t stop, and what returns will destroy your world.",
+    AIPL_akt3_cykl_zagrozenie:
+      "The corporation doesn’t understand what these ships truly are. They will think it’s just technology to exploit. But each mission brings back something uncontrollable. They won’t realize it until it’s too late.",
+    AIPL_akt3_korporacja_oferta:
+      "The corporation will pay you millions for this discovery. They may try to control Ħarûn'kal, but this will set you up for life. Remember, this might be your only chance.",
+    AIPL_akt3_korporacja_ostateczna_decyzja:
+      "I’m receiving a message from the corporation. They are ready to invest millions in your return. They await your decision.",
+    AIPL_akt3_korporacja_wybor:
+      "The decision has been made, the continuation of the story is coming soon...",
+
+    AIPL_akt3_harunkal_przestroga_option1: "Why is the cycle so dangerous?",
+    AIPL_akt3_harunkal_przestroga_option2:
+      "What will the corporation do to you?",
+    AIPL_akt3_korporacja_ostateczna_decyzja_option1:
+      "Hand the alien over to the corporation.",
+    AIPL_akt3_korporacja_ostateczna_decyzja_option2:
+      "Join forces to stop the cycle.",
 
     // Start Screen
     startScreenTitle: "NO RETURN",
