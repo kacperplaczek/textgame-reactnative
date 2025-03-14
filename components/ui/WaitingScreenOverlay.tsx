@@ -11,7 +11,6 @@ import { InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { translations } from "@/lib/translations/translations";
 
-// 🔹 Definiujemy ekrany + ich tła (klucze do tłumaczeń)
 const waitingScreens = {
   hibernacja_w_toku: {
     titleKey: "hibernacjaTitle",
@@ -70,7 +69,6 @@ const waitingScreens = {
   },
 };
 
-// 🔹 Domyślny ekran (jeśli `notifyScreenName` nie pasuje)
 const defaultScreen = {
   titleKey: "defaultTitle",
   subtitleKey: "defaultSubtitle",
@@ -91,14 +89,18 @@ export default function WaitingScreenOverlay({
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
 
   useEffect(() => {
-    if (!visible) return; // 🔥 Zabezpieczenie przed błędem
+    if (!visible || !notifyScreenName) return;
 
     console.log("🔄 Ustawiam odpowiedni ekran:", notifyScreenName);
 
-    // 🔹 Ustawiamy właściwy ekran dopiero po zamontowaniu komponentu
-    setScreen(waitingScreens[notifyScreenName] || defaultScreen);
+    const selectedScreen = waitingScreens[notifyScreenName] || defaultScreen;
 
-    // ✅ Pobieramy język użytkownika
+    if (screen !== selectedScreen) {
+      console.log("📌 Aktualizacja ekranu na:", notifyScreenName);
+      setScreen(selectedScreen);
+    }
+
+    // ✅ Pobranie języka użytkownika
     const loadLang = async () => {
       const lang = await getCurrentLanguage();
       console.log("🌍 Ustawiam język w WaitingScreenOverlay:", lang);
@@ -106,53 +108,22 @@ export default function WaitingScreenOverlay({
     };
 
     loadLang();
-
-    console.log("📌 Aktualny ekran:", screen.titleKey);
-
-    // 🔥 Tworzymy instancję reklamy pełnoekranowej
-    const adUnitId =
-      Platform.OS === "ios"
-        ? "ca-app-pub-4136563182662861/1075007008" // ✅ iOS ID
-        : "ca-app-pub-4136563182662861/9144358271"; // ✅ Android ID (domyślne)
-
-    // ✅ Tworzenie reklamy z dynamicznym ID
-    const interstitialAd = InterstitialAd.createForAdRequest(adUnitId);
-
-    // 🔥 Nasłuchujemy, kiedy reklama się załaduje
-    const adListener = interstitialAd.addAdEventListener(
-      AdEventType.LOADED,
-      () => {
-        console.log("✅ Reklama załadowana!");
-        setAdLoaded(true);
-        interstitialAd
-          .show()
-          .catch((err) => console.error("❌ Błąd wyświetlania reklamy:", err));
-      }
-    );
-
-    // 🔥 Jeśli użytkownik zamknie reklamę, logujemy zdarzenie
-    interstitialAd.addAdEventListener(AdEventType.CLOSED, () => {
-      console.log("✅ Reklama zamknięta.");
-    });
-
-    // 🔥 Ładujemy reklamę
-    interstitialAd.load();
-
-    return () => {
-      adListener(); // Usuwamy nasłuchiwanie
-    };
   }, [visible, notifyScreenName]);
 
   if (!visible) return null;
 
-  // ✅ Pobieranie tłumaczenia
   const translatedTitle =
     translations[jezyk]?.[screen.titleKey] ?? "PROSZĘ CZEKAĆ";
   const translatedSubtitle =
     translations[jezyk]?.[screen.subtitleKey] ?? "Przygotowania w toku...";
 
   return (
-    <Modal visible={visible} animationType="fade" transparent={false}>
+    <Modal
+      key={notifyScreenName}
+      visible={visible}
+      animationType="fade"
+      transparent={false}
+    >
       <ImageBackground source={screen.background} style={styles.background}>
         <View style={styles.overlay}>
           {/* 🔹 Tytuł na górze */}
@@ -185,7 +156,7 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.1)", // 🔹 Przyciemnienie, żeby poprawić czytelność tekstu
+    backgroundColor: "rgba(0, 0, 0, 0.1)",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 20,

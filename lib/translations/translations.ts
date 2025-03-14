@@ -1069,7 +1069,47 @@ export const translations = {
     resetGame: "Resetuj grę",
     privacyPolicy: "Polityka prywatności",
     privacyText:
-      "Twoja prywatność jest dla nas ważna. Nie zbieramy żadnych danych osobowych.",
+      "Polityka Prywatności Aplikacji No Return\n\n" +
+      "Ostatnia aktualizacja: 2024-12-18\n\n" +
+      'Dziękujemy za korzystanie z aplikacji No Return ("Aplikacja"). Ochrona Twojej prywatności jest dla nas bardzo ważna. Niniejsza Polityka Prywatności wyjaśnia, jakie dane zbieramy, jak je wykorzystujemy oraz jakie prawa Ci przysługują.\n\n' +
+      "1. Administrator Danych\n\n" +
+      "Administratorem Twoich danych osobowych jest traker24.eu logistyka Łukasz Orzechowski, z siedzibą przy Rynek 16 lok. 8, 59-500 Złotoryja, Polska. NIP: 6941590534, REGON: 021828731. W przypadku pytań dotyczących niniejszej Polityki Prywatności skontaktuj się z nami pod adresem spicesugar.store@gmail.com.\n\n" +
+      "2. Jakie Dane Zbieramy\n\n" +
+      "Dane zbierane automatycznie:\n" +
+      "- Identyfikatory urządzenia: np. Google Advertising ID do wyświetlania reklam Google AdMob.\n" +
+      "- Dane dotyczące użytkowania aplikacji: Informacje o interakcjach w grze (np. wybory ścieżek dialogowych).\n" +
+      "- Dane diagnostyczne: np. dzienniki błędów i awarii.\n\n" +
+      "Dane Osobowe (Opcjonalne):\n\n" +
+      "Jeśli w przyszłości Aplikacja umożliwi tworzenie kont, możemy zbierać dane takie jak:\n" +
+      "- Imię lub pseudonim\n" +
+      "- Adres e-mail\n\n" +
+      "Dane zbierane przez reklamy:\n\n" +
+      "Aplikacja wykorzystuje Google AdMob do wyświetlania reklam. AdMob może zbierać dane takie jak:\n" +
+      "- Przybliżona lokalizacja (np. miasto)\n" +
+      "- Identyfikator reklamowy urządzenia\n\n" +
+      "Więcej informacji znajdziesz w Polityce Prywatności Google.\n\n" +
+      "3. Jak Wykorzystujemy Zebrane Dane\n\n" +
+      "Zebrane dane wykorzystujemy w następujących celach:\n" +
+      "- Wyświetlanie reklam przez Google AdMob\n" +
+      "- Analiza interakcji użytkownika z Aplikacją w celu jej ulepszania\n" +
+      "- Diagnostyka i rozwiązywanie problemów technicznych\n\n" +
+      "4. Udostępnianie Danych\n\n" +
+      "Twoje dane mogą być udostępniane:\n" +
+      "- Partnerom reklamowym: np. Google AdMob w celu personalizacji reklam i analizy danych.\n" +
+      "- Podmiotom zewnętrznym: wyłącznie gdy wymaga tego prawo, np. na żądanie organów ścigania.\n\n" +
+      "5. Twoje Prawa\n\n" +
+      "Masz następujące prawa w zakresie swoich danych:\n" +
+      "- Prawo dostępu: Możesz uzyskać informacje, jakie dane zbieramy.\n" +
+      "- Prawo do sprostowania: Możesz zażądać poprawienia swoich danych.\n" +
+      "- Prawo do usunięcia: Możesz zażądać usunięcia swoich danych osobowych.\n\n" +
+      "6. Usuwanie Konta i Danych\n\n" +
+      "Jeśli Aplikacja umożliwia tworzenie kont, masz prawo do usunięcia konta i powiązanych danych.\n\n" +
+      "7. Pliki Cookies i Technologie Śledzące\n\n" +
+      "Aplikacja może wykorzystywać pliki cookies do:\n" +
+      "- Personalizacji reklam (Google AdMob)\n\n" +
+      "8. Kontakt\n\n" +
+      "W razie pytań skontaktuj się z nami: spicesugar.store@gmail.com.\n\n" +
+      "Dziękujemy za korzystanie z aplikacji No Return!",
     close: "Zamknij",
     notifications: "Powiadomienia",
     notificationsOn: "WL",
@@ -2207,7 +2247,56 @@ export const translations = {
     resetGame: "Reset Game",
     privacyPolicy: "Privacy Policy",
     privacyText:
-      "Your privacy is important to us. We do not collect any personal data.",
+      "Privacy Policy of the No Return Application\n\n" +
+      "Last Updated: 2024-12-18\n\n" +
+      'Thank you for using the No Return application ("Application"). Protecting your privacy is very important to us. This Privacy Policy explains what data we collect, how we use it, and what rights you have.\n\n' +
+      "1. Data Controller\n\n" +
+      "The controller of your personal data is traker24.eu logistyka Łukasz Orzechowski, located at Rynek 16 lok. 8, 59-500 Złotoryja, Poland. NIP: 6941590534, REGON: 021828731. For any questions regarding this Privacy Policy, please contact us at spicesugar.store@gmail.com.\n\n" +
+      "2. Data We Collect\n\n" +
+      "Automatically Collected Data:\n" +
+      "- Device identifiers: e.g., Google Advertising ID for displaying Google AdMob advertisements.\n" +
+      "- App usage data: Information about interactions with the game (e.g., dialogue path choices).\n" +
+      "- Diagnostic data: e.g., error and crash logs.\n\n" +
+      "Personal Data (Optional):\n\n" +
+      "If the Application enables account creation in the future, we may collect data such as:\n" +
+      "- Name or nickname\n" +
+      "- Email address\n\n" +
+      "Data Collected by Ads:\n\n" +
+      "The Application uses Google AdMob to display ads. AdMob may collect data such as:\n" +
+      "- Approximate location (e.g., city)\n" +
+      "- Device advertising identifier\n\n" +
+      "For more information, please refer to Google’s Privacy Policy.\n\n" +
+      "3. How We Use Collected Data\n\n" +
+      "The collected data is used for the following purposes:\n" +
+      "- Displaying advertisements via Google AdMob\n" +
+      "- Analyzing user interactions with the Application to improve it\n" +
+      "- Diagnosing and resolving technical issues\n\n" +
+      "4. Sharing Data\n\n" +
+      "Your data may be shared:\n" +
+      "- With advertising partners: e.g., Google AdMob for ad personalization and analytics.\n" +
+      "- With external entities: only as required by law, e.g., upon request from law enforcement authorities.\n\n" +
+      "5. Your Rights\n\n" +
+      "You have the following rights concerning your data:\n" +
+      "- Right to access: You have the right to know what data we collect about you.\n" +
+      "- Right to rectification: You can request that we correct your data if it is incorrect.\n" +
+      "- Right to deletion: You can request the deletion of your personal data. See Section 6 for account deletion details.\n" +
+      "- Right to file a complaint: If you believe we are violating data protection regulations, you can file a complaint with your local supervisory authority.\n\n" +
+      "6. Deleting Account and Data\n\n" +
+      "If the Application allows account creation, you have the right to delete your account along with associated data. To do so:\n" +
+      '- Go to the settings in the Application and select the "Delete Account" option.\n' +
+      "- Contact us by sending a request to spicesugar.store@gmail.com.\n\n" +
+      "If accounts are not created and personal data is not collected, your data (e.g., diagnostics) will be automatically deleted after 90 days.\n\n" +
+      "7. Cookies and Tracking Technologies\n\n" +
+      "The Application may use cookies or similar technologies for:\n" +
+      "- Ad personalization (Google AdMob)\n" +
+      "- Analyzing app usage data\n\n" +
+      "8. Data Security\n\n" +
+      "Your data is protected against unauthorized access using appropriate technologies and procedures. However, no system is 100% secure, so we encourage caution when using the Application.\n\n" +
+      "9. Changes to the Privacy Policy\n\n" +
+      "We may update this Privacy Policy periodically. Any changes will be communicated within the Application or on our website. Please review this Policy regularly.\n\n" +
+      "10. Contact\n\n" +
+      "If you have any questions or concerns regarding this Privacy Policy, please contact us at spicesugar.store@gmail.com.\n\n" +
+      "Thank you for using the No Return application!",
     close: "Close",
     settings: "Settings",
     notifications: "Notifications",
