@@ -10,6 +10,7 @@ import {
   Dimensions,
   ImageBackground,
   AppState,
+  Platform,
 } from "react-native";
 import { Href, useLocalSearchParams, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -35,12 +36,14 @@ import {
   BannerAdSize,
   TestIds,
 } from "react-native-google-mobile-ads";
+import choiceSound from "@/assets/sounds/choice.wav";
+import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
   const [hasStartedGame, setHasStartedGame] = useState<boolean | null>(null);
   const [plec, setPlec] = useState<"pan" | "pani" | null>(null);
-  const [jezyk, setJezyk] = useState<Language>("pl");
+  const [jezyk, setJezyk] = useState<Language>("en");
   const [dialogue, setDialogue] = useState<
     { autor: "NPC" | "GRACZ"; tekst: string; npcKey?: NpcKey }[]
   >([]);
@@ -67,6 +70,7 @@ export default function StartGameScreen() {
   const scrollRef = useRef<ScrollView>(null);
   const [refreshKey, setRefreshKey] = useState(0);
   const [modalVisible, setModalVisible] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   const [modalContent, setModalContent] = useState<{
     title: string;
     subtitle?: string;
@@ -84,7 +88,21 @@ export default function StartGameScreen() {
     requireWaitTime?: number;
   } | null>(null);
   const [waitingScreenVisible, setWaitingScreenVisible] = useState(false);
-  const optionsBanner = "ca-app-pub-4136563182662861/8460997846";
+  const optionsBanner =
+    Platform.OS === "android"
+      ? "ca-app-pub-4136563182662861/8460997846" // android
+      : "ca-app-pub-4136563182662861/4480470362"; // ios
+
+  console.log(
+    `ID Reklamy ustawione na: ${optionsBanner} wykrto platformę ${Platform.OS}`
+  );
+
+  useEffect(() => {
+    console.log("🔄 Sprawdzanie stanu gry...");
+    // console.log("📌 Aktualne tłumaczenia:", translations[jezyk]);
+    console.log("📌 Aktualny język:", jezyk);
+    console.log("📌 Opcje wyboru:", options);
+  }, [refreshKey]);
 
   async function clearStoredTime() {
     try {
@@ -127,6 +145,17 @@ export default function StartGameScreen() {
       console.error("Błąd zatrzymywania dźwięków:", e);
     }
   };
+
+  // ✅ Pobieramy ustawienia dźwięku z pamięci
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const storedSound = await Storage.getItem({ key: "soundEnabled" });
+      setSoundEnabled(storedSound !== "off");
+    };
+    fetchSettings();
+  }, []);
+
+  const playChoiceSound = useChoiceSound(); // 🎵 Pobieramy funkcję
 
   const savePlayerChoices = async (
     selectedShipClass: string,
@@ -359,16 +388,28 @@ export default function StartGameScreen() {
   };
 
   const handleSceneChange = async (sceneName: string) => {
-    const plec = (await Storage.getItem({ key: "plec" })) || "pan";
-    const scenes = getScenes(translations[jezyk], plec);
+    // ✅ Pobieramy język z `Storage`
+    const storedLang = (await Storage.getItem({ key: "lang" })) || "en";
+    console.log("📌 Aktualny język w Storage:", storedLang);
+
+    const plec = await Storage.getItem({ key: "plec" });
+
+    console.log(`📌 Aktualny język w Storage: ${storedLang}`);
+    console.log(`📌 Ustawiam scenę: ${sceneName}`);
+
+    // ✅ Dynamicznie pobieramy sceny dla aktualnego języka
+    const scenes = getScenes(translations[storedLang], plec);
     const scene = scenes[sceneName];
 
-    if (!scene) return;
+    if (!scene) {
+      console.log("⚠️ Scena nie istnieje!");
+      return;
+    }
 
     console.log(`🎬 Zmiana sceny: ${sceneName}`);
 
     await stopSound();
-    // await clearStoredTime();
+    setOptions([]);
 
     if (scene.sound) {
       await playSound(scene.sound, scene.soundPlayLoop ?? false);
@@ -377,40 +418,77 @@ export default function StartGameScreen() {
     setCurrentScene(sceneName);
     await DialogueController.setScene(sceneName);
 
+    // 📌 Normalne przejście sceny – dynamiczne tłumaczenie
+    let tekst = scene.tekst
+      ? typeof scene.tekst === "function"
+        ? scene.tekst()
+        : scene.tekst
+      : "❌ Brak tekstu";
+
+    console.log(`📜 Tekst sceny: ${tekst}`);
+    addMessage("NPC", tekst, scene.npcKey);
+
+    // ✅ **Obsługa `notifyTime` (czekanie na kolejną scenę)**
     if (scene.notifyTime) {
-      console.log("⏳ Ustawiamy czas oczekiwania:", scene.notifyTime, "sekund");
+      const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+      const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
-      // 🕒 Pobieramy istniejący czas zakończenia
-      let storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+      if (storedEndTime) {
+        const endTime = parseInt(storedEndTime, 10);
+        const remaining = endTime - now;
 
-      if (!storedEndTime) {
-        // 🕒 Pobieramy aktualny czas w sekundach i ustawiamy nowy czas zakończenia
-        const now = Math.floor(Date.now() / 1000);
-        storedEndTime = (now + scene.notifyTime).toString();
+        if (remaining <= 0) {
+          console.log(
+            "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
+          );
+          await Storage.removeItem({ key: "waitingEndTime" });
+          await Storage.removeItem({ key: "waitingScene" });
 
-        await Storage.setItem({ key: "waitingEndTime", value: storedEndTime });
-        await Storage.setItem({
-          key: "waitingScene",
-          value: scene.autoNextScene ?? sceneName,
+          setWaiting(null);
+          setWaitingScreenVisible(false);
+          setRemainingTime(null);
+
+          return handleSceneChange(scene.autoNextScene);
+        }
+
+        console.log(
+          `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
+        );
+
+        setWaiting({
+          sceneName: scene.autoNextScene ?? sceneName,
+          endTime: parseInt(storedEndTime),
+          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
         });
 
-        console.log("📌 Zapisano NOWY waitingEndTime:", storedEndTime);
-      } else {
-        console.log("📌 Używam zapisany waitingEndTime:", storedEndTime);
+        setWaitingScreenVisible(true);
+        setRemainingTime(remaining);
+        return;
       }
 
-      // 🔄 Ustawiamy ekran oczekiwania
+      const endTime = now + scene.notifyTime;
+      await Storage.setItem({
+        key: "waitingEndTime",
+        value: endTime.toString(),
+      });
+      await Storage.setItem({
+        key: "waitingScene",
+        value: scene.autoNextScene,
+      });
+
+      console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+
       setWaiting({
         sceneName: scene.autoNextScene ?? sceneName,
-        endTime: parseInt(storedEndTime),
-        notifyScreenName: scene.notifyScreenName ?? "default",
+        endTime: endTime,
+        notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
       });
-      setWaitingScreenVisible(true);
 
-      return;
+      setWaitingScreenVisible(true);
+      setRemainingTime(scene.notifyTime);
     }
 
-    // 🖼️ Jeśli scena wymaga pełnoekranowego UI, otwieramy go zamiast przekierowywać
+    // ✅ **Obsługa `specialScreen`**
     if (scene.specialScreen) {
       setSpecialSceneContent({
         title: scene.specialScreen.title,
@@ -426,133 +504,72 @@ export default function StartGameScreen() {
       return;
     }
 
-    // ⏳ **Obsługa notifyTime - ekran oczekiwania i powiadomienia**
-    // if (scene.notifyTime) {
-    //   console.log(`⏳ Czekamy ${scene.notifyTime} sekund...`);
-
-    //   setOptions([]); // Usuwamy opcje wyboru
-    //   setWaiting({
-    //     sceneName: scene.autoNextScene ?? sceneName,
-    //     endTime: Date.now() + scene.notifyTime * 1000,
-    //   });
-
-    //   await Storage.setItem({
-    //     key: "waitingEndTime",
-    //     value: (Date.now() + scene.notifyTime * 1000).toString(),
-    //   });
-    //   await Storage.setItem({
-    //     key: "waitingScene",
-    //     value: scene.autoNextScene ?? sceneName,
-    //   });
-
-    //   // **Pokazanie nowego UI oczekiwania**
-    //   setWaitingScreenVisible(true);
-    //   setRemainingTime(scene.notifyTime);
-
-    //   // **Zaplanowanie powiadomienia push**
-    //   if (scene.enableNotification) {
-    //     console.log(
-    //       "🔔 Powiadomienie zostanie zaplanowane za",
-    //       scene.notifyTime,
-    //       "sekund."
-    //     );
-    //     await Notifications.scheduleNotificationAsync({
-    //       content: {
-    //         title: "Czas ruszać dalej!",
-    //         body: "Przygotowania zakończone.",
-    //         sound: true,
-    //       },
-    //       trigger: { seconds: scene.notifyTime }, // 🔥 Teraz powiadomienie przyjdzie DOKŁADNIE po `notifyTime`
-    //     });
-    //   }
-
-    //   // **Automatyczna zmiana sceny po notifyTime**
-    //   setTimeout(() => {
-    //     console.log("⏩ Koniec oczekiwania, przejście do kolejnej sceny.");
-    //     setWaitingScreenVisible(false);
-    //     setWaiting(null);
-    //     handleSceneChange(scene.autoNextScene ?? sceneName);
-    //   }, scene.notifyTime * 1000);
-
-    //   return; // ⬅️ Przerywamy dalsze wykonywanie
-    // }
-
-    // 📌 **Obsługa `autoReply` → Automatyczna odpowiedź gracza**
-    if (scene.autoReply) {
-      addMessage("GRACZ", scene.autoReply);
+    // ✅ **Obsługa `darknessUI`**
+    if (scene.enableDarknessUI) {
+      await Storage.setItem({ key: "darknessUI", value: "true" });
+      console.log("🌑 Darkness UI włączone!");
+      setDarknessUI(true);
+      setRefreshKey((prev) => prev + 1);
     }
 
-    // 📌 **Obsługa `autoReplyInsert` → Wstawianie dynamicznej odpowiedzi gracza**
-    let npcTekst =
-      typeof scene.tekst === "function" ? scene.tekst() : scene.tekst;
-    if (scene.autoReplyInsert) {
-      npcTekst = npcTekst.replace("{{graczOdpowiedz}}", scene.autoReply || "");
+    if (scene.disableDarknessUI) {
+      await Storage.removeItem({ key: "darknessUI" });
+      console.log("☀️ Darkness UI wyłączone!");
+      setDarknessUI(false);
+      setRefreshKey((prev) => prev + 1);
     }
 
-    // 📝 **Dodanie wiadomości NPC**
-    if (!scene.waitTime) {
-      addMessage("NPC", npcTekst, scene.npcKey);
-    }
-
-    // 🎭 **Obsługa opcji odpowiedzi**
+    // ✅ **Obsługa opcji dialogowych**
     if (scene.options) {
       setOptions(
-        scene.options.map((option) => ({
-          tekst: option.tekst,
-          akcja: async () => {
-            console.log("🛠 Wykonuję akcję dla opcji:", option.tekst);
+        scene.options.map((option) => {
+          const translatedText =
+            translations[storedLang]?.[option.tekst] ?? option.tekst;
+          console.log(`📝 Opcja: ${translatedText}`);
 
-            if (option.akcja) {
-              await option.akcja();
-            }
+          return {
+            tekst: translatedText,
+            akcja: async () => {
+              console.log("🛠 Wykonuję akcję dla opcji:", translatedText);
 
-            addMessage("GRACZ", option.tekst);
-            handleSceneChange(option.next);
-          },
-        }))
+              if (option.akcja) {
+                await option.akcja();
+              }
+
+              addMessage("GRACZ", translatedText);
+              handleSceneChange(option.next);
+            },
+          };
+        })
       );
     } else {
+      console.log("⚠️ Brak opcji w scenie!");
       setOptions([]);
     }
 
-    // ⏳ **Obsługa czasu oczekiwania przed kolejną sceną**
-    if (scene.waitTime) {
-      setOptions([]);
-      const endTime = Math.floor(Date.now() / 1000) + scene.waitTime;
-      setWaiting({ sceneName: scene.autoNextScene ?? sceneName, endTime });
-
-      await Storage.setItem({
-        key: "waitingEndTime",
-        value: endTime.toString(),
-      });
-      await Storage.setItem({
-        key: "waitingScene",
-        value: scene.autoNextScene ?? sceneName,
-      });
-
-      return;
-    }
-
-    // ⏩ **Obsługa auto-przejścia po określonym czasie**
+    // ✅ **Automatyczne przejście do kolejnej sceny po opóźnieniu**
     if (scene.autoNextScene && scene.autoNextDelay) {
       setTimeout(() => {
         handleSceneChange(scene.autoNextScene!);
       }, scene.autoNextDelay);
     }
 
-    // 🎯 **Zapisywanie checkpointu**
+    // ✅ **Obsługa checkpointu**
     if (scene.checkpoint) {
-      await DialogueController.setCheckpoint(sceneName);
+      console.log(`💾 Zapisuję checkpoint: ${sceneName}`);
+      await Storage.removeItem({ key: "checkpoint" });
+      await Storage.setItem({ key: "checkpoint", value: sceneName });
     }
 
-    // 💀 **Obsługa ekranu śmierci**
+    // ✅ **Obsługa `deathScreen`**
     if (scene.deathScreen) {
+      console.log("☠️ Wczytuję ekran śmierci:", scene.deathScreen);
       await DialogueController.setDeathScreen(scene.deathScreen);
       setDeadScreen(scene.deathScreen);
       setDead(true);
     }
 
-    // 🎬 **Obsługa zakończenia aktu**
+    // ✅ **Obsługa zakończenia aktu**
     if (scene.endAct) {
       setEndAct(true);
       setEndActScreen(scene.endAct);
@@ -562,70 +579,6 @@ export default function StartGameScreen() {
       });
     }
   };
-
-  //   const handleSceneChange = async (sceneName: string) => {
-  //     const scenes = getScenes(translations[jezyk], plec);
-  //     const scene = scenes[sceneName];
-
-  //     if (sceneName === currentScene) return;
-  //     if (!scene) return;
-
-  //     console.log(`Zmiana sceny: ${sceneName}`);
-  //     console.log("Muzyka do odpalenia:", scene.sound);
-
-  //     // 🛑 Stopujemy zawsze NAJPIERW
-  //     await stopSound();
-
-  //     // Aktualizacja sceny
-  //     setCurrentScene(sceneName);
-  //     await DialogueController.setScene(sceneName);
-
-  //     // 🎵 Odtwarzamy nową muzykę, jeżeli jest
-  //     if (scene.sound) {
-  //       await playSound(scene.sound, scene.soundPlayLoop ?? false);
-  //     }
-
-  //     // Opcje wyboru
-  //     if (scene.options) {
-  //       setOptions(
-  //         scene.options.map((option) => ({
-  //           tekst: option.tekst,
-  //           akcja: () => {
-  //             addMessage("GRACZ", option.tekst);
-  //             handleSceneChange(option.next);
-  //           },
-  //         }))
-  //       );
-  //     } else {
-  //       setOptions([]);
-  //     }
-
-  //     // Auto-przejście
-  //     if (scene.autoNextScene && scene.autoNextDelay) {
-  //       setTimeout(() => {
-  //         handleSceneChange(scene.autoNextScene!);
-  //       }, scene.autoNextDelay);
-  //     }
-
-  //     if (scene.checkpoint) {
-  //       await DialogueController.setCheckpoint(sceneName);
-  //     }
-
-  //     if (scene.deathScreen) {
-  //       await DialogueController.setDeathScreen(scene.deathScreen);
-  //       setDeadScreen(scene.deathScreen);
-  //       setDead(true);
-  //     }
-
-  //     if (scene.endAct) {
-  //       setEndAct(true);
-  //       setEndActScreen(scene.endAct);
-  //       setActFinished({
-  //         actKey: sceneName,
-  //         nextAct: scene.nextAct || "startgame",
-  //       });
-  //     }
-  //   };
 
   const closeModalAndChangeScene = (nextScene: string) => {
     console.log("📌 Zamykam modal i przechodzę do sceny:", nextScene);
@@ -810,13 +763,15 @@ export default function StartGameScreen() {
           {options.map((option, index) => (
             <TouchableOpacity
               key={index}
-              onPress={option.akcja}
+              onPress={async () => {
+                await playChoiceSound(); // 🔊 Odtwarzamy dźwięk
+                option.akcja(); // 🛠️ Wykonujemy akcję
+              }}
               style={styles.choiceButton}
             >
               <Text style={styles.choiceButtonText}>{option.tekst}</Text>
             </TouchableOpacity>
           ))}
-
           <BannerAd
             unitId={optionsBanner}
             size={BannerAdSize.ADAPTIVE_BANNER}

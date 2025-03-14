@@ -1,81 +1,79 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ImageBackground, Modal } from "react-native";
 import {
-  InterstitialAd,
-  AdEventType,
-  TestIds,
-} from "react-native-google-mobile-ads";
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Modal,
+  Platform,
+} from "react-native";
+import { InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+import { getCurrentLanguage } from "@/lib/settings/LanguageController";
+import { translations } from "@/lib/translations/translations";
 
-// 🔹 Definiujemy ekrany + ich tła
+// 🔹 Definiujemy ekrany + ich tła (klucze do tłumaczeń)
 const waitingScreens = {
   hibernacja_w_toku: {
-    title: "HIBERNACJA W TOKU",
-    subtitle: "Twoje ciało przechodzi w stan hibernacji.",
-    color: "#219653",
+    titleKey: "hibernacjaTitle",
+    subtitleKey: "hibernacjaSubtitle",
     background: require("@/assets/images/hibernacja.png"),
   },
   odpoczynek: {
-    title: "😴 Odpoczynek...",
-    subtitle: "Regenerujesz siły przed dalszą podróżą.",
-    color: "#219653",
+    titleKey: "odpoczynekTitle",
+    subtitleKey: "odpoczynekSubtitle",
     background: require("@/assets/images/bg_ufo.png"),
   },
   rekrutacja_oficer: {
-    title: "PROSZĘ CZEKAĆ",
-    subtitle: "PRZETWARZANIE ZGŁOSZENIA REKRUTACYJNEGO",
-    color: "#219653",
+    titleKey: "rekrutacjaTitle",
+    subtitleKey: "rekrutacjaSubtitle",
     background: require("@/assets/images/rekrutacja_oficer_tlo.png"),
   },
   sygnal: {
-    title: "📡 Oczekiwanie na sygnał...",
-    subtitle: "Czekasz na połączenie ze statkiem.",
-    color: "#219653",
+    titleKey: "sygnalTitle",
+    subtitleKey: "sygnalSubtitle",
     background: require("@/assets/images/bg_ufo.png"),
   },
   powrot_na_statek: {
-    title: "Wracasz na STATEK",
-    subtitle: "Oczekiwanie na powrót na Statek.",
-    color: "#219653",
+    titleKey: "powrotTitle",
+    subtitleKey: "powrotSubtitle",
     background: require("@/assets/images/end_of_act_bg.png"),
   },
   wspinaczka_w_toku: {
-    title: "PROSZĘ CZEKAĆ",
-    subtitle: "WSPINACZKA W TOKU",
-    color: "#219653",
+    titleKey: "wspinaczkaTitle",
+    subtitleKey: "wspinaczkaSubtitle",
     background: require("@/assets/images/wspinaczka_ekran.png"),
   },
-
   przeprawa_w_toku: {
-    title: "PROSZĘ CZEKAĆ",
-    subtitle: "PRZEPRAWA W TOKU",
-    color: "#219653",
+    titleKey: "przeprawaTitle",
+    subtitleKey: "przeprawaSubtitle",
     background: require("@/assets/images/przeprawa_ekran.png"),
   },
   boom: {
-    title: "",
-    subtitle: "Proszę czekać...",
-    color: "#219653",
+    titleKey: "boomTitle",
+    subtitleKey: "boomSubtitle",
     background: require("@/assets/images/boom.png"),
   },
   kosmita_oczekiwanie: {
-    title: "",
-    subtitle: "Proszę czekać...",
-    color: "#219653",
+    titleKey: "kosmitaTitle",
+    subtitleKey: "kosmitaSubtitle",
     background: require("@/assets/images/kosmita_oczekiwanie.png"),
   },
   krysztal_analiza: {
-    title: "ANALIZOWANIE KRYSZTAŁU",
-    subtitle: "Proszę czekać...",
-    color: "#219653",
+    titleKey: "krysztalTitle",
+    subtitleKey: "krysztalSubtitle",
     background: require("@/assets/images/krysztal_obraz.png"),
+  },
+  statek_odlatuje: {
+    titleKey: "statekOdlatujeTitle",
+    subtitleKey: "statekOdlatujeSubtitle",
+    background: require("@/assets/images/statek-odlatuje.png"),
   },
 };
 
 // 🔹 Domyślny ekran (jeśli `notifyScreenName` nie pasuje)
 const defaultScreen = {
-  title: "PROSZĘ CZEKAĆ",
-  subtitle: "Przygotowania w toku...",
-  color: "#219653",
+  titleKey: "defaultTitle",
+  subtitleKey: "defaultSubtitle",
   background: require("@/assets/images/bg_ufo.png"),
 };
 
@@ -90,9 +88,7 @@ export default function WaitingScreenOverlay({
 }) {
   const [screen, setScreen] = useState(defaultScreen);
   const [adLoaded, setAdLoaded] = useState(false);
-
-  // ✅ ID reklamy - używaj TestIds w trybie deweloperskim
-  const interstitialAdUnitId = "ca-app-pub-4136563182662861/9144358271";
+  const [jezyk, setJezyk] = useState<"pl" | "en">("en");
 
   useEffect(() => {
     if (!visible) return; // 🔥 Zabezpieczenie przed błędem
@@ -102,11 +98,25 @@ export default function WaitingScreenOverlay({
     // 🔹 Ustawiamy właściwy ekran dopiero po zamontowaniu komponentu
     setScreen(waitingScreens[notifyScreenName] || defaultScreen);
 
-    console.log("📌 Aktualny ekran:", screen.title);
+    // ✅ Pobieramy język użytkownika
+    const loadLang = async () => {
+      const lang = await getCurrentLanguage();
+      console.log("🌍 Ustawiam język w WaitingScreenOverlay:", lang);
+      setJezyk(lang);
+    };
+
+    loadLang();
+
+    console.log("📌 Aktualny ekran:", screen.titleKey);
 
     // 🔥 Tworzymy instancję reklamy pełnoekranowej
-    const interstitialAd =
-      InterstitialAd.createForAdRequest(interstitialAdUnitId);
+    const adUnitId =
+      Platform.OS === "ios"
+        ? "ca-app-pub-4136563182662861/1075007008" // ✅ iOS ID
+        : "ca-app-pub-4136563182662861/9144358271"; // ✅ Android ID (domyślne)
+
+    // ✅ Tworzenie reklamy z dynamicznym ID
+    const interstitialAd = InterstitialAd.createForAdRequest(adUnitId);
 
     // 🔥 Nasłuchujemy, kiedy reklama się załaduje
     const adListener = interstitialAd.addAdEventListener(
@@ -135,23 +145,29 @@ export default function WaitingScreenOverlay({
 
   if (!visible) return null;
 
+  // ✅ Pobieranie tłumaczenia
+  const translatedTitle =
+    translations[jezyk]?.[screen.titleKey] ?? "PROSZĘ CZEKAĆ";
+  const translatedSubtitle =
+    translations[jezyk]?.[screen.subtitleKey] ?? "Przygotowania w toku...";
+
   return (
     <Modal visible={visible} animationType="fade" transparent={false}>
       <ImageBackground source={screen.background} style={styles.background}>
         <View style={styles.overlay}>
           {/* 🔹 Tytuł na górze */}
           <View style={styles.header}>
-            <Text style={[styles.title, { color: screen.color }]}>
-              {screen.title}
+            <Text style={[styles.title, { color: "#219653" }]}>
+              {translatedTitle}
             </Text>
           </View>
 
           {/* 🔹 Dolna część z opisem i czasem */}
           <View style={styles.footer}>
-            <Text style={styles.subtitle}>{screen.subtitle}</Text>
-            <Text style={styles.timeText}>
+            <Text style={styles.subtitle}>{translatedSubtitle}</Text>
+            {/* <Text style={styles.timeText}>
               Pozostały czas: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
-            </Text>
+            </Text> */}
           </View>
         </View>
       </ImageBackground>

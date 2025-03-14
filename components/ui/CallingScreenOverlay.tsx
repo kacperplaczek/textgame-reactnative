@@ -34,11 +34,12 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
   onClose,
   autoNextDelay,
 }) => {
-  const [jezyk, setJezyk] = useState<"pl" | "en">("en");
+  const [jezyk, setJezyk] = useState<"pl" | "en" | null>(null); // ⏳ Początkowo `null`, czekamy na `Storage`
 
   useEffect(() => {
     const loadLang = async () => {
       const lang = await getCurrentLanguage();
+      console.log("🌍 Ustawiam język:", lang);
       setJezyk(lang);
     };
     loadLang();
@@ -51,29 +52,27 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
     }
   }, [autoNextDelay]);
 
-  if (!visible) return null;
+  if (!visible || !jezyk) return null; // ⏳ Czekamy na język
 
   console.log("📌 npcKey w CallingScreenOverlay:", npcKey);
 
   // ✅ Pobieramy dane NPC
   const npcAvatar = npcKey && npcData[npcKey] ? npcData[npcKey].avatar : null;
   const npcName =
-    npcKey && npcData[npcKey] && translations[jezyk][npcData[npcKey].nameKey]
+    npcKey && npcData[npcKey] && translations[jezyk]?.[npcData[npcKey].nameKey]
       ? translations[jezyk][npcData[npcKey].nameKey]
       : "Nieznany NPC";
 
   // ✅ Dynamiczne tłumaczenie tytułu i subtytułu
-  const translatedTitle = title
-    ? translations[jezyk] && translations[jezyk][title]
+  const translatedTitle =
+    title && translations[jezyk]?.[title]
       ? translations[jezyk][title]
-      : title
-    : translations[jezyk]?.incomingCallTitle ?? "Incoming Call";
+      : translations[jezyk]?.incomingCallTitle ?? title ?? "Incoming Call";
 
-  const translatedSubtitle = subtitle
-    ? translations[jezyk] && translations[jezyk][subtitle]
+  const translatedSubtitle =
+    subtitle && translations[jezyk]?.[subtitle] // Jeśli `subtitle` istnieje w tłumaczeniach, używamy go
       ? translations[jezyk][subtitle]
-      : subtitle
-    : translations[jezyk]?.incomingCallSubtitle ?? "Tap to answer";
+      : translations[jezyk]?.incomingCallSubtitle ?? "Kliknij, aby odebrać"; // Domyślne tłumaczenie, jeśli `subtitle` jest puste
 
   console.log("🖼️ Avatar NPC:", npcAvatar);
   console.log("🔤 Nazwa NPC:", npcName);
@@ -112,7 +111,7 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
             ) : (
               <Text style={{ color: "red" }}>Brak obrazu NPC</Text>
             )}
-            {/* 📌 PODPIS NPC (mniejsza czcionka, umieszczony POD obrazkiem) */}
+            {/* 📌 PODPIS NPC */}
             {npcName && <Text style={styles.npcName}>{npcName}</Text>}
           </View>
 
@@ -153,14 +152,13 @@ const styles = StyleSheet.create({
     width: "90%",
     height: "70%",
     padding: 20,
-    backgroundColor: "rgba(0, 0, 0, 0.9)", // 📌 Przyciemnienie dla czytelności
+    backgroundColor: "rgba(0, 0, 0, 0.9)",
     alignItems: "center",
     justifyContent: "space-between",
     borderWidth: 3,
     borderRadius: 20,
     borderColor: "#219653",
   },
-  // 🔼 GÓRNY TEKST
   topContainer: {
     width: "100%",
     alignItems: "center",
@@ -176,7 +174,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 3,
   },
-  // 🏙️ ŚRODEK: AVATAR + PODPIS NPC
   middleContainer: {
     alignItems: "center",
     justifyContent: "center",
@@ -200,7 +197,6 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
-  // 🔽 DOLNY TEKST
   bottomContainer: {
     width: "100%",
     alignItems: "center",
@@ -215,14 +211,13 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 2,
   },
-  // 🖼️ OBRAZ NA DOLE
   bottomImageContainer: {
     width: "100%",
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.7)", // 🔥 Delikatne tło dla czytelności
+    backgroundColor: "rgba(0,0,0,0.7)",
   },
   bottomImage: {
     width: "100%",

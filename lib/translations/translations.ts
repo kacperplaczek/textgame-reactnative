@@ -188,11 +188,13 @@ export const translations = {
       "W tej części statku znajdują się instrumenty nawigacyjne i sterowanie statku. Niestety nie wiemy, jak działa większość dostępnych urządzeń...",
     AIPL_akt2_dowodzenie_option1: "Zmień pomieszczenie",
     AIPL_akt2_dowodzenie_option2: "Udaj się do komory hibernacyjnej",
-
+    AIPL_dzwoni_officer_text: "Łączenie...",
     AIPL_akt2_magazyn:
       "Tutaj znajdują się skrzynie z prowiantem, lekami, uzbrojeniem i wyposażeniem dodatkowym zamówionym przez Ciebie.",
     AIPL_akt2_magazyn_option1: "Zmień pomieszczenie",
     AIPL_akt2_magazyn_option2: "Udaj się do komory hibernacyjnej",
+    incomingCallTitle: "Nadchodzące połączenie",
+    incomingCallSubtitle: "Kliknij, aby odebrać", // 🟢 DODAJ TO, jeśli brak!
 
     AIPL_akt2_zaloga:
       "Tutaj znajduje się Twoja komora hibernacyjna oraz infrastruktura niezbędna do podtrzymania życia. Nic specjalnie interesującego...",
@@ -1062,6 +1064,70 @@ export const translations = {
     menuResetCancel: "Anuluj",
     menuResetConfirm: "Tak, resetuj",
     menuResetError: "Błąd podczas restartu aplikacji:",
+
+    // GAMEMENU NEW
+    resetGame: "Resetuj grę",
+    privacyPolicy: "Polityka prywatności",
+    privacyText:
+      "Twoja prywatność jest dla nas ważna. Nie zbieramy żadnych danych osobowych.",
+    close: "Zamknij",
+    notifications: "Powiadomienia",
+    notificationsOn: "WL",
+    notificationsOff: "WYL",
+    sound: "Dźwięk",
+    soundOn: "WL",
+    soundOff: "WYL",
+    music: "Dźwięki",
+    musicOn: "WL",
+    musicOff: "WYL",
+
+    // NOTIFY SCREENS
+    // 📌 Standardowy ekran oczekiwania
+    defaultTitle: "PROSZĘ CZEKAĆ",
+    defaultSubtitle: "Przygotowania w toku...",
+
+    // 📌 Hibernacja
+    hibernacjaTitle: "HIBERNACJA W TOKU",
+    hibernacjaSubtitle: "Twoje ciało przechodzi w stan hibernacji.",
+
+    // 📌 Odpoczynek
+    odpoczynekTitle: "😴 Odpoczynek...",
+    odpoczynekSubtitle: "Regenerujesz siły przed dalszą podróżą.",
+
+    // 📌 Rekrutacja
+    rekrutacjaTitle: "PROSZĘ CZEKAĆ",
+    rekrutacjaSubtitle: "PRZETWARZANIE ZGŁOSZENIA REKRUTACYJNEGO",
+
+    // 📌 Sygnał
+    sygnalTitle: "📡 Oczekiwanie na sygnał...",
+    sygnalSubtitle: "Czekasz na połączenie ze statkiem.",
+
+    // 📌 Powrót na statek
+    powrotTitle: "Wracasz na STATEK",
+    powrotSubtitle: "Oczekiwanie na powrót na Statek.",
+
+    // 📌 Wspinaczka
+    wspinaczkaTitle: "PROSZĘ CZEKAĆ",
+    wspinaczkaSubtitle: "WSPINACZKA W TOKU",
+
+    // 📌 Przeprawa
+    przeprawaTitle: "PROSZĘ CZEKAĆ",
+    przeprawaSubtitle: "PRZEPRAWA W TOKU",
+
+    // 📌 Eksplozja
+    boomTitle: "",
+    boomSubtitle: "Proszę czekać...",
+
+    // 📌 Oczekiwanie na kosmitę
+    kosmitaTitle: "",
+    kosmitaSubtitle: "Proszę czekać...",
+
+    // 📌 Analiza kryształu
+    krysztalTitle: "ANALIZOWANIE KRYSZTAŁU",
+    krysztalSubtitle: "Proszę czekać...",
+    // Transfer do bazy obcych w toku
+    statekOdlatujeTitle: "TRANSFER DO BAZY OBCYCH",
+    statekOdlatujeSubtitle: "Proszę czekać",
   },
   en: {
     // TEST
@@ -1950,7 +2016,7 @@ export const translations = {
       "It's him. We've found the signal source. Who are you? Why are you warning us?",
     AIPL_akt3_sygnal_ostrzezenie:
       "The signal... was meant as a warning. My nature is beyond my control. If you set me free, you may unleash something you cannot comprehend.",
-
+    AIPL_dzwoni_officer_text: "Connecting...",
     AIPL_akt3_statek_reaguje:
       "His energy is unstable. The ship's systems are reacting to his presence. We must decide what to do next.",
 
@@ -2134,6 +2200,74 @@ export const translations = {
     menuResetCancel: "Cancel",
     menuResetConfirm: "Yes, reset",
     menuResetError: "Error while restarting the application:",
+    incomingCallTitle: "Incoming Call",
+    incomingCallSubtitle: "Tap to answer",
+
+    // GAME MENU NEW
+    resetGame: "Reset Game",
+    privacyPolicy: "Privacy Policy",
+    privacyText:
+      "Your privacy is important to us. We do not collect any personal data.",
+    close: "Close",
+    settings: "Settings",
+    notifications: "Notifications",
+    notificationsOn: "ON",
+    notificationsOff: "OFF",
+    sound: "Sound",
+    soundOn: "ON",
+    soundOff: "OFF",
+    music: "Music",
+    musicOn: "ON",
+    musicOff: "OFF",
+
+    //NOTIFY SCREENS
+    // 📌 Standardowy ekran oczekiwania
+    defaultTitle: "PLEASE WAIT",
+    defaultSubtitle: "Preparations in progress...",
+
+    // 📌 Hibernacja
+    hibernacjaTitle: "HIBERNATION IN PROGRESS",
+    hibernacjaSubtitle: "Your body is entering hibernation mode.",
+
+    // 📌 Odpoczynek
+    odpoczynekTitle: "😴 Resting...",
+    odpoczynekSubtitle: "Regaining strength before the journey.",
+
+    // 📌 Rekrutacja
+    rekrutacjaTitle: "PLEASE WAIT",
+    rekrutacjaSubtitle: "PROCESSING RECRUITMENT APPLICATION",
+
+    // 📌 Sygnał
+    sygnalTitle: "📡 Waiting for signal...",
+    sygnalSubtitle: "Awaiting connection with the ship.",
+
+    // 📌 Powrót na statek
+    powrotTitle: "Returning to the SHIP",
+    powrotSubtitle: "Waiting to return to the Ship.",
+
+    // 📌 Wspinaczka
+    wspinaczkaTitle: "PLEASE WAIT",
+    wspinaczkaSubtitle: "CLIMBING IN PROGRESS",
+
+    // 📌 Przeprawa
+    przeprawaTitle: "PLEASE WAIT",
+    przeprawaSubtitle: "CROSSING IN PROGRESS",
+
+    // 📌 Eksplozja
+    boomTitle: "",
+    boomSubtitle: "Please wait...",
+
+    // 📌 Oczekiwanie na kosmitę
+    kosmitaTitle: "",
+    kosmitaSubtitle: "Please wait...",
+
+    // 📌 Analiza kryształu
+    krysztalTitle: "ANALYZING CRYSTAL",
+    krysztalSubtitle: "Please wait...",
+
+    // Transfer do bazy obcych w toku
+    statekOdlatujeTitle: "Transfer to Foreign Base",
+    statekOdlatujeSubtitle: "Please wait...",
   },
 };
 

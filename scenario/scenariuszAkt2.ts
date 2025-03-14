@@ -15,7 +15,14 @@ export const getScenes = (
   plec: "pan" | "pani" | null
 ): Record<string, SceneType> => ({
   // 🔥 SCENA 1: Początek komunikacji
+
   rozpoczecie_akt2: {
+    notifyTime: 10,
+    notifyScreenName: "statek_odlatuje",
+    autoNextScene: "rozpoczecie2_akt2",
+  },
+
+  rozpoczecie2_akt2: {
     npcKey: "flightControlCenter",
     tekst: () => translations.rozpoczecieAkt2,
     options: [
@@ -141,7 +148,7 @@ export const getScenes = (
   akt2_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_hibernacja,
-    notifyTime: 100, // ! 7200 sekudn
+    notifyTime: 7200, // ! 7200 sekudn
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },
@@ -233,8 +240,8 @@ export const getScenes = (
   akt2_krysztal_analiza: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_krysztal_analiza,
-    notifyTime: 100, // 5 minut
-    notifyScreenName: "analiza_krysztalu",
+    notifyTime: 300, // 5 minut
+    notifyScreenName: "krysztal_analiza",
     autoNextScene: "akt2_krysztal_wynik",
   },
 
@@ -442,7 +449,7 @@ export const getScenes = (
   akt2_6h_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_6h_hibernacja,
-    notifyTime: 100, //! 21600 sekund
+    notifyTime: 21600, //! 21600 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_sygnal",
   },
@@ -750,6 +757,12 @@ export const getScenes = (
     notifyTime: 10, // TODO: zmienić na 1800
     notifyScreenName: "wspinaczka_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
+  },
+
+  death_explosion: {
+    npcKey: "rozbitek",
+    tekst: () => "Spadasz w otchłań",
+    deathScreen: "explosionDeathScreen",
   },
 
   akt2_jaskinie_smierc: {
