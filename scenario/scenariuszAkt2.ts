@@ -148,7 +148,7 @@ export const getScenes = (
   akt2_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_hibernacja,
-    notifyTime: 7200, // ! 7200 sekudn
+    notifyTime: 7200, // ! 7200 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },

@@ -110,6 +110,13 @@ export default function WaitingScreenOverlay({
     loadLang();
   }, [visible, notifyScreenName]);
 
+  useEffect(() => {
+    if (notifyScreenName && waitingScreens[notifyScreenName]) {
+      console.log("🔄 Wymuszam aktualizację ekranu:", notifyScreenName);
+      setScreen(waitingScreens[notifyScreenName]);
+    }
+  }, [notifyScreenName]);
+
   if (!visible) return null;
 
   const translatedTitle =
@@ -136,9 +143,9 @@ export default function WaitingScreenOverlay({
           {/* 🔹 Dolna część z opisem i czasem */}
           <View style={styles.footer}>
             <Text style={styles.subtitle}>{translatedSubtitle}</Text>
-            {/* <Text style={styles.timeText}>
+            <Text style={styles.timeText}>
               Pozostały czas: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
-            </Text> */}
+            </Text>
           </View>
         </View>
       </ImageBackground>
