@@ -8,6 +8,7 @@ node_modules/
 .expo/
 dist/
 web-build/
+build/
 expo-env.d.ts
 
 # Native
@@ -51,6 +52,7 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+package-lock.json
 
 # Native
 *.orig.*
