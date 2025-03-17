@@ -31,18 +31,6 @@ export default function RootLayout() {
   const [canPlayMusic, setCanPlayMusic] = useState<boolean | null>(null);
   const [appState, setAppState] = useState(AppState.currentState);
 
-  // ✅ Pobieranie ustawień muzyki z pamięci
-  useEffect(() => {
-    const fetchMusicSettings = async () => {
-      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
-      const isMusicOn = storedMusic !== "off";
-      console.log(`🎵 Muzyka ustawiona na: ${isMusicOn ? "ON" : "OFF"}`);
-      setCanPlayMusic(isMusicOn);
-    };
-
-    fetchMusicSettings();
-  }, []);
-
   // ✅ Konfiguracja Audio – nie powoduje błędów z `interruptionMode`
   useEffect(() => {
     (async () => {
@@ -61,41 +49,64 @@ export default function RootLayout() {
     })();
   }, []);
 
+  useEffect(() => {
+    const fetchMusicSettings = async () => {
+      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
+      const isMusicOn = storedMusic !== "off";
+      console.log(`🎵 Pobieram ustawienia: ${isMusicOn ? "ON" : "OFF"}`);
+      setCanPlayMusic(isMusicOn);
+    };
+
+    fetchMusicSettings();
+  }, []);
+
   // ✅ Funkcja do ładowania i odtwarzania muzyki
   const loadAndPlayMusic = async () => {
-    if (canPlayMusic === null || !canPlayMusic) {
-      console.log("⛔ Muzyka wyłączona – nie odtwarzam.");
+    if (canPlayMusic === null) {
+      console.log("⏳ Oczekiwanie na pobranie ustawień muzyki...");
       return;
     }
 
-    try {
-      console.log("🎵 Sprawdzanie, czy muzyka już gra...");
+    if (!canPlayMusic) {
+      console.log("⛔ Muzyka wyłączona – zatrzymuję dźwięk.");
       if (soundRef.current) {
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isLoaded && status.isPlaying) {
-          console.log("✅ Muzyka już gra – nie ładuję ponownie.");
-          return;
-        }
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+        soundRef.current = null;
       }
+      return;
+    } else {
+      try {
+        console.log("🎵 Sprawdzanie, czy muzyka już gra...");
+        if (soundRef.current) {
+          const status = await soundRef.current.getStatusAsync();
+          if (status.isLoaded && status.isPlaying) {
+            console.log("✅ Muzyka już gra – nie ładuję ponownie.");
+            return;
+          }
+        }
 
-      console.log("🎵 Ładowanie muzyki...");
-      const { sound } = await Audio.Sound.createAsync(pustynia, {
-        shouldPlay: true,
-        isLooping: true,
-        volume: 0.5,
-      });
+        console.log("🎵 Ładowanie muzyki...");
+        const { sound } = await Audio.Sound.createAsync(pustynia, {
+          shouldPlay: true,
+          isLooping: true,
+          volume: 0.5,
+        });
 
-      soundRef.current = sound;
-      await sound.playAsync();
-      console.log("🎶 Muzyka w tle odtwarzana!");
-    } catch (error) {
-      console.error("❌ Błąd odtwarzania muzyki:", error);
+        soundRef.current = sound;
+        await sound.playAsync();
+        console.log("🎶 Muzyka w tle odtwarzana!");
+      } catch (error) {
+        console.error("❌ Błąd odtwarzania muzyki:", error);
+      }
     }
   };
 
   // ✅ Odtwarzanie muzyki – nie wyłącza się po zmianie ekranu
   useEffect(() => {
-    loadAndPlayMusic();
+    if (canPlayMusic !== null) {
+      loadAndPlayMusic();
+    }
   }, [canPlayMusic]);
 
   // ✅ Wznawianie muzyki po powrocie do aplikacji

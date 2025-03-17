@@ -38,6 +38,7 @@ import {
 } from "react-native-google-mobile-ads";
 import choiceSound from "@/assets/sounds/choice.wav";
 import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
+import ActSwitcher from "@/components/ui/ActsSwitch";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -92,10 +93,6 @@ export default function StartGameScreen() {
     Platform.OS === "android"
       ? "ca-app-pub-4136563182662861/8460997846" // android
       : "ca-app-pub-4136563182662861/4480470362"; // ios
-
-  console.log(
-    `ID Reklamy ustawione na: ${optionsBanner} wykrto platformę ${Platform.OS}`
-  );
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
@@ -169,15 +166,33 @@ export default function StartGameScreen() {
     );
   };
 
-  const saveDialogue = async (dialogue: typeof dialogue) => {
+  const saveDialogue = async (
+    akt: string,
+    scene: string,
+    message: { autor: "NPC" | "GRACZ"; tekst: string; npcKey?: string }
+  ) => {
     try {
-      const aktKey = "akt1";
+      // Pobierz istniejące dialogi dla aktu
+      const storedData = await Storage.getItem({ key: "dialogue_history" });
+      const dialogues = storedData ? JSON.parse(storedData) : {};
+
+      // Jeśli akt nie istnieje w zapisanych danych, dodaj nowy
+      if (!dialogues[akt]) {
+        dialogues[akt] = [];
+      }
+
+      // Dodajemy nową linię dialogową do historii aktu
+      dialogues[akt].push({ scene, ...message });
+
+      // Zapisujemy zaktualizowaną historię
       await Storage.setItem({
-        key: `dialogue_${aktKey}`,
-        value: JSON.stringify(dialogue),
+        key: "dialogue_history",
+        value: JSON.stringify(dialogues),
       });
+
+      console.log(`✅ Zapisano dialog w ${akt}:`, { scene, ...message });
     } catch (error) {
-      console.error("Błąd zapisu historii dialogów:", error);
+      console.error("❌ Błąd zapisu historii dialogów:", error);
     }
   };
 
@@ -666,7 +681,7 @@ export default function StartGameScreen() {
 
   return (
     <ImageBackground
-      source={require("../../../assets/images/bg_komputer.png")}
+      source={require("../../../assets/images/INTRO.png")}
       style={styles.background}
       resizeMode="cover"
     >
@@ -678,6 +693,7 @@ export default function StartGameScreen() {
 
       <StatusBar hidden />
 
+      <ActSwitcher />
       <GameMenu onReset={""} />
 
       <WaitingScreenOverlay

@@ -32,6 +32,7 @@ import SpecialSceneOverlay from "@/components/ui/CallingScreenOverlay";
 import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
 import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import ActSwitcher from "@/components/ui/ActsSwitch";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -463,7 +464,7 @@ export default function StartGameScreen() {
     // ✅ **Obsługa `notifyTime` (czekanie na kolejną scenę)**
     if (scene.notifyTime) {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
-      const now = Math.floor(Date.now() / 1000); // Aktualny czas w sekundach
+      const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
@@ -480,7 +481,6 @@ export default function StartGameScreen() {
           setWaitingScreenVisible(false);
           setRemainingTime(null);
 
-          // **PRZECHODZIMY OD RAZU DO KOLEJNEJ SCENY**
           return handleSceneChange(scene.autoNextScene);
         }
 
@@ -488,11 +488,10 @@ export default function StartGameScreen() {
           `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
         );
 
-        // **Ustawiamy czas pozostały do końca odliczania**
         setWaiting({
           sceneName: scene.autoNextScene ?? sceneName,
-          endTime: endTime,
-          notifyScreenName: scene.notifyScreenName ?? "default",
+          endTime: parseInt(storedEndTime),
+          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
         });
 
         setWaitingScreenVisible(true);
@@ -500,28 +499,26 @@ export default function StartGameScreen() {
         return;
       }
 
-      // **Tylko jeśli `waitingEndTime` nie było zapisane – ustawiamy nowy czas**
-      if (!storedEndTime) {
-        const endTime = now + scene.notifyTime;
-        await Storage.setItem({
-          key: "waitingEndTime",
-          value: endTime.toString(),
-        });
-        await Storage.setItem({
-          key: "waitingScene",
-          value: scene.autoNextScene,
-        });
+      const endTime = now + scene.notifyTime;
+      await Storage.setItem({
+        key: "waitingEndTime",
+        value: endTime.toString(),
+      });
+      await Storage.setItem({
+        key: "waitingScene",
+        value: scene.autoNextScene,
+      });
 
-        console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+      console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
 
-        setWaiting({
-          sceneName: scene.autoNextScene ?? sceneName,
-          endTime: endTime,
-          notifyScreenName: scene.notifyScreenName ?? "default",
-        });
-        setWaitingScreenVisible(true);
-        setRemainingTime(scene.notifyTime);
-      }
+      setWaiting({
+        sceneName: scene.autoNextScene ?? sceneName,
+        endTime: endTime,
+        notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+      });
+
+      setWaitingScreenVisible(true);
+      setRemainingTime(scene.notifyTime);
     }
 
     // ✅ **Obsługa `specialScreen`**
@@ -1041,11 +1038,12 @@ export default function StartGameScreen() {
     </View>
   ) : (
     <ImageBackground
-      source={require("../../../assets/images/bg_komputer.png")}
+      source={require("../../../assets/images/INTRO.png")}
       style={getStyles().background}
       resizeMode="cover"
     >
       <StatusBar hidden />
+      <ActSwitcher />
       <GameMenu onReset={undefined} />
 
       <WaitingScreenOverlay

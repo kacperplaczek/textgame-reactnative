@@ -33,6 +33,7 @@ import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import choiceSound from "@/assets/sounds/choice.wav";
 import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
+import ActSwitcher from "@/components/ui/ActsSwitch";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -91,9 +92,13 @@ export default function StartGameScreen() {
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
-    console.log("📌 Aktualne tłumaczenia:", translations[jezyk]);
+    // console.log("📌 Aktualne tłumaczenia:", translations[jezyk]);
     console.log("📌 Aktualny język:", jezyk);
     console.log("📌 Opcje wyboru:", options);
+    console.log(
+      "📌 Aktualnie ustawiony akt: ",
+      Storage.getItem({ key: "currentAct" })
+    );
   }, [refreshKey]);
 
   useEffect(() => {
@@ -293,21 +298,30 @@ export default function StartGameScreen() {
       const storedScene = await Storage.getItem({ key: "waitingScene" });
 
       if (storedEndTime && storedScene) {
-        const endTime = parseInt(storedEndTime, 10); // Pobieramy zapisany czas jako liczba (ms)
-        const now = Date.now(); // Pobieramy aktualny timestamp (ms)
-        const remaining = Math.max(0, Math.floor((endTime - now) / 1000)); // Konwersja na sekundy
+        const endTime = parseInt(storedEndTime, 10); // Pobieramy zapisany czas
+        const now = Math.floor(Date.now() / 1000); // Pobieramy aktualny timestamp w sekundach
+        const remaining = Math.max(0, endTime - now); // Obliczamy czas pozostały
 
         console.log(`⏳ Pozostały czas: ${remaining} sekund`);
 
         if (remaining > 0) {
           console.log("🔄 Przywracanie ekranu oczekiwania...");
-
           setWaiting({ sceneName: storedScene, endTime });
           setWaitingScreenVisible(true);
           setRemainingTime(remaining);
         } else {
+          console.log("✅ Czas minął! Zmieniam scenę...");
+
+          // ✅ Resetujemy stan oczekiwania
           setWaiting(null);
           setWaitingScreenVisible(false);
+          setRemainingTime(null);
+
+          // ✅ Usuwamy zapisane wartości z `Storage`
+          await Storage.removeItem({ key: "waitingEndTime" });
+          await Storage.removeItem({ key: "waitingScene" });
+
+          // ✅ Przechodzimy do nowej sceny
           handleSceneChange(storedScene);
         }
       }
@@ -465,7 +479,7 @@ export default function StartGameScreen() {
     // ✅ **Obsługa `notifyTime` (czekanie na kolejną scenę)**
     if (scene.notifyTime) {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
-      const now = Math.floor(Date.now() / 1000); // Aktualny czas w sekundach
+      const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
@@ -482,7 +496,6 @@ export default function StartGameScreen() {
           setWaitingScreenVisible(false);
           setRemainingTime(null);
 
-          // **PRZECHODZIMY OD RAZU DO KOLEJNEJ SCENY**
           return handleSceneChange(scene.autoNextScene);
         }
 
@@ -490,11 +503,10 @@ export default function StartGameScreen() {
           `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
         );
 
-        // **Ustawiamy czas pozostały do końca odliczania**
         setWaiting({
           sceneName: scene.autoNextScene ?? sceneName,
-          endTime: endTime,
-          notifyScreenName: scene.notifyScreenName ?? "default",
+          endTime: parseInt(storedEndTime),
+          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
         });
 
         setWaitingScreenVisible(true);
@@ -502,28 +514,26 @@ export default function StartGameScreen() {
         return;
       }
 
-      // **Tylko jeśli `waitingEndTime` nie było zapisane – ustawiamy nowy czas**
-      if (!storedEndTime) {
-        const endTime = now + scene.notifyTime;
-        await Storage.setItem({
-          key: "waitingEndTime",
-          value: endTime.toString(),
-        });
-        await Storage.setItem({
-          key: "waitingScene",
-          value: scene.autoNextScene,
-        });
+      const endTime = now + scene.notifyTime;
+      await Storage.setItem({
+        key: "waitingEndTime",
+        value: endTime.toString(),
+      });
+      await Storage.setItem({
+        key: "waitingScene",
+        value: scene.autoNextScene,
+      });
 
-        console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+      console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
 
-        setWaiting({
-          sceneName: scene.autoNextScene ?? sceneName,
-          endTime: endTime,
-          notifyScreenName: scene.notifyScreenName ?? "default",
-        });
-        setWaitingScreenVisible(true);
-        setRemainingTime(scene.notifyTime);
-      }
+      setWaiting({
+        sceneName: scene.autoNextScene ?? sceneName,
+        endTime: endTime,
+        notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+      });
+
+      setWaitingScreenVisible(true);
+      setRemainingTime(scene.notifyTime);
     }
 
     // ✅ **Obsługa `specialScreen`**
@@ -891,6 +901,7 @@ export default function StartGameScreen() {
   return darknessUI ? (
     <View style={getStyles().background}>
       <StatusBar hidden />
+      <ActSwitcher />
       <GameMenu />
 
       <WaitingScreenOverlay
@@ -982,9 +993,10 @@ export default function StartGameScreen() {
     </View>
   ) : (
     <ImageBackground
-      source={require("../../../assets/images/bg_komputer.png")}
+      source={require("../../../assets/images/INTRO.png")}
       style={getStyles().background}
       resizeMode="cover"
+      blurRadius={0}
     >
       <StatusBar hidden />
       <GameMenu />
@@ -1189,7 +1201,16 @@ const stylesDarkness = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  background: { flex: 1, width: "100%", height: "100%" },
+  background: {
+    flex: 1,
+    width: "100%",
+    height: "100%",
+    position: "absolute",
+    backgroundPosition: "center",
+    top: 0,
+    left: 0,
+  },
+
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
