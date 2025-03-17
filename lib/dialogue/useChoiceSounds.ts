@@ -1,8 +1,6 @@
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
 import Storage from "expo-storage";
-
-// ✅ Import pliku dźwiękowego
 import choiceSound from "@/assets/sounds/choice.wav";
 
 export default function useChoiceSound() {
@@ -12,8 +10,8 @@ export default function useChoiceSound() {
   // ✅ Pobieranie ustawień dźwięku
   useEffect(() => {
     const fetchSoundSettings = async () => {
-      const storedSound = await Storage.getItem({ key: "soundEnabled" });
-      const isSoundOn = storedSound !== "off"; // Jeśli `off`, nie odtwarzaj
+      const storedSound = await Storage.getItem({ key: "canPlayMusic" });
+      const isSoundOn = storedSound !== "off";
       console.log(`🔊 Ustawienia dźwięku: ${isSoundOn ? "ON" : "OFF"}`);
       setSoundEnabled(isSoundOn);
     };
@@ -21,11 +19,17 @@ export default function useChoiceSound() {
     fetchSoundSettings();
   }, []);
 
-  // ✅ Ładowanie dźwięku tylko raz przy starcie aplikacji
+  // ✅ Ładowanie dźwięku
   useEffect(() => {
     const loadSound = async () => {
+      if (!soundEnabled) {
+        console.log("🔇 Dźwięk wyłączony – nie ładuję.");
+        return;
+      }
+
       try {
         const { sound } = await Audio.Sound.createAsync(choiceSound);
+        await sound.setVolumeAsync(1.0);
         setSound(sound);
         console.log("✅ Dźwięk kliknięcia załadowany.");
       } catch (error) {
@@ -37,11 +41,11 @@ export default function useChoiceSound() {
 
     return () => {
       if (sound) {
-        sound.unloadAsync(); // ✅ Zwolnienie pamięci przy zamknięciu aplikacji
+        sound.unloadAsync();
         console.log("🛑 Dźwięk kliknięcia zwolniony z pamięci.");
       }
     };
-  }, []);
+  }, [soundEnabled]);
 
   // ✅ Funkcja do odtwarzania dźwięku
   const playChoiceSound = async () => {
@@ -52,7 +56,7 @@ export default function useChoiceSound() {
 
     try {
       console.log("🔊 Odtwarzanie dźwięku kliknięcia...");
-      await sound.setPositionAsync(0); // ⬅️ Resetujemy dźwięk do początku
+      await sound.setPositionAsync(0);
       await sound.playAsync();
     } catch (error) {
       console.error("❌ Błąd odtwarzania dźwięku kliknięcia:", error);

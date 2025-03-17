@@ -50,24 +50,37 @@ export default function GameMenu({ onReset }) {
 
   // ✅ Przełączanie muzyki
   const toggleMusic = async () => {
-    const newSetting = canPlayMusic ? "off" : "on";
-    await Storage.setItem({ key: "canPlayMusic", value: newSetting });
-    setCanPlayMusic(!canPlayMusic);
-    setTimeout(async () => {
-      try {
-        await Updates.reloadAsync();
-      } catch (e) {
-        console.error("❌ Błąd restartu:", e);
-      }
-    }, 500);
+    try {
+      const newSetting = canPlayMusic ? "off" : "on";
+      await Storage.setItem({ key: "canPlayMusic", value: newSetting });
+
+      console.log("test");
+      setCanPlayMusic(!canPlayMusic);
+
+      console.log(
+        `🎵 Ustawienie muzyki: ${newSetting}, restartuję aplikację...`
+      );
+
+      setTimeout(async () => {
+        try {
+          await Updates.reloadAsync(); // 🔄 Restart aplikacji
+        } catch (e) {
+          console.error("❌ Błąd restartu:", e);
+        }
+      }, 500);
+    } catch (e) {
+      console.error("❌ Błąd zmiany muzyki:", e);
+    }
   };
 
-  // ✅ Przełączanie dźwięku
-  const toggleSound = async () => {
-    const newSetting = soundEnabled ? "off" : "on";
-    await Storage.setItem({ key: "soundEnabled", value: newSetting });
-    setSoundEnabled(!soundEnabled);
-  };
+  useEffect(() => {
+    const checkMusicSetting = async () => {
+      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
+      setCanPlayMusic(storedMusic !== "off");
+    };
+
+    checkMusicSetting();
+  }, [canPlayMusic]); // 🔥 Jeśli `canPlayMusic` się zmienia, odczytaj nowe ustawienie
 
   // ✅ Przełączanie powiadomień
   const toggleNotifications = async () => {
@@ -218,7 +231,7 @@ const styles = StyleSheet.create({
   menuButton: {
     position: "absolute",
     zIndex: 100,
-    top: 20,
+    top: 40,
     right: 20,
     backgroundColor: "transparent",
     paddingVertical: 10,

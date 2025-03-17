@@ -1,106 +1,105 @@
+import React, { useEffect, useState } from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useRouter } from "expo-router";
-import { actsConfig } from "@/lib/settings/actConfig";
-import { useEffect, useState } from "react";
 import Storage from "expo-storage";
+import { useRouter } from "expo-router";
 
-export default function ActsSwitch() {
-  const [completedActs, setCompletedActs] = useState<string[]>([]);
+const ActSwitcher = () => {
   const [currentAct, setCurrentAct] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-
+  const [completedActs, setCompletedActs] = useState<string[]>([]);
   const router = useRouter();
 
   useEffect(() => {
-    const fetchData = async () => {
-      const completed = [];
-      for (const act of actsConfig) {
-        const isCompleted = await Storage.getItem({ key: act.completedKey });
-        if (isCompleted === "true") {
-          completed.push(act.key);
-        }
-      }
-      const current = await Storage.getItem({ key: "currentAct" });
-
-      setCompletedActs(completed);
-      setCurrentAct(current);
-      setLoading(false);
+    const loadActData = async () => {
+      const act = await Storage.getItem({ key: "currentAct" });
+      const completed = await Storage.getItem({ key: "completedActs" });
+      setCurrentAct(act);
+      setCompletedActs(completed ? JSON.parse(completed) : []);
     };
-
-    fetchData();
+    loadActData();
   }, []);
 
-  if (loading) {
-    return (
-      <View style={styles.container}>
-        <Text style={styles.loadingText}>Ładowanie aktów...</Text>
-      </View>
-    );
-  }
-
-  const currentActTitle =
-    actsConfig.find((act) => act.key === currentAct)?.title || "Nieznany akt";
+  const handleActSwitch = (act: string) => {
+    if (act === currentAct) {
+      router.replace(`/${act}.tsx`);
+    } else {
+      router.push(`/history?act=${act}`);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.currentActText}>Aktualny akt: {currentActTitle}</Text>
-      {actsConfig.map((act) => {
-        const isCompleted = completedActs.includes(act.key);
-        const isCurrent = act.key === currentAct;
-
-        if (!isCompleted && !isCurrent) {
-          return null;
-        }
-
-        return (
+      <View style={styles.switcherContainer}>
+        {completedActs.map((act) => (
           <TouchableOpacity
-            key={act.key}
-            style={[styles.button, isCurrent && styles.activeButton]}
-            onPress={() => router.replace(`/${act.key}` as any)}
+            key={act}
+            style={[styles.tab, styles.completedTab]}
+            onPress={() => handleActSwitch(act)}
           >
-            <Text style={styles.buttonText}>{act.title}</Text>
+            <Text style={[styles.tabText, styles.completedText]}>
+              {act.replace("akt-", "AKT ").toUpperCase()}
+            </Text>
           </TouchableOpacity>
-        );
-      })}
+        ))}
+        {currentAct && (
+          <TouchableOpacity
+            style={[styles.tab, styles.currentTab]}
+            onPress={() => handleActSwitch(currentAct)}
+          >
+            <Text style={[styles.tabText, styles.currentText]}>
+              {currentAct.replace("akt-", "AKT ").toUpperCase()}
+            </Text>
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    top: 10,
-    left: 10,
-    backgroundColor: "black",
-    padding: 10,
-    borderWidth: 2,
-    borderColor: "limegreen",
-    borderRadius: 8,
+    top: 40,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    backgroundColor: "transparent",
   },
-  loadingText: {
-    color: "limegreen",
-    fontFamily: "VT323Regular",
-    fontSize: 16,
+  switcherContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  currentActText: {
-    color: "limegreen",
-    fontFamily: "VT323Regular",
-    fontSize: 16,
-    marginBottom: 8,
+  tab: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    marginRight: 5,
   },
-  button: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "limegreen",
-    borderRadius: 8,
-    marginBottom: 4,
+  completedTab: {
+    backgroundColor: "gray",
+    opacity: 0.5,
   },
-  activeButton: {
+  currentTab: {
     backgroundColor: "#219653",
-  },
-  buttonText: {
     color: "black",
-    fontFamily: "VT323Regular",
+  },
+  tabText: {
     fontSize: 16,
+    fontFamily: "VT323Regular",
+  },
+  completedText: {
+    color: "black",
+  },
+  currentText: {
+    color: "black",
+  },
+  menuText: {
+    fontSize: 18,
+    fontFamily: "VT323Regular",
+    color: "#1B5E20",
   },
 });
+
+export default ActSwitcher;

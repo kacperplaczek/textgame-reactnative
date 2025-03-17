@@ -108,7 +108,24 @@ export default function WaitingScreenOverlay({
     };
 
     loadLang();
-  }, [visible, notifyScreenName]);
+
+    // 🔥 Sprawdzenie, czy czas się skończył – jeśli tak, zamknij ekran!
+    if (timeLeft <= 0) {
+      console.log("✅ Czas się skończył! Ukrywam ekran oczekiwania.");
+
+      setTimeout(async () => {
+        setWaitingScreenVisible(false); // ⬅️ Ukryj ekran natychmiast
+        setWaiting(null); // ⬅️ Zresetuj stan oczekiwania
+
+        // ✅ Wyczyszczenie `Storage`
+        await Storage.removeItem({ key: "waitingEndTime" });
+        await Storage.removeItem({ key: "waitingScene" });
+
+        // ✅ Ustawienie nowej sceny
+        handleSceneChange(notifyScreenName);
+      }, 500);
+    }
+  }, [visible, notifyScreenName, timeLeft]); // 🔥 Dodaj `timeLeft` jako zależność
 
   useEffect(() => {
     if (notifyScreenName && waitingScreens[notifyScreenName]) {
@@ -123,6 +140,8 @@ export default function WaitingScreenOverlay({
     translations[jezyk]?.[screen.titleKey] ?? "PROSZĘ CZEKAĆ";
   const translatedSubtitle =
     translations[jezyk]?.[screen.subtitleKey] ?? "Przygotowania w toku...";
+  const translatedWaitingTime =
+    translations[jezyk]?.[screen.WaitingTime] ?? "Pozostało";
 
   return (
     <Modal
@@ -143,9 +162,10 @@ export default function WaitingScreenOverlay({
           {/* 🔹 Dolna część z opisem i czasem */}
           <View style={styles.footer}>
             <Text style={styles.subtitle}>{translatedSubtitle}</Text>
-            {/* <Text style={styles.timeText}>
-              Pozostały czas: {Math.floor(timeLeft / 60)}m {timeLeft % 60}s
-            </Text> */}
+            <Text style={styles.timeText}>
+              {translatedWaitingTime}: {Math.floor(timeLeft / 60)}m{" "}
+              {timeLeft % 60}s
+            </Text>
           </View>
         </View>
       </ImageBackground>

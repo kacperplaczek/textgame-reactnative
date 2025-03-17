@@ -1065,6 +1065,9 @@ export const translations = {
     menuResetConfirm: "Tak, resetuj",
     menuResetError: "Błąd podczas restartu aplikacji:",
 
+    // OTHER
+    WaitingTime: "Pozostały czas",
+
     // GAMEMENU NEW
     resetGame: "Resetuj grę",
     privacyPolicy: "Polityka prywatności",
@@ -2231,6 +2234,9 @@ export const translations = {
     // Start Screen
     startScreenTitle: "NO RETURN",
     startScreenSubtitle: "CLICK THE SCREEN TO BEGIN",
+
+    // OTHER
+    WaitingTime: "Remaning Time",
 
     // Menu
     menuButtonText: "MENU",
