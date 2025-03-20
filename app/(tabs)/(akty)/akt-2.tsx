@@ -135,15 +135,29 @@ export default function StartGameScreen() {
   };
 
   //? Zapisywanie dialogów
-  const saveDialogue = async (dialogue: void) => {
+  const saveDialogue = async (
+    akt: string,
+    scene: string,
+    message: { autor: "NPC" | "GRACZ"; tekst: string; npcKey?: string }
+  ) => {
     try {
-      const aktKey = "akt1";
+      const storedData = await Storage.getItem({ key: "dialogue_history" });
+      const dialogues = storedData ? JSON.parse(storedData) : {};
+
+      if (!dialogues[akt]) {
+        dialogues[akt] = [];
+      }
+
+      dialogues[akt].push({ scene, ...message });
+
       await Storage.setItem({
-        key: `dialogue_${aktKey}`,
-        value: JSON.stringify(dialogue),
+        key: "dialogue_history",
+        value: JSON.stringify(dialogues),
       });
+
+      console.log(`✅ Zapisano dialog dla aktu ${akt}:`, dialogues[akt]);
     } catch (error) {
-      console.error("Błąd zapisu historii dialogów:", error);
+      console.error("❌ Błąd zapisu historii dialogów:", error);
     }
   };
 
@@ -210,7 +224,7 @@ export default function StartGameScreen() {
 
     const started = await Storage.getItem({ key: "gameStarted" });
     const currentAct =
-      (await Storage.getItem({ key: "currentAct" })) || "akt-1";
+      (await Storage.getItem({ key: "currentAct" })) || "akt-2";
     const storedScene = await DialogueController.getScene();
 
     console.log("📌 currentAct:", currentAct);
@@ -235,8 +249,50 @@ export default function StartGameScreen() {
       handleSceneChange(storedScene);
     }
 
+    // if (storedScene) {
+    //   setCurrentScene(storedScene);
+    //   handleSceneChange(storedScene);
+    // } else {
+    //   console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_akt2");
+    //   setCurrentScene("rozpoczecie_akt2");
+    //   handleSceneChange("rozpoczecie_akt2");
+    // }
+
     setIsLoading(false);
   }, []);
+
+  // const checkGameStarted = useCallback(async () => {
+  //   setIsLoading(true);
+
+  //   const started = await Storage.getItem({ key: "gameStarted" });
+  //   const currentAct =
+  //     (await Storage.getItem({ key: "currentAct" })) || "akt-1";
+  //   const storedScene = await DialogueController.getScene();
+
+  //   console.log("📌 currentAct:", currentAct);
+  //   console.log("📌 gameStarted:", started);
+  //   console.log("📌 storedScene:", storedScene);
+
+  //   if (started === "true") {
+  //     setHasStartedGame(true);
+  //   } else {
+  //     setHasStartedGame(false);
+  //   }
+
+  //   // 🟢 Jeśli nie ma zapisanego `storedScene` lub pochodzi z innego aktu – zaczynamy nowy akt
+  //   if (!storedScene || !storedScene.startsWith("akt3_")) {
+  //     console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_aktu");
+  //     setCurrentScene("rozpoczecie_aktu");
+  //     handleSceneChange("rozpoczecie_aktu");
+  //   } else {
+  //     // 🟢 Jeśli `storedScene` istnieje i należy do nowego aktu, kontynuujemy
+  //     console.log("📌 Przywracam zapisaną scenę:", storedScene);
+  //     setCurrentScene(storedScene);
+  //     handleSceneChange(storedScene);
+  //   }
+
+  //   setIsLoading(false);
+  // }, []);
 
   useEffect(() => {
     const checkWaitingState = async () => {
@@ -257,10 +313,6 @@ export default function StartGameScreen() {
           setWaitingScreenVisible(true);
           setRemainingTime(remaining);
         } else {
-          console.log(
-            "Czas minął, usuwanie zapisanej wartości i zmiana sceny..."
-          );
-
           setWaiting(null);
           setWaitingScreenVisible(false);
           handleSceneChange(storedScene);
@@ -333,14 +385,22 @@ export default function StartGameScreen() {
     }, 100);
   }, [dialogue]);
 
-  const addMessage = (
+  const addMessage = async (
     autor: "NPC" | "GRACZ",
     tekst: string,
     npcKey?: NpcKey
   ) => {
+    const currentAct =
+      (await Storage.getItem({ key: "currentAct" })) || "startgame";
+    console.log("📌 Aktualny akt zapisany w pamięci:", currentAct);
+
     setDialogue((prev) => {
       const updatedDialogue = [...prev, { autor, tekst, npcKey }];
-      saveDialogue(updatedDialogue);
+      saveDialogue(currentAct, currentScene ?? "unknown", {
+        autor,
+        tekst,
+        npcKey,
+      });
       return updatedDialogue;
     });
   };
@@ -506,11 +566,14 @@ export default function StartGameScreen() {
       });
       await Storage.setItem({
         key: "waitingScene",
-        value: scene.autoNextScene,
+        value: scene.notifyScreenName,
       });
 
       console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
-
+      console.log(
+        "✅ Zapisuję waitingScene:",
+        scene.notifyScreenName || scene.sceneName || "default"
+      );
       setWaiting({
         sceneName: scene.autoNextScene ?? sceneName,
         endTime: endTime,
@@ -610,6 +673,22 @@ export default function StartGameScreen() {
         actKey: sceneName,
         nextAct: scene.nextAct || "startgame",
       });
+
+      // ✅ Pobranie dotychczas ukończonych aktów
+      const completedActs = await Storage.getItem({ key: "completedActs" });
+      let updatedCompletedActs = completedActs ? JSON.parse(completedActs) : [];
+
+      // ✅ Pobranie aktualnego aktu zamiast nazwy sceny
+      const currentAct = await Storage.getItem({ key: "currentAct" });
+
+      if (currentAct && !updatedCompletedActs.includes(currentAct)) {
+        updatedCompletedActs.push(currentAct);
+        await Storage.setItem({
+          key: "completedActs",
+          value: JSON.stringify(updatedCompletedActs),
+        });
+        console.log("🎉 Ukończono akt:", currentAct);
+      }
     }
   };
 
@@ -1044,7 +1123,7 @@ export default function StartGameScreen() {
     >
       <StatusBar hidden />
       <ActSwitcher />
-      <GameMenu onReset={undefined} />
+      <GameMenu />
 
       <WaitingScreenOverlay
         visible={waitingScreenVisible}

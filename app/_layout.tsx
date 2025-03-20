@@ -38,7 +38,6 @@ export default function RootLayout() {
         await Audio.setAudioModeAsync({
           allowsRecordingIOS: false, // ❌ Nie pyta o mikrofon
           playsInSilentModeIOS: false, // ✅ Gra w trybie cichym
-          staysActiveInBackground: false, // ✅ Pozostaje aktywne w tle
           shouldDuckAndroid: false, // 🔄 Nie wycisza innych dźwięków
           playThroughEarpieceAndroid: false,
         });
@@ -175,3 +174,9 @@ export default function RootLayout() {
     </LanguageProvider>
   );
 }
+
+const styles = StyleSheet.create({
+  bgDefault: {
+    backgroundColor: "black",
+  },
+});

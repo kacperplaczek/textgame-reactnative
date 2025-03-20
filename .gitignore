@@ -61,6 +61,8 @@ package-lock.json
 *.p12
 *.key
 *.mobileprovision
+*.aab
+*.apk
 
 # Metro
 .metro-health-check*

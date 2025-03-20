@@ -67,8 +67,10 @@ export const translations = {
     pojedynczy: "Nie widzę przeszkód... Jaki statek preferujesz?",
     wybor_zaopatrzenia:
       "Przekonamy się, ile masz szczęścia... Wybierz dodatkowe zaopatrzenie.",
-    pytanie_o_zdrowie:
-      "Czy miałeś/aś stwierdzone zaburzenia wpływające na misję?",
+    pytanie_o_zdrowie_pan:
+      "Czy miałeś stwierdzone zaburzenia wpływające na misję?",
+    pytanie_o_zdrowie_pani:
+      "Czy miałaś stwierdzone zaburzenia wpływające na misję?",
     potwierdzenie_formularza: "Potwierdź wysłanie formularza...",
     rozpatrzenie_wynik:
       "Twoje zgłoszenie zostało rozpatrzone pozytywnie. Termin startu: NIEZWŁOCZNY",
@@ -1171,6 +1173,28 @@ export const translations = {
     // Transfer do bazy obcych w toku
     statekOdlatujeTitle: "TRANSFER DO BAZY OBCYCH",
     statekOdlatujeSubtitle: "Proszę czekać",
+
+    // 📌 Tłumaczenia nazw aktów
+    startgameTitle: "AKT I",
+    startgameSubtitle: "Wstęp do przygody",
+
+    akt1Title: "AKT II",
+    akt1Subtitle: "Początek podróży",
+
+    akt2Title: "AKT III",
+    akt2Subtitle: "Nowe wyzwania",
+
+    akt3Title: "AKT IV",
+    akt3Subtitle: "Konflikt narasta",
+
+    akt4Title: "AKT V",
+    akt4Subtitle: "Zbliżające się rozwiązanie",
+
+    akt5Title: "AKT VI",
+    akt5Subtitle: "Wielki finał",
+
+    historyEmpty: "Brak zapisanej historii dla tego aktu.",
+    backButton: "Wróć do poprzedniej strony",
   },
   en: {
     // TEST
@@ -2360,9 +2384,31 @@ export const translations = {
     krysztalTitle: "ANALYZING CRYSTAL",
     krysztalSubtitle: "Please wait...",
 
-    // Transfer do bazy obcych w toku
+    // 📌 Transfer do bazy obcych w toku
     statekOdlatujeTitle: "Transfer to Foreign Base",
     statekOdlatujeSubtitle: "Please wait...",
+
+    // 📌 Tłumaczenia nazw aktów
+    startgameTitle: "ACT I",
+    startgameSubtitle: "Wstęp do przygody",
+
+    akt1Title: "ACT II",
+    akt1Subtitle: "Początek podróży",
+
+    akt2Title: "ACT III",
+    akt2Subtitle: "Nowe wyzwania",
+
+    akt3Title: "ACT IV",
+    akt3Subtitle: "Konflikt narasta",
+
+    akt4Title: "ACT V",
+    akt4Subtitle: "Zbliżające się rozwiązanie",
+
+    akt5Title: "ACT VI",
+    akt5Subtitle: "Wielki finał",
+
+    historyEmpty: "No data saved",
+    backButton: "Back to previous card",
   },
 };
 

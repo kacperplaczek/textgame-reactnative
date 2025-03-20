@@ -149,7 +149,10 @@ export const getScenes = (
 
   pytanie_o_zdrowie: {
     npcKey: "officer",
-    tekst: () => translations.pytanie_o_zdrowie,
+    tekst: () =>
+      plec
+        ? translations[`pytanie_o_zdrowie_${plec}`]
+        : translations.pytanie_o_zdrowie,
     options: [
       {
         tekst: translations.pytanieOZdrowieOpcja1,

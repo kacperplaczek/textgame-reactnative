@@ -148,7 +148,7 @@ export const getScenes = (
   akt2_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_hibernacja,
-    notifyTime: 7200, // ! 7200 sekund
+    notifyTime: 600, // ! 7200 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },
@@ -449,7 +449,7 @@ export const getScenes = (
   akt2_6h_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_6h_hibernacja,
-    notifyTime: 21600, //! 21600 sekund
+    notifyTime: 600, //! 21600 sekund
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_sygnal",
   },
@@ -754,7 +754,7 @@ export const getScenes = (
   akt2_przelecze_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_przelecze_koniec_waitTime,
-    notifyTime: 10, // TODO: zmienić na 1800
+    notifyTime: 600, // TODO: zmienić na 1800
     notifyScreenName: "wspinaczka_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
@@ -774,7 +774,7 @@ export const getScenes = (
   akt2_jaskinie_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_jaskinie_koniec_waitTime,
-    notifyTime: 1800, // testowo 10 sekund
+    notifyTime: 600, // testowo 10 sekund
     notifyScreenName: "przeprawa_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },

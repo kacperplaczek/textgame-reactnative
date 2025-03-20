@@ -159,19 +159,21 @@ export default function GameMenu({ onReset }) {
               {/* Sekcja przełączników */}
               <View style={styles.upperSection}>
                 {/* Przełącznik muzyki */}
-                <View style={styles.optionRow}>
+                {/* Przełącznik muzyki */}
+                <TouchableOpacity
+                  style={styles.optionRow}
+                  onPress={toggleMusic}
+                >
                   <Text style={styles.optionLabel}>
                     {translations[jezyk].music}
                   </Text>
                   <Text style={styles.optionDots}>....................</Text>
-                  <TouchableOpacity onPress={toggleMusic}>
-                    <Text style={styles.optionValue}>
-                      {canPlayMusic
-                        ? translations[jezyk].musicOn
-                        : translations[jezyk].musicOff}
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                  <Text style={styles.optionValue}>
+                    {canPlayMusic
+                      ? translations[jezyk].musicOn
+                      : translations[jezyk].musicOff}
+                  </Text>
+                </TouchableOpacity>
 
                 {/* Przycisk polityki prywatności */}
                 <TouchableOpacity

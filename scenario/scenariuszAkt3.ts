@@ -1295,7 +1295,7 @@ export const getScenes = (
   akt3_statek_stabilny: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt3_statek_stabilny,
-    notifyTime: 1800,
+    notifyTime: 300,
     notifyScreenName: "kosmita_oczekiwanie",
     autoNextScene: "akt3_decyzja_misji",
   },

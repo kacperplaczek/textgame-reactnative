@@ -172,25 +172,21 @@ export default function StartGameScreen() {
     message: { autor: "NPC" | "GRACZ"; tekst: string; npcKey?: string }
   ) => {
     try {
-      // Pobierz istniejące dialogi dla aktu
       const storedData = await Storage.getItem({ key: "dialogue_history" });
       const dialogues = storedData ? JSON.parse(storedData) : {};
 
-      // Jeśli akt nie istnieje w zapisanych danych, dodaj nowy
       if (!dialogues[akt]) {
         dialogues[akt] = [];
       }
 
-      // Dodajemy nową linię dialogową do historii aktu
       dialogues[akt].push({ scene, ...message });
 
-      // Zapisujemy zaktualizowaną historię
       await Storage.setItem({
         key: "dialogue_history",
         value: JSON.stringify(dialogues),
       });
 
-      console.log(`✅ Zapisano dialog w ${akt}:`, { scene, ...message });
+      console.log(`✅ Zapisano dialog dla aktu ${akt}:`, dialogues[akt]);
     } catch (error) {
       console.error("❌ Błąd zapisu historii dialogów:", error);
     }
@@ -309,31 +305,24 @@ export default function StartGameScreen() {
     scrollRef.current?.scrollToEnd({ animated: true });
   }, [dialogue]);
 
-  const addMessage = (
+  const addMessage = async (
     autor: "NPC" | "GRACZ",
     tekst: string,
     npcKey?: NpcKey
   ) => {
+    const currentAct =
+      (await Storage.getItem({ key: "currentAct" })) || "startgame";
+    console.log("📌 Aktualny akt zapisany w pamięci:", currentAct);
+
     setDialogue((prev) => {
       const updatedDialogue = [...prev, { autor, tekst, npcKey }];
-      saveDialogue(updatedDialogue);
+      saveDialogue(currentAct, currentScene ?? "unknown", {
+        autor,
+        tekst,
+        npcKey,
+      });
       return updatedDialogue;
     });
-  };
-
-  const handleDeathScreenPress = async () => {
-    const lastCheckpoint = await DialogueController.getLastCheckpoint();
-    if (lastCheckpoint) {
-      await DialogueController.clearAfterCheckpoint(lastCheckpoint);
-      await DialogueController.clearDeathScreen();
-      await stopSound();
-
-      setDead(false);
-      setDeadScreen(null);
-      setDialogue([]);
-      setOptions([]);
-      setCurrentScene(lastCheckpoint);
-    }
   };
 
   const processScene = async (sceneName: string) => {
@@ -488,11 +477,14 @@ export default function StartGameScreen() {
       });
       await Storage.setItem({
         key: "waitingScene",
-        value: scene.autoNextScene,
+        value: scene.notifyScreenName,
       });
 
       console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
-
+      console.log(
+        "✅ Zapisuję waitingScene:",
+        scene.notifyScreenName || scene.sceneName || "default"
+      );
       setWaiting({
         sceneName: scene.autoNextScene ?? sceneName,
         endTime: endTime,
@@ -592,6 +584,22 @@ export default function StartGameScreen() {
         actKey: sceneName,
         nextAct: scene.nextAct || "startgame",
       });
+
+      // ✅ Pobranie dotychczas ukończonych aktów
+      const completedActs = await Storage.getItem({ key: "completedActs" });
+      let updatedCompletedActs = completedActs ? JSON.parse(completedActs) : [];
+
+      // ✅ Pobranie aktualnego aktu zamiast nazwy sceny
+      const currentAct = await Storage.getItem({ key: "currentAct" });
+
+      if (currentAct && !updatedCompletedActs.includes(currentAct)) {
+        updatedCompletedActs.push(currentAct);
+        await Storage.setItem({
+          key: "completedActs",
+          value: JSON.stringify(updatedCompletedActs),
+        });
+        console.log("🎉 Ukończono akt:", currentAct);
+      }
     }
   };
 

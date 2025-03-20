@@ -2,7 +2,7 @@
   "expo": {
     "name": "No Return",
     "slug": "no-return",
-    "version": "1.6.3",
+    "version": "1.6.8",
     "orientation": "portrait",
     "icon": "./assets/images/icon/app-icon.png",
     "scheme": "myapp",
@@ -48,6 +48,14 @@
         {
           "androidAppId": "ca-app-pub-4136563182662861~5600922486",
           "iosAppId": "ca-app-pub-4136563182662861~8354892922"
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "kotlinVersion": "1.9.25"
+          }
         }
       ]
     ],

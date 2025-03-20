@@ -7,9 +7,22 @@ import {
   Modal,
   Platform,
 } from "react-native";
-import { InterstitialAd, AdEventType } from "react-native-google-mobile-ads";
+import {
+  InterstitialAd,
+  AdEventType,
+  TestIds,
+} from "react-native-google-mobile-ads";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { translations } from "@/lib/translations/translations";
+
+// 🔥 ID reklamy (zmień na własny przed publikacją!)
+const adUnitId =
+  Platform.OS === "ios"
+    ? "ca-app-pub-4136563182662861/1075007008" // 🛠 iOS Test Ad
+    : "ca-app-pub-4136563182662861/9144358271"; // 🛠 Android Test Ad
+
+// 🔥 Inicjalizacja reklamy
+const interstitial = InterstitialAd.createForAdRequest(adUnitId);
 
 const waitingScreens = {
   hibernacja_w_toku: {
@@ -85,20 +98,27 @@ export default function WaitingScreenOverlay({
   notifyScreenName: string;
 }) {
   const [screen, setScreen] = useState(defaultScreen);
-  const [adLoaded, setAdLoaded] = useState(false);
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
 
   useEffect(() => {
-    if (!visible || !notifyScreenName) return;
+    console.log("🔄 [WaitingScreenOverlay] Wywołanie useEffect");
+    console.log("📌 notifyScreenName:", notifyScreenName);
+
+    if (!visible || !notifyScreenName) {
+      console.log("⚠️ notifyScreenName nie jest ustawiony - ustawiam default");
+      return;
+    }
 
     console.log("🔄 Ustawiam odpowiedni ekran:", notifyScreenName);
-
     const selectedScreen = waitingScreens[notifyScreenName] || defaultScreen;
+    console.log(
+      "🎯 Wybrany ekran:",
+      notifyScreenName,
+      "->",
+      selectedScreen.titleKey
+    );
 
-    if (screen !== selectedScreen) {
-      console.log("📌 Aktualizacja ekranu na:", notifyScreenName);
-      setScreen(selectedScreen);
-    }
+    setScreen(selectedScreen);
 
     // ✅ Pobranie języka użytkownika
     const loadLang = async () => {
@@ -109,30 +129,24 @@ export default function WaitingScreenOverlay({
 
     loadLang();
 
-    // 🔥 Sprawdzenie, czy czas się skończył – jeśli tak, zamknij ekran!
-    if (timeLeft <= 0) {
-      console.log("✅ Czas się skończył! Ukrywam ekran oczekiwania.");
-
-      setTimeout(async () => {
-        setWaitingScreenVisible(false); // ⬅️ Ukryj ekran natychmiast
-        setWaiting(null); // ⬅️ Zresetuj stan oczekiwania
-
-        // ✅ Wyczyszczenie `Storage`
-        await Storage.removeItem({ key: "waitingEndTime" });
-        await Storage.removeItem({ key: "waitingScene" });
-
-        // ✅ Ustawienie nowej sceny
-        handleSceneChange(notifyScreenName);
-      }, 500);
-    }
-  }, [visible, notifyScreenName, timeLeft]); // 🔥 Dodaj `timeLeft` jako zależność
+    // ✅ Ładowanie reklamy
+    interstitial.load();
+  }, [visible, notifyScreenName]);
 
   useEffect(() => {
-    if (notifyScreenName && waitingScreens[notifyScreenName]) {
-      console.log("🔄 Wymuszam aktualizację ekranu:", notifyScreenName);
-      setScreen(waitingScreens[notifyScreenName]);
-    }
-  }, [notifyScreenName]);
+    // ✅ Pokaż reklamę, gdy tylko się załaduje
+    const adListener = interstitial.addAdEventListener(
+      AdEventType.LOADED,
+      () => {
+        console.log("🎥 Reklama załadowana - wyświetlam...");
+        interstitial.show();
+      }
+    );
+
+    return () => {
+      adListener(); // Czyszczenie event listenera
+    };
+  }, []);
 
   if (!visible) return null;
 
@@ -141,7 +155,7 @@ export default function WaitingScreenOverlay({
   const translatedSubtitle =
     translations[jezyk]?.[screen.subtitleKey] ?? "Przygotowania w toku...";
   const translatedWaitingTime =
-    translations[jezyk]?.[screen.WaitingTime] ?? "Pozostało";
+    translations[jezyk]?.["WaitingTime"] ?? "Pozostało";
 
   return (
     <Modal

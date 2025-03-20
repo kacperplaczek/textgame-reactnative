@@ -140,15 +140,39 @@ export default function StartGameScreen() {
   };
 
   //? Zapisywanie dialogów
-  const saveDialogue = async (dialogue: void) => {
+  const saveDialogue = async (
+    akt: string,
+    scene: string,
+    message: { autor: "NPC" | "GRACZ"; tekst: string; npcKey?: string }
+  ) => {
     try {
-      const aktKey = "akt1";
+      // Pobieramy dane z pamięci
+      const storedData = await Storage.getItem({ key: "dialogue_history" });
+      const dialogues = storedData ? JSON.parse(storedData) : {};
+
+      // Jeśli nie istnieje klucz dla danego aktu, tworzymy nowy
+      if (!dialogues[akt]) {
+        dialogues[akt] = [];
+      }
+
+      // Sprawdzamy, czy message nie zawiera błędnych struktur
+      console.log("🔍 Przed zapisem:", JSON.stringify(message, null, 2));
+
+      // Dodajemy nową wiadomość
+      dialogues[akt].push({ scene, ...message });
+
+      // Zapisujemy zmodyfikowany obiekt
       await Storage.setItem({
-        key: `dialogue_${aktKey}`,
-        value: JSON.stringify(dialogue),
+        key: "dialogue_history",
+        value: JSON.stringify(dialogues),
       });
+
+      console.log(
+        `✅ Zapisano dialog dla aktu ${akt}:`,
+        JSON.stringify(dialogues[akt], null, 2)
+      );
     } catch (error) {
-      console.error("Błąd zapisu historii dialogów:", error);
+      console.error("❌ Błąd zapisu historii dialogów:", error);
     }
   };
 
@@ -238,6 +262,15 @@ export default function StartGameScreen() {
       handleSceneChange(storedScene);
     }
 
+    // if (storedScene) {
+    //   setCurrentScene(storedScene);
+    //   handleSceneChange(storedScene);
+    // } else {
+    //   console.log("🔄 Ustawiam domyślną scenę: rozpoczecie_akt2");
+    //   setCurrentScene("rozpoczecie_akt2");
+    //   handleSceneChange("rozpoczecie_akt2");
+    // }
+
     setIsLoading(false);
   }, []);
 
@@ -298,30 +331,21 @@ export default function StartGameScreen() {
       const storedScene = await Storage.getItem({ key: "waitingScene" });
 
       if (storedEndTime && storedScene) {
-        const endTime = parseInt(storedEndTime, 10); // Pobieramy zapisany czas
-        const now = Math.floor(Date.now() / 1000); // Pobieramy aktualny timestamp w sekundach
-        const remaining = Math.max(0, endTime - now); // Obliczamy czas pozostały
+        const endTime = parseInt(storedEndTime, 10); // Pobieramy zapisany czas jako liczba (ms)
+        const now = Date.now(); // Pobieramy aktualny timestamp (ms)
+        const remaining = Math.max(0, Math.floor((endTime - now) / 1000)); // Konwersja na sekundy
 
         console.log(`⏳ Pozostały czas: ${remaining} sekund`);
 
         if (remaining > 0) {
           console.log("🔄 Przywracanie ekranu oczekiwania...");
+
           setWaiting({ sceneName: storedScene, endTime });
           setWaitingScreenVisible(true);
           setRemainingTime(remaining);
         } else {
-          console.log("✅ Czas minął! Zmieniam scenę...");
-
-          // ✅ Resetujemy stan oczekiwania
           setWaiting(null);
           setWaitingScreenVisible(false);
-          setRemainingTime(null);
-
-          // ✅ Usuwamy zapisane wartości z `Storage`
-          await Storage.removeItem({ key: "waitingEndTime" });
-          await Storage.removeItem({ key: "waitingScene" });
-
-          // ✅ Przechodzimy do nowej sceny
           handleSceneChange(storedScene);
         }
       }
@@ -346,14 +370,22 @@ export default function StartGameScreen() {
     }, 100);
   }, [dialogue]);
 
-  const addMessage = (
+  const addMessage = async (
     autor: "NPC" | "GRACZ",
     tekst: string,
     npcKey?: NpcKey
   ) => {
+    const currentAct =
+      (await Storage.getItem({ key: "currentAct" })) || "startgame";
+    console.log("📌 Aktualny akt zapisany w pamięci:", currentAct);
+
     setDialogue((prev) => {
       const updatedDialogue = [...prev, { autor, tekst, npcKey }];
-      saveDialogue(updatedDialogue);
+      saveDialogue(currentAct, currentScene ?? "unknown", {
+        autor,
+        tekst,
+        npcKey,
+      });
       return updatedDialogue;
     });
   };
@@ -521,11 +553,14 @@ export default function StartGameScreen() {
       });
       await Storage.setItem({
         key: "waitingScene",
-        value: scene.autoNextScene,
+        value: scene.notifyScreenName,
       });
 
       console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
-
+      console.log(
+        "✅ Zapisuję waitingScene:",
+        scene.notifyScreenName || scene.sceneName || "default"
+      );
       setWaiting({
         sceneName: scene.autoNextScene ?? sceneName,
         endTime: endTime,
@@ -535,6 +570,70 @@ export default function StartGameScreen() {
       setWaitingScreenVisible(true);
       setRemainingTime(scene.notifyTime);
     }
+
+    // ✅ **Obsługa `notifyTime` (czekanie na kolejną scenę)**
+    // if (scene.notifyTime) {
+    //   const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
+    //   const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
+
+    //   if (storedEndTime) {
+    //     const endTime = parseInt(storedEndTime, 10);
+    //     const remaining = endTime - now;
+
+    //     if (remaining <= 0) {
+    //       console.log(
+    //         "✅ Czas minął! Usuwam dane z pamięci i zmieniam scenę..."
+    //       );
+    //       await Storage.removeItem({ key: "waitingEndTime" });
+    //       await Storage.removeItem({ key: "waitingScene" });
+
+    //       setWaiting(null);
+    //       setWaitingScreenVisible(false);
+    //       setRemainingTime(null);
+
+    //       return handleSceneChange(scene.autoNextScene);
+    //     }
+
+    //     console.log(
+    //       `⏳ Przywracanie odliczania... Pozostało: ${remaining} sekund`
+    //     );
+
+    //     setWaiting({
+    //       sceneName: scene.autoNextScene ?? sceneName,
+    //       endTime: parseInt(storedEndTime),
+    //       notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+    //     });
+
+    //     setWaitingScreenVisible(true);
+    //     setRemainingTime(remaining);
+    //     return;
+    //   }
+
+    //   const endTime = now + scene.notifyTime;
+    //   await Storage.setItem({
+    //     key: "waitingEndTime",
+    //     value: endTime.toString(),
+    //   });
+    //   await Storage.setItem({
+    //     key: "waitingScene",
+    //     value: scene.notifyScreenName,
+    //   });
+
+    //   console.log("📌 Poprawnie zapisano NOWY waitingEndTime:", endTime);
+    //   console.log(
+    //     "✅ Zapisuję waitingScene:",
+    //     scene.notifyScreenName || scene.sceneName || "default"
+    //   );
+
+    //   setWaiting({
+    //     sceneName: scene.autoNextScene ?? sceneName,
+    //     endTime: endTime,
+    //     notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+    //   });
+
+    //   setWaitingScreenVisible(true);
+    //   setRemainingTime(scene.notifyTime);
+    // }
 
     // ✅ **Obsługa `specialScreen`**
     if (scene.specialScreen) {
@@ -623,8 +722,24 @@ export default function StartGameScreen() {
       setEndActScreen(scene.endAct);
       setActFinished({
         actKey: sceneName,
-        nextAct: scene.nextAct || "startgame",
+        nextAct: scene.nextAct || "akt-1",
       });
+
+      // ✅ Pobranie dotychczas ukończonych aktów
+      const completedActs = await Storage.getItem({ key: "completedActs" });
+      let updatedCompletedActs = completedActs ? JSON.parse(completedActs) : [];
+
+      // ✅ Pobranie aktualnego aktu zamiast nazwy sceny
+      const currentAct = await Storage.getItem({ key: "currentAct" });
+
+      if (currentAct && !updatedCompletedActs.includes(currentAct)) {
+        updatedCompletedActs.push(currentAct);
+        await Storage.setItem({
+          key: "completedActs",
+          value: JSON.stringify(updatedCompletedActs),
+        });
+        console.log("🎉 Ukończono akt:", currentAct);
+      }
     }
   };
 
@@ -999,6 +1114,7 @@ export default function StartGameScreen() {
       blurRadius={0}
     >
       <StatusBar hidden />
+      <ActSwitcher />
       <GameMenu />
 
       <WaitingScreenOverlay
@@ -1201,16 +1317,7 @@ const stylesDarkness = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: "100%",
-    height: "100%",
-    position: "absolute",
-    backgroundPosition: "center",
-    top: 0,
-    left: 0,
-  },
-
+  background: { flex: 1, width: "100%", height: "100%" },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
