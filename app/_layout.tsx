@@ -28,130 +28,117 @@ export default function RootLayout() {
 
   // 🔊 Ref do obiektu Audio
   const soundRef = useRef<Audio.Sound | null>(null);
-  const [canPlayMusic, setCanPlayMusic] = useState<boolean | null>(null);
+  const [canPlayMusic, setCanPlayMusic] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [appState, setAppState] = useState(AppState.currentState);
 
-  // ✅ Konfiguracja Audio – nie powoduje błędów z `interruptionMode`
-  useEffect(() => {
-    (async () => {
+  // ✅ Funkcja do zatrzymywania muzyki
+  const stopMusic = async () => {
+    if (soundRef.current) {
       try {
-        await Audio.setAudioModeAsync({
-          allowsRecordingIOS: false, // ❌ Nie pyta o mikrofon
-          playsInSilentModeIOS: false, // ✅ Gra w trybie cichym
-          shouldDuckAndroid: false, // 🔄 Nie wycisza innych dźwięków
-          playThroughEarpieceAndroid: false,
-        });
-        console.log("🔊 Tryb audio poprawnie skonfigurowany.");
-      } catch (e) {
-        console.error("❌ Błąd konfiguracji audio:", e);
-      }
-    })();
-  }, []);
-
-  useEffect(() => {
-    const fetchMusicSettings = async () => {
-      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
-      const isMusicOn = storedMusic !== "off";
-      console.log(`🎵 Pobieram ustawienia: ${isMusicOn ? "ON" : "OFF"}`);
-      setCanPlayMusic(isMusicOn);
-    };
-
-    fetchMusicSettings();
-  }, []);
-
-  // ✅ Funkcja do ładowania i odtwarzania muzyki
-  const loadAndPlayMusic = async () => {
-    if (canPlayMusic === null) {
-      console.log("⏳ Oczekiwanie na pobranie ustawień muzyki...");
-      return;
-    }
-
-    if (!canPlayMusic) {
-      console.log("⛔ Muzyka wyłączona – zatrzymuję dźwięk.");
-      if (soundRef.current) {
-        await soundRef.current.stopAsync();
-        await soundRef.current.unloadAsync();
-        soundRef.current = null;
-      }
-      return;
-    } else {
-      try {
-        console.log("🎵 Sprawdzanie, czy muzyka już gra...");
-        if (soundRef.current) {
-          const status = await soundRef.current.getStatusAsync();
-          if (status.isLoaded && status.isPlaying) {
-            console.log("✅ Muzyka już gra – nie ładuję ponownie.");
-            return;
-          }
+        const status = await soundRef.current.getStatusAsync();
+        if (status.isLoaded) {
+          await soundRef.current.stopAsync();
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+          setIsLoaded(false);
+          console.log("⛔ Muzyka została wyłączona.");
         }
-
-        console.log("🎵 Ładowanie muzyki...");
-        const { sound } = await Audio.Sound.createAsync(pustynia, {
-          shouldPlay: true,
-          isLooping: true,
-          volume: 0.5,
-        });
-
-        soundRef.current = sound;
-        await sound.playAsync();
-        console.log("🎶 Muzyka w tle odtwarzana!");
       } catch (error) {
-        console.error("❌ Błąd odtwarzania muzyki:", error);
+        console.error("❌ Błąd zatrzymywania muzyki:", error);
       }
     }
   };
 
-  // ✅ Odtwarzanie muzyki – nie wyłącza się po zmianie ekranu
+  const loadAndPlayMusic = async () => {
+    try {
+      if (!canPlayMusic || appState !== "active") {
+        console.log("⏳ Muzyka wyłączona lub aplikacja w tle.");
+        return;
+      }
+
+      if (soundRef.current) {
+        const status = await soundRef.current.getStatusAsync();
+        if (status.isLoaded && status.isPlaying) {
+          console.log("✅ Muzyka już gra – nie ładuję ponownie.");
+          return;
+        }
+      }
+
+      console.log("🎵 Ładowanie muzyki...");
+
+      // ✅ Konfiguracja trybu audio
+      await Audio.setAudioModeAsync({
+        staysActiveInBackground: false, // Muzyka zatrzyma się w tle
+        playsInSilentModeIOS: true,
+        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
+        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
+        shouldDuckAndroid: true,
+      });
+
+      const { sound } = await Audio.Sound.createAsync(pustynia, {
+        shouldPlay: true,
+        isLooping: true,
+        volume: 0.5,
+      });
+
+      soundRef.current = sound;
+      setIsLoaded(true);
+      await sound.playAsync();
+      console.log("🎶 Muzyka w tle odtwarzana!");
+    } catch (error) {
+      console.error("❌ Błąd odtwarzania muzyki:", error);
+    }
+  };
+
+  // ✅ Pobieranie ustawień z pamięci
   useEffect(() => {
-    if (canPlayMusic !== null) {
+    const fetchSettings = async () => {
+      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
+      const isMusicOn = storedMusic !== "off";
+      setCanPlayMusic(isMusicOn);
+      console.log(`🎵 Ustawienia startowe: ${isMusicOn ? "ON" : "OFF"}`);
+    };
+    fetchSettings();
+  }, []);
+
+  // ✅ Cykliczne sprawdzanie ustawień
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const stored = await Storage.getItem({ key: "canPlayMusic" });
+      const isOn = stored !== "off";
+
+      if (isOn !== canPlayMusic) {
+        console.log("🔁 Zmiana ustawień muzyki");
+        setCanPlayMusic(isOn);
+      }
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [canPlayMusic]);
+
+  // ✅ Automatyczne włączanie/wyłączanie muzyki
+  useEffect(() => {
+    if (canPlayMusic) {
       loadAndPlayMusic();
+    } else {
+      stopMusic();
     }
   }, [canPlayMusic]);
 
-  // ✅ Wznawianie muzyki po powrocie do aplikacji
+  // ✅ Nasłuchiwanie zmian stanu aplikacji
   useEffect(() => {
-    const handleAppStateChange = (nextAppState: string) => {
-      console.log(`📱 Zmiana stanu aplikacji: ${nextAppState}`);
-      if (appState.match(/inactive|background/) && nextAppState === "active") {
-        console.log("🔄 Aplikacja wróciła – sprawdzam muzykę...");
-        loadAndPlayMusic(); // ✅ Wznowienie muzyki
+    const handleAppStateChange = (nextState: string) => {
+      setAppState(nextState);
+      if (nextState === "active" && canPlayMusic) {
+        loadAndPlayMusic();
+      } else {
+        stopMusic();
       }
-      setAppState(nextAppState);
     };
 
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
-
-    return () => {
-      subscription.remove();
-    };
-  }, [appState]);
-
-  // ✅ Konfiguracja powiadomień
-  useEffect(() => {
-    const configureNotifications = async () => {
-      const { status } = await Notifications.getPermissionsAsync();
-      if (status !== "granted") {
-        await Notifications.requestPermissionsAsync();
-      }
-
-      Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: false,
-        }),
-      });
-
-      SplashScreen.preventAutoHideAsync();
-      NavigationBar.setVisibilityAsync("hidden");
-      NavigationBar.setBehaviorAsync("inset-swipe");
-    };
-
-    configureNotifications();
-  }, []);
+    const sub = AppState.addEventListener("change", handleAppStateChange);
+    return () => sub.remove();
+  }, [canPlayMusic]);
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -159,8 +146,8 @@ export default function RootLayout() {
     }
   }, [fontsLoaded]);
 
-  if (!fontsLoaded || canPlayMusic === null) {
-    return null; // ⏳ Czekamy na ustawienia muzyki
+  if (!fontsLoaded) {
+    return null;
   }
 
   return (

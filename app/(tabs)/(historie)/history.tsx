@@ -101,8 +101,7 @@ const HistoryScreen = () => {
           <ScrollView ref={scrollRef}>
             {dialogueHistory.length === 0 ? (
               <Text style={styles.emptyText}>
-                {translations[language]?.historyEmpty ||
-                  "Brak zapisanej historii dla tego aktu."}
+                {translations[language]?.historyEmpty || "Ładowanie..."}
               </Text>
             ) : (
               dialogueHistory.map((msg, index) => (
@@ -244,6 +243,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     borderColor: "#219653",
     borderRadius: 8,
+    fontFamily: "VT323Regular",
     alignSelf: "center",
     marginBottom: 30,
   },
@@ -255,7 +255,8 @@ const styles = StyleSheet.create({
   },
   backButtonText: {
     color: "#219653",
-    fontSize: 18,
+    fontFamily: "VT323Regular",
+    fontSize: 23,
   },
 });
 export default HistoryScreen;

@@ -11,6 +11,13 @@ import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { translations } from "@/lib/translations/translations";
 import { useEffect, useState } from "react";
 import Storage from "expo-storage";
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  withDelay,
+} from "react-native-reanimated";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -44,6 +51,54 @@ export default function HomeScreen() {
     }
   };
 
+  const useBlinkingStyle = (delay = 0) => {
+    const opacity = useSharedValue(1);
+
+    useEffect(() => {
+      opacity.value = withDelay(
+        delay,
+        withRepeat(
+          withTiming(0, { duration: 500 }),
+          -1,
+          true // auto-reverse
+        )
+      );
+    }, []);
+
+    return useAnimatedStyle(() => ({
+      opacity: opacity.value,
+    }));
+  };
+
+  const BlinkingLight = ({
+    top,
+    left,
+    delay,
+  }: {
+    top: number;
+    left: number;
+    delay: number;
+  }) => {
+    const style = useBlinkingStyle(delay);
+
+    return (
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top,
+            left,
+            width: 10,
+            height: 10,
+            backgroundColor: "#00ff00",
+            borderRadius: 2,
+          },
+          style,
+        ]}
+      />
+    );
+  };
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
@@ -52,7 +107,7 @@ export default function HomeScreen() {
         activeOpacity={0.9}
       >
         <ImageBackground
-          source={require("../../assets/images/animated_bg_ufo.gif")}
+          source={require("../../assets/images/bg-starter-screen.gif")}
           style={styles.background}
           resizeMode="contain"
         >

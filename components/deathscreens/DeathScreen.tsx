@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
+import GlowSkia from "../ui/GlowBackground";
 
 type DeathScreenProps = {
   title: string;
@@ -24,6 +25,7 @@ export default function DeathScreen({
         style={styles.background}
         resizeMode="cover"
       >
+        <GlowSkia />
         <View style={styles.overlay} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.tapText}>Dotknij, aby wrócić do checkpointu</Text>

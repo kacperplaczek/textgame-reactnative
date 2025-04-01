@@ -1,3 +1,5 @@
+import { SceneStyleInterpolators } from "@react-navigation/bottom-tabs";
+
 export const translations = {
   pl: {
     // TEST
@@ -1195,6 +1197,26 @@ export const translations = {
 
     historyEmpty: "Brak zapisanej historii dla tego aktu.",
     backButton: "Wróć do poprzedniej strony",
+
+    // Powiadomienia teksty
+
+    // Scenariusz pierwszy
+    scen1notification1title: "Oficer Rekrutujący",
+    scen1notification1desc: "Halo! Jesteś tam?",
+    // Scenariusz drugi
+    scen2notification1title: "Hibernacja",
+    scen2notification1desc: "Hibernacja została zakończona, możesz wrócić",
+    scen2notification2title: "Analiza",
+    scen2notification2desc: "Analiza zakończona, wracaj!",
+    scen2notification3title: "Wspinaczka",
+    scen2notification3desc: "Zakończono wspinaczkę CZEKANAMI, możesz wracać!",
+    scen2notification4title: "Przeprawa",
+    scen2notification4desc: "Zakończono PRZEPRAWĘ, możesz wracać!",
+    // Scenariusz trzeci
+    scen3notification1title: "Hibernacja",
+    scen3notification1desc: "Hibernacja została zakończona, możesz wrócić",
+    scen3notification2title: "Gotowe!",
+    scen3notification2desc: "Wróć na statek!",
   },
   en: {
     // TEST
@@ -2409,6 +2431,26 @@ export const translations = {
 
     historyEmpty: "No data saved",
     backButton: "Back to previous card",
+
+    // Notification texts
+
+    // Scenario one
+    scen1notification1title: "Recruiting Officer",
+    scen1notification1desc: "Hello! Are you there?",
+    // Scenario two
+    scen2notification1title: "Hibernation",
+    scen2notification1desc: "Hibernation completed, you can return",
+    scen2notification2title: "Analysis",
+    scen2notification2desc: "Analysis completed, come back!",
+    scen2notification3title: "Climbing",
+    scen2notification3desc: "ICE AXE climbing completed, you can return!",
+    scen2notification4title: "Crossing",
+    scen2notification4desc: "CROSSING completed, you can return!",
+    // Scenario three
+    scen3notification1title: "Hibernation",
+    scen3notification1desc: "Hibernation completed, you can return",
+    scen3notification2title: "Ready!",
+    scen3notification2desc: "Return to the ship!",
   },
 };
 

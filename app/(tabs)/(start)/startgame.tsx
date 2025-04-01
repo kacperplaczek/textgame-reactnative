@@ -13,6 +13,7 @@ import {
   Platform,
 } from "react-native";
 import { Href, useLocalSearchParams, useRouter } from "expo-router";
+import * as Svg from "react-native-svg";
 import { StatusBar } from "expo-status-bar";
 import Storage from "expo-storage";
 import { translations, Language } from "@/lib/translations/translations";
@@ -21,7 +22,13 @@ import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { getScenes } from "@/scenario/scenariuszAkt1";
 import { calculateRemainingTime } from "@/lib/dialogue/SceneUtils";
-import { scheduleNotification } from "@/lib/notifications/NotificationUtils";
+import {
+  planujPowiadomienie,
+  planujPowiadomienieZaSekundy,
+  scheduleNotification,
+  schedulePushNotification,
+  wyślijPowiadomienieZaSekundy,
+} from "@/lib/notifications/NotificationUtils";
 import { deathScreensMap } from "@/lib/screens/DeathScreens";
 import GameMenu from "@/components/ui/GameMenu";
 import { endActScreensMap } from "@/lib/screens/EndActScreens";
@@ -39,6 +46,8 @@ import {
 import choiceSound from "@/assets/sounds/choice.wav";
 import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
 import ActSwitcher from "@/components/ui/ActsSwitch";
+import GlowBackground from "@/components/ui/GlowBackground";
+import GlowSkia from "@/components/ui/GlowBackground";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -263,6 +272,45 @@ export default function StartGameScreen() {
   }, []);
 
   useEffect(() => {
+    const loadDialogueHistory = async () => {
+      const currentAct =
+        (await Storage.getItem({ key: "currentAct" })) || "startgame";
+      const storedData = await Storage.getItem({ key: "dialogue_history" });
+
+      if (storedData) {
+        const dialogues = JSON.parse(storedData);
+        if (dialogues[currentAct]) {
+          console.log(`📖 Załadowano historię dla aktu ${currentAct}`);
+
+          let history = dialogues[currentAct];
+
+          // ❌ Usuń ostatni dialog z historii
+          if (history.length > 1) {
+            history = history.slice(0, history.length - 1);
+          }
+
+          // 🔁 Połącz historię z obecnym stanem i usuń duplikaty
+          setDialogue((prev) => {
+            const combined = [...history, ...prev];
+
+            const seen = new Set();
+            const unique = combined.filter((msg) => {
+              const key = JSON.stringify(msg);
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
+
+            return unique;
+          });
+        }
+      }
+    };
+
+    loadDialogueHistory();
+  }, []);
+
+  useEffect(() => {
     const checkWaitingState = async () => {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
       const storedScene = await Storage.getItem({ key: "waitingScene" });
@@ -437,6 +485,20 @@ export default function StartGameScreen() {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
       const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
+      if (scene.notification) {
+        console.log("📢 Ustawiono powiadomienie na " + scene.notifyTime);
+        // 📢 **Planowanie powiadomienia**
+        schedulePushNotification(
+          scene.notificationTitle || "Powiadomienie",
+          scene.notificationDesc || "Wróć do gry!",
+          scene.notifyTime
+        );
+
+        console.log(
+          `Puszczamy powiadomienie z TYTUŁEM: ${scene.notificationTitle} oraz OPISEM: ${scene.notificationDesc}`
+        );
+      }
+
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
         const remaining = endTime - now;
@@ -462,7 +524,7 @@ export default function StartGameScreen() {
         setWaiting({
           sceneName: scene.autoNextScene ?? sceneName,
           endTime: parseInt(storedEndTime),
-          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+          notifyScreenName: scene.notifyScreenName,
         });
 
         setWaitingScreenVisible(true);
@@ -693,21 +755,16 @@ export default function StartGameScreen() {
       style={styles.background}
       resizeMode="cover"
     >
-      <Image
-        source={require("@/assets/images/refleks.png")}
-        resizeMode="contain"
-        style={styles.overlayImage}
-      />
+      <GlowSkia />
 
       <StatusBar hidden />
-
       <ActSwitcher />
       <GameMenu onReset={""} />
 
       <WaitingScreenOverlay
-        visible={waitingScreenVisible}
+        visible={waitingScreenVisible && !!waiting?.notifyScreenName}
         timeLeft={remainingTime ?? 0}
-        notifyScreenName={waiting?.notifyScreenName ?? "default"}
+        notifyScreenName={waiting?.notifyScreenName}
       />
 
       <SpecialSceneOverlay

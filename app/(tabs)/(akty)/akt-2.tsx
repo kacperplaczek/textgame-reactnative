@@ -21,7 +21,10 @@ import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { getScenes } from "@/scenario/scenariuszAkt3";
 import { calculateRemainingTime } from "@/lib/dialogue/SceneUtils";
-import { scheduleNotification } from "@/lib/notifications/NotificationUtils";
+import {
+  scheduleNotification,
+  schedulePushNotification,
+} from "@/lib/notifications/NotificationUtils";
 import { deathScreensMap } from "@/lib/screens/DeathScreens";
 import GameMenu from "@/components/ui/GameMenu";
 import { endActScreensMap } from "@/lib/screens/EndActScreens";
@@ -33,6 +36,7 @@ import WaitingScreenOverlay from "@/components/ui/WaitingScreenOverlay";
 import useChoiceSound from "@/lib/dialogue/useChoiceSounds";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import ActSwitcher from "@/components/ui/ActsSwitch";
+import GlowSkia from "@/components/ui/GlowBackground";
 
 export default function StartGameScreen() {
   const [isLoading, setIsLoading] = useState(true);
@@ -88,6 +92,8 @@ export default function StartGameScreen() {
       ? "ca-app-pub-4136563182662861/8460997846" // android
       : "ca-app-pub-4136563182662861/4480470362"; // ios
   const getStyles = () => (darknessUI ? stylesDarkness : styles);
+
+  console.log("");
 
   useEffect(() => {
     console.log("🔄 Sprawdzanie stanu gry...");
@@ -261,6 +267,45 @@ export default function StartGameScreen() {
     setIsLoading(false);
   }, []);
 
+  useEffect(() => {
+    const loadDialogueHistory = async () => {
+      const currentAct =
+        (await Storage.getItem({ key: "currentAct" })) || "startgame";
+      const storedData = await Storage.getItem({ key: "dialogue_history" });
+
+      if (storedData) {
+        const dialogues = JSON.parse(storedData);
+        if (dialogues[currentAct]) {
+          console.log(`📖 Załadowano historię dla aktu ${currentAct}`);
+
+          let history = dialogues[currentAct];
+
+          // ❌ Usuń ostatni dialog z historii
+          if (history.length > 1) {
+            history = history.slice(0, history.length - 1);
+          }
+
+          // 🔁 Połącz historię z obecnym stanem i usuń duplikaty
+          setDialogue((prev) => {
+            const combined = [...history, ...prev];
+
+            const seen = new Set();
+            const unique = combined.filter((msg) => {
+              const key = JSON.stringify(msg);
+              if (seen.has(key)) return false;
+              seen.add(key);
+              return true;
+            });
+
+            return unique;
+          });
+        }
+      }
+    };
+
+    loadDialogueHistory();
+  }, []);
+
   // const checkGameStarted = useCallback(async () => {
   //   setIsLoading(true);
 
@@ -387,18 +432,24 @@ export default function StartGameScreen() {
 
   const addMessage = async (
     autor: "NPC" | "GRACZ",
-    tekst: string,
+    tekst: string | Promise<string>,
     npcKey?: NpcKey
   ) => {
     const currentAct =
-      (await Storage.getItem({ key: "currentAct" })) || "startgame";
+      (await Storage.getItem({ key: "currentAct" })) || "akt-1";
     console.log("📌 Aktualny akt zapisany w pamięci:", currentAct);
 
+    const resolvedTekst =
+      typeof tekst === "string" ? tekst : await Promise.resolve(tekst);
+
     setDialogue((prev) => {
-      const updatedDialogue = [...prev, { autor, tekst, npcKey }];
+      const updatedDialogue = [
+        ...prev,
+        { autor, tekst: resolvedTekst, npcKey },
+      ];
       saveDialogue(currentAct, currentScene ?? "unknown", {
         autor,
-        tekst,
+        tekst: resolvedTekst,
         npcKey,
       });
       return updatedDialogue;
@@ -526,6 +577,20 @@ export default function StartGameScreen() {
       const storedEndTime = await Storage.getItem({ key: "waitingEndTime" });
       const now = Math.floor(Date.now() / 1000); // Pobierz aktualny czas w sekundach
 
+      if (scene.notification) {
+        console.log("📢 Ustawiono powiadomienie na " + scene.notifyTime);
+        // 📢 **Planowanie powiadomienia**
+        schedulePushNotification(
+          scene.notificationTitle || "Powiadomienie",
+          scene.notificationDesc || "Wróć do gry!",
+          scene.notifyTime
+        );
+
+        console.log(
+          `Puszczamy powiadomienie z TYTUŁEM: ${scene.notificationTitle} oraz OPISEM: ${scene.notificationDesc}`
+        );
+      }
+
       if (storedEndTime) {
         const endTime = parseInt(storedEndTime, 10);
         const remaining = endTime - now;
@@ -551,7 +616,7 @@ export default function StartGameScreen() {
         setWaiting({
           sceneName: scene.autoNextScene ?? sceneName,
           endTime: parseInt(storedEndTime),
-          notifyScreenName: scene.notifyScreenName ?? "default", // <- TUTAJ
+          notifyScreenName: scene.notifyScreenName,
         });
 
         setWaitingScreenVisible(true);
@@ -1029,9 +1094,9 @@ export default function StartGameScreen() {
       <GameMenu />
 
       <WaitingScreenOverlay
-        visible={waitingScreenVisible}
+        visible={waitingScreenVisible && !!waiting?.notifyScreenName}
         timeLeft={remainingTime ?? 0}
-        notifyScreenName={waiting?.notifyScreenName ?? "default"}
+        notifyScreenName={waiting?.notifyScreenName}
       />
 
       <SpecialSceneOverlay
@@ -1121,6 +1186,8 @@ export default function StartGameScreen() {
       style={getStyles().background}
       resizeMode="cover"
     >
+      <GlowSkia />
+
       <StatusBar hidden />
       <ActSwitcher />
       <GameMenu />
@@ -1333,6 +1400,12 @@ const styles = StyleSheet.create({
     backgroundColor: "black",
   },
 
+  overlayImage: {
+    position: "absolute",
+    width: width * 1,
+    height: height * 0.5,
+    zIndex: 1,
+  },
   // Pojemnik na cały kontent pod menu
   contentContainer: {
     flex: 1,

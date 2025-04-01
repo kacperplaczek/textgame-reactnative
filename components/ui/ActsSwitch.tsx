@@ -115,6 +115,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     paddingVertical: 10,
     backgroundColor: "transparent",
+    zIndex: 100,
+    elevation: 10,
+    pointerEvents: "box-none",
   },
   switcherContainer: {
     flexDirection: "row",

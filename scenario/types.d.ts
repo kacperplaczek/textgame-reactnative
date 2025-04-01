@@ -38,6 +38,9 @@ type SceneType = {
   notifyTime?: number; // ⏳ Czas oczekiwania w sekundach
   notifyScreen?: boolean; // 🖥️ Czy pokazać ekran oczekiwania?
   notifyScreenName?: string; // 📌 Nazwa ekranu oczekiwania
+  notification?: boolean; // True lub False, czy ma wysłać powiadomienie
+  notificationTitle?: string | undefined; // Tytuł powiadomienia
+  notificationDesc?: string; // Opis powiadomienia
   enableNotification?: boolean; // 🔔 Czy wysłać powiadomienie push?
 
   // W obu przypadkach użyj tylko 'true' lub w ogóle nie oddawaj tego do kodu...

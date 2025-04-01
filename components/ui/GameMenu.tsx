@@ -53,21 +53,8 @@ export default function GameMenu({ onReset }) {
     try {
       const newSetting = canPlayMusic ? "off" : "on";
       await Storage.setItem({ key: "canPlayMusic", value: newSetting });
-
-      console.log("test");
       setCanPlayMusic(!canPlayMusic);
-
-      console.log(
-        `🎵 Ustawienie muzyki: ${newSetting}, restartuję aplikację...`
-      );
-
-      setTimeout(async () => {
-        try {
-          await Updates.reloadAsync(); // 🔄 Restart aplikacji
-        } catch (e) {
-          console.error("❌ Błąd restartu:", e);
-        }
-      }, 500);
+      console.log(`🎵 Ustawienie muzyki: ${newSetting}`);
     } catch (e) {
       console.error("❌ Błąd zmiany muzyki:", e);
     }

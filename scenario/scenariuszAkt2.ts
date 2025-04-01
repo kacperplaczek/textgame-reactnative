@@ -18,6 +18,7 @@ export const getScenes = (
 
   rozpoczecie_akt2: {
     notifyTime: 10,
+    notification: false,
     notifyScreenName: "statek_odlatuje",
     autoNextScene: "rozpoczecie2_akt2",
   },
@@ -148,7 +149,10 @@ export const getScenes = (
   akt2_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_hibernacja,
-    notifyTime: 600, // ! 7200 sekund
+    notifyTime: 600, // 10 minut
+    notification: true,
+    notificationTitle: translations.scen2notification1title,
+    notificationDesc: translations.scen2notification1desc,
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_pobudka",
   },
@@ -241,6 +245,9 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_krysztal_analiza,
     notifyTime: 300, // 5 minut
+    notification: true,
+    notificationTitle: translations.scen2notification2title,
+    notificationDesc: translations.scen2notification2desc,
     notifyScreenName: "krysztal_analiza",
     autoNextScene: "akt2_krysztal_wynik",
   },
@@ -449,7 +456,10 @@ export const getScenes = (
   akt2_6h_hibernacja: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_6h_hibernacja,
-    notifyTime: 600, //! 21600 sekund
+    notifyTime: 600, // 10 minut
+    notification: true,
+    notificationTitle: translations.scen2notification1title,
+    notificationDesc: translations.scen2notification1desc,
     notifyScreenName: "hibernacja_w_toku",
     autoNextScene: "akt2_sygnal",
   },
@@ -754,7 +764,10 @@ export const getScenes = (
   akt2_przelecze_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_przelecze_koniec_waitTime,
-    notifyTime: 600, // TODO: zmienić na 1800
+    notifyTime: 600, // 10 minut
+    notification: true,
+    notificationTitle: translations.scen2notification3title,
+    notificationDesc: translations.scen2notification3desc,
     notifyScreenName: "wspinaczka_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
@@ -774,7 +787,10 @@ export const getScenes = (
   akt2_jaskinie_koniec_waitTime: {
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_jaskinie_koniec_waitTime,
-    notifyTime: 600, // testowo 10 sekund
+    notifyTime: 600, // 10 minut
+    notification: true,
+    notificationTitle: translations.scen2notification4title,
+    notificationDesc: translations.scen2notification4desc,
     notifyScreenName: "przeprawa_w_toku",
     autoNextScene: "akt2_jasknie_dotarlesNaSzczytKanionu",
   },
@@ -1496,6 +1512,9 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_ruiny_zbadajkrysztal,
     notifyTime: 300,
+    notification: true,
+    notificationTitle: translations.scen2notification2title,
+    notificationDesc: translations.scen2notification2desc,
     notifyScreenName: "krysztal_analiza",
     autoNextScene: "akt2_ruiny_analiza_krysztalu",
   },
@@ -1504,6 +1523,9 @@ export const getScenes = (
     npcKey: "flightControlCenter",
     tekst: () => translations.AIPL_akt2_ruiny_zostawkrysztal,
     notifyTime: 300,
+    notification: true,
+    notificationTitle: translations.scen2notification2title,
+    notificationDesc: translations.scen2notification2desc,
     notifyScreenName: "krysztal_analiza",
     autoNextScene: "akt2_ruiny_analiza_krysztalu",
   },

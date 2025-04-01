@@ -2,7 +2,7 @@
   "expo": {
     "name": "No Return",
     "slug": "no-return",
-    "version": "1.6.8",
+    "version": "1.7.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon/app-icon.png",
     "scheme": "myapp",
@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.forsolutions.noreturn",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["audio"]
       }
     },
     "android": {
@@ -34,12 +35,17 @@
       "expo-localization",
       "expo-router",
       [
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "PORTRAIT"
+        }
+      ],
+      [
         "expo-splash-screen",
         {
-          "image": "./assets/images/icon/app-icon.png",
-          "imageWidth": 200,
+          "image": "./assets/images/splashscreen-bg-ufo.png",
           "resizeMode": "contain",
-          "backgroundColor": "#ffffff"
+          "backgroundColor": "#000000"
         }
       ],
       "expo-notifications",

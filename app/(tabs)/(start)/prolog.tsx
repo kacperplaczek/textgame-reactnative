@@ -151,8 +151,16 @@ export default function PrologScreen() {
 
 // Skaluje czcionkę w zależności od ekranu
 const scaleFont = (size: number) => {
+  const { width, height } = Dimensions.get("window");
   const scale = width / 375; // Punkt odniesienia: iPhone SE (375px szerokości)
-  return Math.round(PixelRatio.getFontScale() * size * scale);
+  const isTablet = width >= 768; // Prosty warunek rozpoznawania iPada
+
+  // Na iPadzie zmniejszamy skalowanie, żeby czcionki nie były za duże
+  const tabletScaleFactor = isTablet ? 0.7 : 1;
+
+  return Math.round(
+    PixelRatio.getFontScale() * size * scale * tabletScaleFactor
+  );
 };
 
 // Stylizacja

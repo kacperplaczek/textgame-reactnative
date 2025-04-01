@@ -1,37 +1,70 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Audio } from "expo-av";
 import Storage from "expo-storage";
 import choiceSound from "@/assets/sounds/choice.wav";
+import { AppState } from "react-native";
 
 export default function useChoiceSound() {
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [playPending, setPlayPending] = useState(false); // 🆕
+  const soundRef = useRef<Audio.Sound | null>(null);
+  const [appState, setAppState] = useState(AppState.currentState);
 
-  // ✅ Pobieranie ustawień dźwięku
   useEffect(() => {
-    const fetchSoundSettings = async () => {
-      const storedSound = await Storage.getItem({ key: "canPlayMusic" });
-      const isSoundOn = storedSound !== "off";
-      console.log(`🔊 Ustawienia dźwięku: ${isSoundOn ? "ON" : "OFF"}`);
-      setSoundEnabled(isSoundOn);
-    };
+    const sub = AppState.addEventListener("change", (nextState) => {
+      setAppState(nextState);
+    });
 
-    fetchSoundSettings();
+    return () => sub.remove();
   }, []);
 
-  // ✅ Ładowanie dźwięku
+  // ✅ Pobranie ustawień przy starcie
+  useEffect(() => {
+    const fetchSettings = async () => {
+      const storedSound = await Storage.getItem({ key: "canPlayMusic" });
+      const isOn = storedSound !== "off";
+      setSoundEnabled(isOn);
+      console.log(`🔊 Ustawienia startowe: ${isOn ? "ON" : "OFF"}`);
+    };
+    fetchSettings();
+  }, []);
+
+  // ✅ Nasłuchiwanie zmian
+  useEffect(() => {
+    const interval = setInterval(async () => {
+      const stored = await Storage.getItem({ key: "canPlayMusic" });
+      const isOn = stored !== "off";
+      setSoundEnabled((prev) => {
+        if (prev !== isOn) {
+          console.log("🔁 Zmiana ustawień soundEnabled");
+          return isOn;
+        }
+        return prev;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // ✅ Ładowanie dźwięku gdy `soundEnabled` się zmieni
   useEffect(() => {
     const loadSound = async () => {
       if (!soundEnabled) {
-        console.log("🔇 Dźwięk wyłączony – nie ładuję.");
+        console.log("🔇 Dźwięk wyłączony – czyszczenie...");
+        if (soundRef.current) {
+          await soundRef.current.unloadAsync();
+          soundRef.current = null;
+        }
+        setIsLoaded(false);
         return;
       }
 
       try {
         const { sound } = await Audio.Sound.createAsync(choiceSound);
         await sound.setVolumeAsync(1.0);
-        setSound(sound);
-        console.log("✅ Dźwięk kliknięcia załadowany.");
+        soundRef.current = sound;
+        setIsLoaded(true);
+        console.log("✅ Dźwięk kliknięcia załadowany");
       } catch (error) {
         console.error("❌ Błąd ładowania dźwięku:", error);
       }
@@ -40,26 +73,45 @@ export default function useChoiceSound() {
     loadSound();
 
     return () => {
-      if (sound) {
-        sound.unloadAsync();
-        console.log("🛑 Dźwięk kliknięcia zwolniony z pamięci.");
+      if (soundRef.current) {
+        soundRef.current.unloadAsync();
+        soundRef.current = null;
       }
     };
   }, [soundEnabled]);
 
-  // ✅ Funkcja do odtwarzania dźwięku
+  // ✅ Jeśli kliknięcie było w międzyczasie, odpal je teraz
+  useEffect(() => {
+    if (playPending && isLoaded && soundRef.current && appState === "active") {
+      console.log("▶️ Odtwarzam zaległy dźwięk po załadowaniu.");
+      soundRef.current.replayAsync();
+      setPlayPending(false);
+    }
+  }, [isLoaded, playPending]);
+
+  // ✅ Główna funkcja
   const playChoiceSound = async () => {
-    if (!soundEnabled || !sound) {
-      console.log("🔇 Dźwięki wyłączone – nie odtwarzam.");
+    if (!soundEnabled) {
+      console.log("🔇 Dźwięki wyłączone – brak reakcji.");
+      return;
+    }
+
+    if (appState !== "active") {
+      console.log("⏸️ Aplikacja nieaktywna – nie odtwarzam dźwięku.");
+      return;
+    }
+
+    if (!isLoaded || !soundRef.current) {
+      console.log("⏳ Dźwięk jeszcze się ładuje – kolejkuję kliknięcie.");
+      setPlayPending(true);
       return;
     }
 
     try {
-      console.log("🔊 Odtwarzanie dźwięku kliknięcia...");
-      await sound.setPositionAsync(0);
-      await sound.playAsync();
+      console.log("🔊 Klik – odtwarzam.");
+      await soundRef.current.replayAsync();
     } catch (error) {
-      console.error("❌ Błąd odtwarzania dźwięku kliknięcia:", error);
+      console.error("❌ Błąd odtwarzania:", error);
     }
   };
 

@@ -14,6 +14,8 @@ import {
 } from "react-native-google-mobile-ads";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { translations } from "@/lib/translations/translations";
+import GlowSkia from "./GlowBackground";
+import { Dimensions, SafeAreaView } from "react-native";
 
 // 🔥 ID reklamy (zmień na własny przed publikacją!)
 const adUnitId =
@@ -104,21 +106,34 @@ export default function WaitingScreenOverlay({
     console.log("🔄 [WaitingScreenOverlay] Wywołanie useEffect");
     console.log("📌 notifyScreenName:", notifyScreenName);
 
-    if (!visible || !notifyScreenName) {
-      console.log("⚠️ notifyScreenName nie jest ustawiony - ustawiam default");
+    // if (!visible || !notifyScreenName) {
+    //   console.log("⚠️ notifyScreenName nie jest ustawiony - ustawiam default");
+    //   return;
+    // }
+
+    if (!visible) {
       return;
     }
 
     console.log("🔄 Ustawiam odpowiedni ekran:", notifyScreenName);
-    const selectedScreen = waitingScreens[notifyScreenName] || defaultScreen;
-    console.log(
-      "🎯 Wybrany ekran:",
-      notifyScreenName,
-      "->",
-      selectedScreen.titleKey
-    );
+    // const selectedScreen = waitingScreens[notifyScreenName] || defaultScreen;
+    // console.log(
+    //   "🎯 Wybrany ekran:",
+    //   notifyScreenName,
+    //   "->",
+    //   selectedScreen.titleKey
+    // );
 
-    setScreen(selectedScreen);
+    // setScreen(selectedScreen);
+
+    const selectedName =
+      notifyScreenName && waitingScreens[notifyScreenName]
+        ? notifyScreenName
+        : "default";
+
+    console.log("🔄 Ustawiam ekran:", selectedName);
+
+    setScreen(waitingScreens[selectedName] || defaultScreen);
 
     // ✅ Pobranie języka użytkownika
     const loadLang = async () => {
@@ -163,17 +178,22 @@ export default function WaitingScreenOverlay({
       visible={visible}
       animationType="fade"
       transparent={false}
+      presentationStyle="fullScreen" // <- ważne
     >
-      <ImageBackground source={screen.background} style={styles.background}>
-        <View style={styles.overlay}>
-          {/* 🔹 Tytuł na górze */}
+      <ImageBackground
+        source={screen.background}
+        style={{ width, height }} // <- pełny ekran
+        resizeMode="cover"
+      >
+        <GlowSkia />
+
+        <SafeAreaView style={styles.overlay}>
           <View style={styles.header}>
             <Text style={[styles.title, { color: "#219653" }]}>
               {translatedTitle}
             </Text>
           </View>
 
-          {/* 🔹 Dolna część z opisem i czasem */}
           <View style={styles.footer}>
             <Text style={styles.subtitle}>{translatedSubtitle}</Text>
             <Text style={styles.timeText}>
@@ -181,12 +201,13 @@ export default function WaitingScreenOverlay({
               {timeLeft % 60}s
             </Text>
           </View>
-        </View>
+        </SafeAreaView>
       </ImageBackground>
     </Modal>
   );
 }
 
+const { width, height } = Dimensions.get("window");
 const styles = StyleSheet.create({
   background: {
     flex: 1,
