@@ -8,7 +8,7 @@ import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState, createContext, useContext } from "react";
 import "react-native-reanimated";
 import * as Notifications from "expo-notifications";
 import * as NavigationBar from "expo-navigation-bar";
@@ -16,9 +16,105 @@ import { Audio } from "expo-av";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { LanguageProvider } from "@/components/LanguageProviders";
 import Storage from "expo-storage";
+import { Platform } from "react-native";
 
 // ✅ Import pliku dźwiękowego
 import pustynia from "@/assets/sounds/pustynia.mp3";
+
+// 🎵 Globalny kontekst dźwięku
+const MusicContext = createContext({
+  playMusic: () => {},
+  stopMusic: () => {},
+});
+
+export function useMusic() {
+  return useContext(MusicContext);
+}
+
+// ✅ Globalny menedżer muzyki
+let globalSoundRef: Audio.Sound | null = null;
+let globalCanPlayMusic: boolean = false;
+
+// ✅ Funkcja inicjalizująca muzykę
+async function initializeMusic() {
+  try {
+    console.log("🔧 Konfiguracja trybu audio...");
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      staysActiveInBackground: false,
+      interruptionModeIOS: 1,
+      playsInSilentModeIOS: true,
+      interruptionModeAndroid: 1,
+      shouldDuckAndroid: true,
+      playThroughEarpieceAndroid: false,
+    });
+
+    if (globalSoundRef === null) {
+      console.log("🎵 Globalne ładowanie muzyki...");
+      const { sound } = await Audio.Sound.createAsync(pustynia, {
+        shouldPlay: false, // Nie odtwarzaj automatycznie
+        isLooping: true,
+        volume: 1,
+      });
+      globalSoundRef = sound;
+
+      // Sprawdzenie stanu muzyki z pamięci
+      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
+      const isMusicOn = storedMusic !== "off";
+      if (isMusicOn) {
+        await globalSoundRef.playAsync(); // Odtwarzaj tylko jeśli włączone
+        console.log("✅ Muzyka załadowana i odtwarzana!");
+      } else {
+        console.log("🚫 Muzyka załadowana, ale nie odtwarzana (off).");
+      }
+    }
+  } catch (error) {
+    console.error("❌ Błąd inicjalizacji muzyki:", error);
+  }
+}
+
+// ✅ Funkcja włączająca muzykę (play)
+async function playMusic() {
+  try {
+    if (globalSoundRef === null) {
+      console.log("🔄 Ponowne ładowanie muzyki...");
+      const { sound } = await Audio.Sound.createAsync(pustynia, {
+        shouldPlay: true,
+        isLooping: true,
+        volume: 1,
+      });
+      globalSoundRef = sound;
+      console.log("🎶 Muzyka w tle odtwarzana!");
+    } else {
+      const status = await globalSoundRef.getStatusAsync();
+      if (!status.isPlaying) {
+        await globalSoundRef.playAsync();
+        console.log("▶️ Muzyka wznowiona!");
+      } else {
+        console.log("🎵 Muzyka już gra.");
+      }
+    }
+  } catch (error) {
+    console.error("❌ Błąd odtwarzania muzyki:", error);
+  }
+}
+
+// ✅ Funkcja wyłączająca muzykę (pause)
+async function stopMusic() {
+  try {
+    if (globalSoundRef) {
+      const status = await globalSoundRef.getStatusAsync();
+      if (status.isPlaying) {
+        await globalSoundRef.pauseAsync();
+        console.log("⏸️ Muzyka wstrzymana.");
+      } else {
+        console.log("⚠️ Muzyka już jest wstrzymana.");
+      }
+    }
+  } catch (error) {
+    console.error("❌ Błąd wstrzymywania muzyki:", error);
+  }
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -26,119 +122,74 @@ export default function RootLayout() {
     VT323Regular: require("../assets/fonts/VT323-Regular.ttf"),
   });
 
-  // 🔊 Ref do obiektu Audio
-  const soundRef = useRef<Audio.Sound | null>(null);
   const [canPlayMusic, setCanPlayMusic] = useState<boolean>(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [appState, setAppState] = useState(AppState.currentState);
 
-  // ✅ Funkcja do zatrzymywania muzyki
-  const stopMusic = async () => {
-    if (soundRef.current) {
-      try {
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isLoaded) {
-          await soundRef.current.stopAsync();
-          await soundRef.current.unloadAsync();
-          soundRef.current = null;
-          setIsLoaded(false);
-          console.log("⛔ Muzyka została wyłączona.");
-        }
-      } catch (error) {
-        console.error("❌ Błąd zatrzymywania muzyki:", error);
-      }
+  useEffect(() => {
+    if (Platform.OS === "android") {
+      NavigationBar.setVisibilityAsync("hidden");
+      NavigationBar.setPositionAsync("absolute");
     }
-  };
+  }, []);
 
-  const loadAndPlayMusic = async () => {
-    try {
-      if (!canPlayMusic || appState !== "active") {
-        console.log("⏳ Muzyka wyłączona lub aplikacja w tle.");
-        return;
-      }
-
-      if (soundRef.current) {
-        const status = await soundRef.current.getStatusAsync();
-        if (status.isLoaded && status.isPlaying) {
-          console.log("✅ Muzyka już gra – nie ładuję ponownie.");
-          return;
-        }
-      }
-
-      console.log("🎵 Ładowanie muzyki...");
-
-      // ✅ Konfiguracja trybu audio
-      await Audio.setAudioModeAsync({
-        staysActiveInBackground: false, // Muzyka zatrzyma się w tle
-        playsInSilentModeIOS: true,
-        interruptionModeIOS: Audio.INTERRUPTION_MODE_IOS_DO_NOT_MIX,
-        interruptionModeAndroid: Audio.INTERRUPTION_MODE_ANDROID_DO_NOT_MIX,
-        shouldDuckAndroid: true,
-      });
-
-      const { sound } = await Audio.Sound.createAsync(pustynia, {
-        shouldPlay: true,
-        isLooping: true,
-        volume: 0.5,
-      });
-
-      soundRef.current = sound;
-      setIsLoaded(true);
-      await sound.playAsync();
-      console.log("🎶 Muzyka w tle odtwarzana!");
-    } catch (error) {
-      console.error("❌ Błąd odtwarzania muzyki:", error);
-    }
-  };
-
-  // ✅ Pobieranie ustawień z pamięci
   useEffect(() => {
     const fetchSettings = async () => {
       const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
       const isMusicOn = storedMusic !== "off";
       setCanPlayMusic(isMusicOn);
-      console.log(`🎵 Ustawienia startowe: ${isMusicOn ? "ON" : "OFF"}`);
+      globalCanPlayMusic = isMusicOn;
+      if (isMusicOn) playMusic();
     };
     fetchSettings();
+    initializeMusic();
   }, []);
 
-  // ✅ Cykliczne sprawdzanie ustawień
+  // ✅ Cykliczne sprawdzanie zmian ustawień
   useEffect(() => {
     const interval = setInterval(async () => {
-      const stored = await Storage.getItem({ key: "canPlayMusic" });
-      const isOn = stored !== "off";
-
-      if (isOn !== canPlayMusic) {
-        console.log("🔁 Zmiana ustawień muzyki");
-        setCanPlayMusic(isOn);
+      const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
+      const isMusicOn = storedMusic !== "off";
+      if (isMusicOn !== canPlayMusic) {
+        setCanPlayMusic(isMusicOn);
+        globalCanPlayMusic = isMusicOn;
+        if (isMusicOn) {
+          playMusic();
+        } else {
+          stopMusic();
+        }
       }
     }, 1000);
     return () => clearInterval(interval);
   }, [canPlayMusic]);
 
-  // ✅ Automatyczne włączanie/wyłączanie muzyki
-  useEffect(() => {
-    if (canPlayMusic) {
-      loadAndPlayMusic();
-    } else {
-      stopMusic();
-    }
-  }, [canPlayMusic]);
-
-  // ✅ Nasłuchiwanie zmian stanu aplikacji
   useEffect(() => {
     const handleAppStateChange = (nextState: string) => {
-      setAppState(nextState);
-      if (nextState === "active" && canPlayMusic) {
-        loadAndPlayMusic();
-      } else {
+      if (nextState === "active" && globalCanPlayMusic) {
+        playMusic();
+      } else if (nextState !== "active") {
         stopMusic();
       }
     };
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+    return () => subscription.remove();
+  }, []);
 
-    const sub = AppState.addEventListener("change", handleAppStateChange);
-    return () => sub.remove();
-  }, [canPlayMusic]);
+  const toggleMusic = async () => {
+    const newState = !canPlayMusic;
+    setCanPlayMusic(newState);
+    globalCanPlayMusic = newState;
+    await Storage.setItem({
+      key: "canPlayMusic",
+      value: newState ? "on" : "off",
+    });
+    if (newState) {
+      playMusic();
+    } else {
+      stopMusic();
+    }
+  };
 
   useEffect(() => {
     if (fontsLoaded) {
@@ -151,14 +202,18 @@ export default function RootLayout() {
   }
 
   return (
-    <LanguageProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-        <StatusBar style="auto" hidden />
-      </ThemeProvider>
-    </LanguageProvider>
+    <MusicContext.Provider value={{ playMusic, stopMusic }}>
+      <LanguageProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+          <StatusBar style="auto" hidden />
+        </ThemeProvider>
+      </LanguageProvider>
+    </MusicContext.Provider>
   );
 }
 

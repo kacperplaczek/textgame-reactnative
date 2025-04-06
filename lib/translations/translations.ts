@@ -135,9 +135,9 @@ export const translations = {
     akt2_scen000009_pani:
       "Uspokoiłaś mnie ale zanim do tego dojdzie i usiądziemy przy zimnym piwku będziemy musieli wymyśleć jak mnie znaleść.",
     akt2_scen000010_pan:
-      "Dotarłeś na szczyt kanionu. Już niedaleko do źródła sygnału ... Pamiętaj, jesteś tam sam/a, bez wsparcia - każdy twój krok może przynieść odkrycia... albo zagrożenia...",
+      "Dotarłeś na szczyt kanionu. Już niedaleko do źródła sygnału ... Pamiętaj, jesteś tam sam, bez wsparcia - każdy twój krok może przynieść odkrycia... albo zagrożenia...",
     akt2_scen000010_pani:
-      "Dotarłaś na szczyt kanionu. Już niedaleko do źródła sygnału ... Pamiętaj, jesteś tam sam/a, bez wsparcia - każdy twój krok może przynieść odkrycia... albo zagrożenia...",
+      "Dotarłaś na szczyt kanionu. Już niedaleko do źródła sygnału ... Pamiętaj, jesteś tam sama, bez wsparcia - każdy twój krok może przynieść odkrycia... albo zagrożenia...",
     akt2_scen000011_pan:
       "Protokół zaleca zbadanie sygnały. Wolałabym nie zgłaszać niesubordynacji ale sam decydujesz.",
     akt2_scen000011_pani:
@@ -295,8 +295,10 @@ export const translations = {
     AIPL_akt2_szyfrowanie_option1: "Lądujemy!",
     AIPL_akt2_szyfrowanie_option2: "Wyślij drona zwiadowczego",
 
-    AIPL_akt2_skafander:
-      "Jesteś gotowy/a do wyjścia. Za chwilę śluza się otworzy i wyjdziesz na powierzchnię.",
+    AIPL_akt2_skafander_pan:
+      "Jesteś gotowy do wyjścia. Za chwilę śluza się otworzy i wyjdziesz na powierzchnię.",
+    AIPL_akt2_skafander_pani:
+      "Jesteś gotowa do wyjścia. Za chwilę śluza się otworzy i wyjdziesz na powierzchnię.",
     AIPL_akt2_skafander_option1: "Wyjdź ze statku",
     AIPL_akt2_skafander_option2: "Mam jeszcze pytanie",
 
@@ -359,8 +361,10 @@ export const translations = {
     AIPL_akt2_rozbitek_dialogkontynuacja_option1: "Ruszaj na północ",
     AIPL_akt2_rozbitek_dialogkontynuacja_option2: "Ruszaj na południe",
 
-    AIPL_akt2_rozbitek_polnoc:
-      "Dobrze, że pamiętałeś co mówiłam. Poszedłbyś na południe i spadłbyś w przepaść... Przed Tobą kolejny wybór. Możesz udać się przełęczą, ale będziesz narażony/a na szalone warunki pogodowe, albo wybrać drogę przez system jaskiń - z tym, że nie mam pojęcia co tam jest... Co zdecydujesz?",
+    AIPL_akt2_rozbitek_polnoc_pan:
+      "Dobrze, że pamiętałeś co mówiłam. Poszedłbyś na południe i spadłbyś w przepaść... Przed Tobą kolejny wybór. Możesz udać się przełęczą, ale będziesz narażony na szalone warunki pogodowe, albo wybrać drogę przez system jaskiń - z tym, że nie mam pojęcia co tam jest... Co zdecydujesz?",
+    AIPL_akt2_rozbitek_polnoc_pani:
+      "Dobrze, że pamiętałeś co mówiłam. Poszedłbyś na południe i spadłbyś w przepaść... Przed Tobą kolejny wybór. Możesz udać się przełęczą, ale będziesz narażona na szalone warunki pogodowe, albo wybrać drogę przez system jaskiń - z tym, że nie mam pojęcia co tam jest... Co zdecydujesz?",
     AIPL_akt2_rozbitek_polnoc_option1: "Wybieram ścieżkę przełęczą",
     AIPL_akt2_rozbitek_polnoc_option2: "Jaskinie. Pogoda jest ... szalona",
 

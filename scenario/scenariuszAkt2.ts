@@ -610,7 +610,9 @@ export const getScenes = (
   // 🔥 SPRAWDZENIE SKAFANDRA
   akt2_skafander: {
     npcKey: "flightControlCenter",
-    tekst: () => translations.AIPL_akt2_skafander,
+    tekst: plec
+      ? translations[`AIPL_akt2_skafander_${plec}`]
+      : translations.AIPL_akt2_skafander,
     options: [
       {
         tekst: translations.AIPL_akt2_skafander_option1,
@@ -921,7 +923,9 @@ export const getScenes = (
 
   akt2_rozbitek_polnoc: {
     npcKey: "flightControlCenter",
-    tekst: () => translations.AIPL_akt2_rozbitek_polnoc,
+    tekst: plec
+      ? translations[`AIPL_akt2_rozbitek_polnoc_${plec}`]
+      : translations.AIPL_akt2_rozbitek_polnoc,
     options: [
       {
         tekst: translations.AIPL_akt2_rozbitek_polnoc_option1,
