@@ -18,9 +18,6 @@ import { LanguageProvider } from "@/components/LanguageProviders";
 import Storage from "expo-storage";
 import { Platform } from "react-native";
 
-// ✅ Import pliku dźwiękowego
-import pustynia from "@/assets/sounds/pustynia.mp3";
-
 // 🎵 Globalny kontekst dźwięku
 const MusicContext = createContext({
   playMusic: () => {},
@@ -34,6 +31,9 @@ export function useMusic() {
 // ✅ Globalny menedżer muzyki
 let globalSoundRef: Audio.Sound | null = null;
 let globalCanPlayMusic: boolean = false;
+
+// ✅ Import pliku dźwiękowego
+const pustynia = require("@/assets/sounds/pustynia.mp3");
 
 // ✅ Funkcja inicjalizująca muzykę
 async function initializeMusic() {

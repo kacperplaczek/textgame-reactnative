@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
   withDelay,
 } from "react-native-reanimated";
+import GlowSkia from "@/components/ui/GlowBackground";
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -44,7 +45,8 @@ export default function HomeScreen() {
       router.replace("/prolog");
     } else if (currentAct) {
       console.log("🎭 Przenoszę gracza do aktu:", currentAct);
-      router.replace(`/${currentAct}` as Href<string>);
+      // router.replace(`/${currentAct}` as Href<string>);
+      router.replace("/game" as Href<string>);
     } else {
       console.log("🎮 Brak aktu, startuję od początku...");
       router.replace("/startgame");
@@ -101,13 +103,14 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.wrapper}>
+      <GlowSkia />
       <TouchableOpacity
         style={styles.fullscreenTouchable}
         onPress={handleStartPress}
         activeOpacity={0.9}
       >
         <ImageBackground
-          source={require("../../assets/images/bg-starter-screen.gif")}
+          source={require("@/assets/images/bg-starter-screen.gif")}
           style={styles.background}
           resizeMode="contain"
         >
