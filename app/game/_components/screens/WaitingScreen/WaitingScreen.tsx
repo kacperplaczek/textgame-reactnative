@@ -8,7 +8,6 @@ import { adListener, interstitial } from "@/lib/ads/LoadInterestialAd";
 import { waitingScreens } from "./_config/WaitingScreens";
 import { defaultScreen } from "./_config/DefaultWaitingScreen";
 import { WaitingSCreenStyles } from "./_assets/styles";
-import {getLogger} from "@/lib/helpers/getLogger";
 
 export default function WaitingScreenOverlay({
   visible,
@@ -24,7 +23,7 @@ export default function WaitingScreenOverlay({
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
 
   useEffect(() => {
-    getLogger("{v} [WaitingScreenOverlay] Wywołanie useEffecta");
+    console.log("{v} [WaitingScreenOverlay] Wywołanie useEffecta");
     console.log("📌 notifyScreenName:", notifyScreenName);
 
     if (!visible) {
