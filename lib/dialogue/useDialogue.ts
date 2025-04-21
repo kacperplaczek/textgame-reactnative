@@ -1,0 +1,30 @@
+import { useState } from "react";
+import { NpcKey } from "./NPCData";
+
+type DialogueMessage = {
+  autor: "NPC" | "GRACZ";
+  tekst: string;
+  npcKey?: NpcKey;
+};
+
+export const useDialogue = () => {
+  const [dialogue, setDialogue] = useState<DialogueMessage[]>([]);
+
+  const addMessage = (
+    autor: "NPC" | "GRACZ",
+    tekst: string,
+    npcKey?: NpcKey
+  ) => {
+    setDialogue((prev) => [...prev, { autor, tekst, npcKey }]);
+  };
+
+  const clearDialogue = () => {
+    setDialogue([]);
+  };
+
+  return {
+    dialogue,
+    addMessage,
+    clearDialogue,
+  };
+};
