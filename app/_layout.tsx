@@ -17,6 +17,7 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { LanguageProvider } from "@/components/LanguageProviders";
 import Storage from "expo-storage";
 import { Platform } from "react-native";
+import { getLogger } from "@/lib/helpers/getLogger";
 
 // 🎵 Globalny kontekst dźwięku
 const MusicContext = createContext({
@@ -63,13 +64,13 @@ async function initializeMusic() {
       const isMusicOn = storedMusic !== "off";
       if (isMusicOn) {
         await globalSoundRef.playAsync(); // Odtwarzaj tylko jeśli włączone
-        console.log("✅ Muzyka załadowana i odtwarzana!");
+        getLogger("{v} Muzyka załadowana i odtwarzana");
       } else {
-        console.log("🚫 Muzyka załadowana, ale nie odtwarzana (off).");
+        getLogger("{x} Muzyka załadowana, ale nie odtwarzana");
       }
     }
   } catch (error) {
-    console.error("❌ Błąd inicjalizacji muzyki:", error);
+    getLogger("{x} Błąd inicjalizacji muzyki", error);
   }
 }
 
@@ -84,18 +85,18 @@ async function playMusic() {
         volume: 1,
       });
       globalSoundRef = sound;
-      console.log("🎶 Muzyka w tle odtwarzana!");
+      getLogger("{v} Muzyka w tle jest odtwarzana");
     } else {
       const status = await globalSoundRef.getStatusAsync();
       if (!status.isPlaying) {
         await globalSoundRef.playAsync();
-        console.log("▶️ Muzyka wznowiona!");
+        getLogger("{!} Muzyka w tle już jest odtwarzana");
       } else {
-        console.log("🎵 Muzyka już gra.");
+        getLogger("{v} Muzyka już gra");
       }
     }
   } catch (error) {
-    console.error("❌ Błąd odtwarzania muzyki:", error);
+    getLogger("{x} Błąd włączenia muzyki:", error);
   }
 }
 
@@ -106,13 +107,13 @@ async function stopMusic() {
       const status = await globalSoundRef.getStatusAsync();
       if (status.isPlaying) {
         await globalSoundRef.pauseAsync();
-        console.log("⏸️ Muzyka wstrzymana.");
+        getLogger("{v} Muzyka wstrzymana");
       } else {
-        console.log("⚠️ Muzyka już jest wstrzymana.");
+        getLogger("{!} Muzyka jest już wstrzymana");
       }
     }
   } catch (error) {
-    console.error("❌ Błąd wstrzymywania muzyki:", error);
+    getLogger("{x} Błąd wstrzymywania muzyki:", error);
   }
 }
 
@@ -209,6 +210,7 @@ export default function RootLayout() {
         >
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="game" />
           </Stack>
           <StatusBar style="auto" hidden />
         </ThemeProvider>
