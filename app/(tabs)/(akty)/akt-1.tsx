@@ -1170,7 +1170,7 @@ export default function StartGameScreen() {
 
       <StatusBar hidden />
       <ActSwitcher />
-      <GameMenu />
+      <GameMenu onReset={undefined} />
 
       <WaitingScreenOverlay
         visible={waitingScreenVisible && !!waiting?.notifyScreenName}

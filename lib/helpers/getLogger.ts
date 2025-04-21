@@ -1,11 +1,11 @@
-import chalk from "chalk";
+// lib/utils/logger.ts
 
 const iconMap: Record<string, string> = {
-  "{x}": chalk.red("❌"),
-  "{v}": chalk.green("✅"),
-  "{i}": chalk.blue("ℹ️"),
-  "{!}": chalk.yellow("⚠️"),
-  "{bug}": chalk.magenta("🐞"),
+  "{x}": "❌",
+  "{v}": "✅",
+  "{i}": "ℹ️",
+  "{!}": "⚠️",
+  "{bug}": "🐞",
 };
 
 export const getLogger = (...args: any[]) => {

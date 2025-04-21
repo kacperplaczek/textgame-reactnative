@@ -97,7 +97,7 @@ export default function PrologScreen() {
       await stopAllSounds();
       await Storage.setItem({ key: "gameStarted", value: "true" });
       await Storage.setItem({ key: "currentAct", value: "startgame" });
-      router.replace("/startgame");
+      router.replace("/game");
     }
   };
 
