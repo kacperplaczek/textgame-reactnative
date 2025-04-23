@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { NpcKey } from "./NPCData";
 
-type DialogueMessage = {
+export type DialogueMessage = {
   autor: "NPC" | "GRACZ";
   tekst: string;
   npcKey?: NpcKey;
@@ -22,9 +22,14 @@ export const useDialogue = () => {
     setDialogue([]);
   };
 
+  const clearMessages = () => {
+    setDialogue([]);
+  };
+
   return {
     dialogue,
     addMessage,
     clearDialogue,
+    clearMessages,
   };
 };

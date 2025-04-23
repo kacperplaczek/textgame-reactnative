@@ -1,3 +1,4 @@
+import { actsConfig } from "@/lib/settings/acts.config";
 import { SceneType } from "@/scenario/types";
 import Storage from "expo-storage";
 
@@ -208,6 +209,6 @@ export const getScenes = (
     npcKey: "officer",
     tekst: () => translations.endActCompleted,
     endAct: "actEndScreen",
-    nextAct: "akt-1",
+    nextAct: actsConfig["akt-1"].id,
   },
 });

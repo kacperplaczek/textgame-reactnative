@@ -30,6 +30,8 @@ export default function GameScreen() {
     setSpecialSceneVisible, // ← TO!
     setSpecialScene, // ← TO TEŻ!
     waitingVisible,
+    notifyScreenName,
+    timeLeft,
   } = useGameEngine();
 
   const ContentWrapper: React.ComponentType<ViewProps | ImageBackgroundProps> =
@@ -42,10 +44,6 @@ export default function GameScreen() {
         resizeMode: "cover" as const,
       };
 
-  useEffect(() => {
-    handleSceneChange("dzwoni_officer"); // lub jakakolwiek inna scena z akt-1
-  }, []);
-
   return (
     <ContentWrapper {...wrapperProps}>
       {!darknessUI && <GlowSkia />}
@@ -54,9 +52,9 @@ export default function GameScreen() {
       <GameMenu onReset={() => {}} />
 
       <WaitingScreenOverlay
-        visible={false}
-        timeLeft={0}
-        notifyScreenName="default"
+        visible={waitingVisible}
+        timeLeft={timeLeft}
+        notifyScreenName={notifyScreenName}
       />
 
       <CallingScreenOverlay
@@ -65,7 +63,6 @@ export default function GameScreen() {
         subtitle={specialScene?.subtitle}
         npcKey={specialScene?.npcKey}
         background={specialScene?.background}
-        autoNextDelay={specialScene?.autoNextDelay}
         onClose={async () => {
           console.log(
             "📞 Kliknięto ekran – zatrzymuję dźwięki i przechodzę dalej..."

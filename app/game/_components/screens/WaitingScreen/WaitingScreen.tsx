@@ -70,16 +70,19 @@ export default function WaitingScreenOverlay({
     translations[jezyk]?.["WaitingTime"] ?? "Pozostało";
 
   return (
-    <Modal
-      key={notifyScreenName}
-      visible={visible}
-      animationType="fade"
-      transparent={false}
-      presentationStyle="fullScreen" // <- ważne
+    <View
+      style={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 999,
+      }}
     >
       <ImageBackground
         source={screen.background}
-        style={{ width, height }} // <- pełny ekran
+        style={{ flex: 1 }}
         resizeMode="cover"
       >
         <GlowSkia />
@@ -102,6 +105,6 @@ export default function WaitingScreenOverlay({
           </View>
         </SafeAreaView>
       </ImageBackground>
-    </Modal>
+    </View>
   );
 }
