@@ -16,6 +16,10 @@ import { useOptions } from "@/lib/dialogue/useOptions";
 import { useGameEngine } from "@/lib/game/useGameEngine";
 import { stopAllSounds, stopSound } from "@/lib/helpers/soundController";
 import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
+import DeathScreen from "./_components/screens/DeathScreen/DeathScreen";
+import { deathScreensMap } from "@/lib/screens/DeathScreens";
+import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { adBannerUnitID } from "@/lib/ads/LoadBannerAd";
 
 export default function GameScreen() {
   const scrollRef = useRef<ScrollView>(null);
@@ -32,6 +36,10 @@ export default function GameScreen() {
     waitingVisible,
     notifyScreenName,
     timeLeft,
+    deathScreenVisible,
+    currentDeathScreen,
+    onRetryFromDeath,
+    setActSwitcherRefresh,
   } = useGameEngine();
 
   const ContentWrapper: React.ComponentType<ViewProps | ImageBackgroundProps> =
@@ -48,7 +56,15 @@ export default function GameScreen() {
     <ContentWrapper {...wrapperProps}>
       {!darknessUI && <GlowSkia />}
       <StatusBar hidden />
-      <ActSwitcher />
+      <ActSwitcher
+        onMountRefresh={() => {
+          setActSwitcherRefresh(() => {
+            console.log("🔄 Odświeżam ActSwitcher (via onMountRefresh)");
+            // zaktualizuj completedActs etc.
+            // Użyj czegoś jak triggerReload() lub wewnętrzny refresh
+          });
+        }}
+      />
       <GameMenu onReset={() => {}} />
 
       <WaitingScreenOverlay
@@ -75,12 +91,29 @@ export default function GameScreen() {
         }}
       />
 
+      {deathScreenVisible && currentDeathScreen && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 9999,
+          }}
+        >
+          {deathScreensMap[currentDeathScreen]?.({ onRetry: onRetryFromDeath })}
+        </View>
+      )}
+
       <View
         style={{ flex: 1, justifyContent: "space-between", paddingTop: 50 }}
       >
         <DialogueBox scrollRef={scrollRef} dialogue={dialogue || []} />
 
         <OptionsBox options={options} />
+
+        <BannerAd unitId={adBannerUnitID} size={BannerAdSize.ADAPTIVE_BANNER} />
       </View>
     </ContentWrapper>
   );
