@@ -4,23 +4,22 @@ import Storage from "expo-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { translations } from "@/lib/translations/translations"; // Import tłumaczeń
 import { getCurrentLanguage } from "@/lib/settings/LanguageController"; // ✅ Używamy poprawnej funkcji
+import { useGameEngine } from "@/lib/game/useGameEngine";
+import { DeviceEventEmitter } from "react-native";
 
-const ActSwitcher = () => {
+const ActSwitcher = ({ onMountRefresh }: { onMountRefresh?: () => void }) => {
   const [currentAct, setCurrentAct] = useState<string | null>(null);
   const [completedActs, setCompletedActs] = useState<string[]>([]);
   const [language, setLanguage] = useState<string>("pl"); // Domyślnie PL
   const { act: historyAct } = useLocalSearchParams();
   const router = useRouter();
+  const { setActSwitcherRefresh } = useGameEngine();
 
   useEffect(() => {
     const loadActData = async () => {
       const act = await Storage.getItem({ key: "currentAct" });
       const completed = await Storage.getItem({ key: "completedActs" });
-      const lang = await getCurrentLanguage(); // ✅ Pobieramy poprawnie język
-
-      console.log("📌 Aktualny język:", lang); // 🔍 Debugging
-      console.log("📌 Aktualny akt:", act); // 🔍 Debugging
-      console.log("📌 Ukończone akty:", completed); // 🔍 Debugging
+      const lang = await getCurrentLanguage();
 
       setCurrentAct(act);
       setCompletedActs(completed ? JSON.parse(completed) : []);
@@ -28,14 +27,26 @@ const ActSwitcher = () => {
     };
 
     loadActData();
+
+    const subscription = DeviceEventEmitter.addListener(
+      "completedActsUpdated",
+      () => {
+        console.log("📥 Otrzymano completedActsUpdated – odświeżam switcher");
+        loadActData();
+      }
+    );
+
+    return () => {
+      subscription.remove();
+    };
   }, []);
 
   const handleActSwitch = async (act: string) => {
     console.log(`🔄 Przełączam akt na: ${act}`);
 
     if (act === currentAct) {
-      console.log("✅ Powrót do aktualnego aktu!");
-      router.replace(`/${act}`);
+      console.log("✅ Powrót do aktualnego aktu w /game");
+      router.replace("/game");
     } else {
       console.log(`📖 Otwieram historię dla aktu: ${act}`);
       await Storage.setItem({ key: "viewingHistoryAct", value: act });
