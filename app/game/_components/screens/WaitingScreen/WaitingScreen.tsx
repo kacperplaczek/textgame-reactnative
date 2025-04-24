@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ImageBackground, Modal } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ImageBackground,
+  Modal,
+  ActivityIndicator,
+} from "react-native";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController";
 import { translations } from "@/lib/translations/translations";
 import GlowSkia from "@/components/ui/GlowBackground";
@@ -21,42 +28,32 @@ export default function WaitingScreenOverlay({
   const { width, height } = Dimensions.get("window");
   const [screen, setScreen] = useState(defaultScreen);
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
+  const [isImageLoaded, setIsImageLoaded] = useState(false); // 👈 dodaj
 
   useEffect(() => {
-    console.log("{v} [WaitingScreenOverlay] Wywołanie useEffecta");
-    console.log("📌 notifyScreenName:", notifyScreenName);
+    if (!visible) return;
 
-    if (!visible) {
-      return;
-    }
-
-    console.log("🔄 Ustawiam odpowiedni ekran:", notifyScreenName);
+    setIsImageLoaded(false); // resetuj przy każdym ekranie
 
     const selectedName =
       notifyScreenName && waitingScreens[notifyScreenName]
         ? notifyScreenName
         : "defaultScreen";
 
-    console.log("🔄 Ustawiam ekran:", selectedName);
-
     setScreen(waitingScreens[selectedName] || defaultScreen);
 
-    // ✅ Pobranie języka użytkownika
     const loadLang = async () => {
       const lang = await getCurrentLanguage();
-      console.log("🌍 Ustawiam język w WaitingScreenOverlay:", lang);
       setJezyk(lang);
     };
 
     loadLang();
-
-    // ✅ Ładowanie reklamy
     interstitial.load();
   }, [visible, notifyScreenName]);
 
   useEffect(() => {
     return () => {
-      adListener(); // Czyszczenie event listenera
+      adListener();
     };
   }, []);
 
@@ -77,33 +74,52 @@ export default function WaitingScreenOverlay({
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 999,
+        backgroundColor: "black",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 9999,
       }}
     >
+      {!isImageLoaded && (
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "black",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <ActivityIndicator size="large" color="#219653" />
+        </View>
+      )}
+
       <ImageBackground
         source={screen.background}
         style={{ flex: 1 }}
         resizeMode="cover"
+        onLoadEnd={() => setIsImageLoaded(true)} // 👈 kluczowy moment
       >
-        <GlowSkia />
-
-        <SafeAreaView style={WaitingSCreenStyles.overlay}>
-          <View style={WaitingSCreenStyles.header}>
-            <Text style={[WaitingSCreenStyles.title, { color: "#219653" }]}>
-              {translatedTitle}
-            </Text>
-          </View>
-
-          <View style={WaitingSCreenStyles.footer}>
-            <Text style={WaitingSCreenStyles.subtitle}>
-              {translatedSubtitle}
-            </Text>
-            <Text style={WaitingSCreenStyles.timeText}>
-              {translatedWaitingTime}: {Math.floor(timeLeft / 60)}m{" "}
-              {timeLeft % 60}s
-            </Text>
-          </View>
-        </SafeAreaView>
+        {isImageLoaded && (
+          <>
+            <GlowSkia />
+            <SafeAreaView style={WaitingSCreenStyles.overlay}>
+              <View style={WaitingSCreenStyles.header}>
+                <Text style={[WaitingSCreenStyles.title, { color: "#219653" }]}>
+                  {translatedTitle}
+                </Text>
+              </View>
+              <View style={WaitingSCreenStyles.footer}>
+                <Text style={WaitingSCreenStyles.subtitle}>
+                  {translatedSubtitle}
+                </Text>
+                <Text style={WaitingSCreenStyles.timeText}>
+                  {translatedWaitingTime}: {Math.floor(timeLeft / 60)}m{" "}
+                  {timeLeft % 60}s
+                </Text>
+              </View>
+            </SafeAreaView>
+          </>
+        )}
       </ImageBackground>
     </View>
   );

@@ -1,68 +1,79 @@
+import React from "react";
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
+  StyleSheet,
+  Dimensions,
   ImageBackground,
 } from "react-native";
-import GlowSkia from "@/components/ui/GlowBackground";
 
-type DeathScreenProps = {
-  title: string;
-  image: any; // require() obrazka
-  onRetry: () => void;
-};
+const { width, height } = Dimensions.get("window");
 
-export default function DeathScreen({
+const DeathScreen = ({
   title,
   image,
   onRetry,
-}: DeathScreenProps) {
+}: {
+  title: string;
+  image: any;
+  onRetry: () => void;
+}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={onRetry}>
-      <ImageBackground
-        source={image}
-        style={styles.background}
-        resizeMode="cover"
+    <View style={styles.wrapper}>
+      <TouchableOpacity
+        style={styles.touchable}
+        onPress={onRetry}
+        activeOpacity={1}
       >
-        <GlowSkia />
-        <View style={styles.overlay} />
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.tapText}>Dotknij, aby wrócić do checkpointu</Text>
-      </ImageBackground>
-    </TouchableOpacity>
+        <ImageBackground
+          source={image}
+          style={styles.imageBackground}
+          resizeMode="cover"
+        >
+          <View style={styles.overlay}>
+            <Text style={styles.title}>{title}</Text>
+          </View>
+        </ImageBackground>
+      </TouchableOpacity>
+    </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  wrapper: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width,
+    height,
+    zIndex: 9999,
+    backgroundColor: "black",
   },
-  background: {
+  touchable: {
     flex: 1,
-    justifyContent: "space-between",
+    width: "100%",
+    height: "100%",
+  },
+  imageBackground: {
+    flex: 1,
+    justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 40,
+    width: "100%",
+    height: "100%",
   },
   overlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.1)",
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    padding: 20,
+    borderRadius: 10,
   },
   title: {
-    color: "#219653",
-    fontSize: 42,
-    fontFamily: "VT323Regular",
+    fontSize: 32,
+    color: "white",
     textAlign: "center",
-    textShadowColor: "rgba(0,0,0,1)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
-  },
-  tapText: {
-    color: "#219653",
-    fontSize: 18,
+    fontWeight: "bold",
     fontFamily: "VT323Regular",
-    textShadowColor: "rgba(0,0,0,1)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
   },
 });
+
+export default DeathScreen;
