@@ -209,7 +209,6 @@ export default function RootLayout() {
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
           <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="(tabs)" />
             <Stack.Screen name="game" />
           </Stack>
           <StatusBar style="auto" hidden />
