@@ -182,7 +182,7 @@ export const getScenes = (
   oczekiwanie_na_rozpatrzenie: {
     npcKey: "officer",
     tekst: () => translations.oczekiwanieStart,
-    notifyTime: 600, // 10 minut
+    notifyTime: 10, // 10 minut
     notification: true,
     notificationTitle: translations.scen1notification1title,
     notificationDesc: translations.scen1notification1desc,

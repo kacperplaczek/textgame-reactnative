@@ -921,6 +921,11 @@ export const getScenes = (
     ],
   },
 
+  akt2_rozbitek_poludnie: {
+    npcKey: "rozbitek",
+    deathScreen: "spadlesWOtchlan",
+  },
+
   akt2_rozbitek_polnoc: {
     npcKey: "flightControlCenter",
     tekst: plec
