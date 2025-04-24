@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from "react";
 import Storage from "expo-storage";
 import { getCurrentLanguage } from "../settings/LanguageController";
 import { getCurrentAct } from "../helpers/getCurrentAct";
+import { DeviceEventEmitter } from "react-native";
+
 import {
   getInitialSceneForAct,
   getScenesForAct,
@@ -14,17 +16,28 @@ import { Language } from "../translations/translations";
 import { ActId } from "../helpers/scenarioLoader";
 import { schedulePushNotification } from "../notifications/NotificationUtils";
 import { useRestoreGame } from "../helpers/useRestoreGame";
+import { defaultScreen } from "@/app/game/_components/screens/WaitingScreen/_config/DefaultWaitingScreen";
+import { saveToHistory } from "../dialogue/saveToHistory";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();
   const { options, updateOptions } = useOptions();
   const [waitingVisible, setWaitingVisible] = useState(false);
-  const [notifyScreenName, setNotifyScreenName] = useState("defaultScreen");
+  const [notifyScreenName, setNotifyScreenName] = useState<string | null>(null);
   const [timeLeft, setTimeLeft] = useState(0);
   const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [currentAct, setCurrentActState] = useState<ActId | null>(null);
   const [specialSceneVisible, setSpecialSceneVisible] = useState(false);
   const [specialScene, setSpecialScene] = useState<any>(null);
+  const [currentDeathScreen, setCurrentDeathScreen] = useState<string | null>(
+    null
+  );
+  const [deathScreenVisible, setDeathScreenVisible] = useState(false);
+  const [lastCheckpoint, setLastCheckpoint] = useState<string | null>(null);
+  const [actDataReloadKey, setActDataReloadKey] = useState(Date.now());
+  const [actSwitcherRefresh, setActSwitcherRefresh] = useState<
+    (() => void) | null
+  >(null);
 
   useEffect(() => {
     const setupAudioMode = async () => {
@@ -55,6 +68,15 @@ export const useGameEngine = () => {
 
     restoreAct();
   }, []);
+
+  const onRetryFromDeath = async () => {
+    setDeathScreenVisible(false);
+    setCurrentDeathScreen(null);
+
+    const sceneToRestore = lastCheckpoint || getInitialSceneForAct(currentAct!);
+    console.log("↩️ Wracam do checkpointu:", sceneToRestore);
+    await handleSceneChange(sceneToRestore);
+  };
 
   const handleSceneChange = useCallback(
     async (sceneName: string) => {
@@ -101,7 +123,12 @@ export const useGameEngine = () => {
       // 4. Dodaj tekst sceny
       const tekst =
         typeof scene.tekst === "function" ? await scene.tekst() : scene.tekst;
+
+      const msg = { autor: "NPC", tekst, npcKey: scene.npcKey };
       addMessage("NPC", tekst, scene.npcKey);
+
+      await saveToHistory(currentAct, msg);
+
       console.log("Dodaję wiadomość do dialogu", tekst);
 
       // 5. Dodaj opcje jeśli są
@@ -115,11 +142,29 @@ export const useGameEngine = () => {
                 await option.akcja();
               }
 
+              // Zapisywanie odpowiedzi gracza do historii.
+              await saveToHistory(currentAct, {
+                autor: "GRACZ",
+                tekst: option.tekst,
+              });
+
               // Potem przejdź do kolejnej sceny
               handleSceneChange(option.next);
             },
           }))
         );
+      }
+
+      if (scene.checkpoint) {
+        console.log("Zapisuję checkpoint:", sceneName);
+        setLastCheckpoint(sceneName);
+      }
+
+      if (scene.deathScreen) {
+        console.log("💀 Death screen triggered:", scene.deathScreen);
+        setCurrentDeathScreen(scene.deathScreen);
+        setDeathScreenVisible(true);
+        return; // ⛔ Stop dalsze przetwarzanie
       }
 
       if (scene.notifyTime && scene.notifyScreenName) {
@@ -167,7 +212,8 @@ export const useGameEngine = () => {
         }
 
         setWaitingVisible(true);
-        setNotifyScreenName(scene.notifyScreenName);
+        setNotifyScreenName(scene.notifyScreenName || "defaultScreen");
+
         setTimeLeft(remaining);
 
         const interval = setInterval(async () => {
@@ -214,6 +260,20 @@ export const useGameEngine = () => {
       if (scene.nextAct) {
         console.log("🌀 Przechodzę do nowego aktu:", scene.nextAct);
 
+        // ✅ Dodaj obecny akt do completedActs
+        const completed = await Storage.getItem({ key: "completedActs" });
+        let completedActs = completed ? JSON.parse(completed) : [];
+
+        if (!completedActs.includes(currentAct)) {
+          completedActs.push(currentAct);
+          await Storage.setItem({
+            key: "completedActs",
+            value: JSON.stringify(completedActs),
+          });
+
+          DeviceEventEmitter.emit("completedActsUpdated");
+        }
+
         const nextAct = scene.nextAct as ActId;
         setCurrentActState(nextAct);
         await Storage.setItem({ key: "currentAct", value: nextAct });
@@ -231,6 +291,9 @@ export const useGameEngine = () => {
         } else {
           console.warn("❌ Nie znaleziono initialScene dla aktu:", nextAct);
         }
+
+        setActDataReloadKey(Date.now());
+
         return;
       }
 
@@ -258,5 +321,10 @@ export const useGameEngine = () => {
     setSpecialSceneVisible,
     notifyScreenName,
     timeLeft,
+    deathScreenVisible,
+    currentDeathScreen,
+    onRetryFromDeath,
+    actDataReloadKey,
+    setActSwitcherRefresh,
   };
 };
