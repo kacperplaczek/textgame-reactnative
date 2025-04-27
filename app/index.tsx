@@ -7,8 +7,8 @@ import {
   Dimensions,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { translations } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { translations } from "@/i18n/translations";
 import { useEffect, useState } from "react";
 import Storage from "expo-storage";
 import Animated, {
