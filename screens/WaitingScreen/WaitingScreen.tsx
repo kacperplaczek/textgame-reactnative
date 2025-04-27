@@ -7,8 +7,8 @@ import {
   Modal,
   ActivityIndicator,
 } from "react-native";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { translations } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { translations } from "@/i18n/translations";
 import GlowSkia from "@/components/ui/GlowBackground";
 import { Dimensions, SafeAreaView } from "react-native";
 import { adListener, interstitial } from "@/lib/ads/LoadInterestialAd";

@@ -12,8 +12,8 @@ import {
   AdEventType,
   TestIds,
 } from "react-native-google-mobile-ads";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { translations } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { translations } from "@/i18n/translations";
 import GlowSkia from "./GlowBackground";
 import { Dimensions, SafeAreaView } from "react-native";
 

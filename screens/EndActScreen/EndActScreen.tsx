@@ -6,8 +6,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useEffect, useState } from "react";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { translations, Language } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { translations, Language } from "@/i18n/translations";
 
 type ActEndScreenProps = {
   onContinue: () => void;

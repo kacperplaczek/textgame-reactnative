@@ -16,7 +16,7 @@ Sprawdź też czy masz dodaną poprawną ściężkę avatara.
 
 */
 
-import { translations, Language } from "@/lib/translations/translations";
+import { translations, Language } from "@/i18n/translations";
 
 export type NpcKey =
   | "officer"

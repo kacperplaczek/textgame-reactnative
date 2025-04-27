@@ -5,9 +5,9 @@ import {
   getInitialSceneForAct,
   getScenesForAct,
 } from "../helpers/scenarioLoader";
-import { Language } from "../translations/translations";
+import { Language } from "../../i18n/translations";
 import { ActId } from "../helpers/scenarioLoader";
-import { getCurrentLanguage } from "../settings/LanguageController";
+import { getCurrentLanguage } from "../../models/LanguageController";
 
 type UseSceneManagerResult = {
   currentScene: string | null;

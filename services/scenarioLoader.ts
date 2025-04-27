@@ -1,6 +1,5 @@
 import { actsConfig } from "@/lib/settings/acts.config";
 import { Language, translations } from "@/i18n/translations";
-import { getLogger } from "./getLogger";
 
 export type ActId = keyof typeof actsConfig;
 
@@ -12,21 +11,24 @@ export const getScenesForAct = (
   const config = actsConfig[actId];
 
   if (!config || !config.scenario) {
-    getLogger("{x} Brak scenariusza dla aktu:", actId);
+    console.log("{x} Brak scenariusza dla aktu:", actId);
     return {};
   }
 
   try {
-    return config.scenario.getScenes(translations[lang], plec);
+    console.log("📘 Ładowanie scen dla aktu:", actId);
+    console.log("📘 Tłumaczenia:", translations[lang]);
+    console.log("📘 Płeć gracza:", plec);
+
+    const scenes = config.scenario.getScenes(translations[lang], plec);
+
+    console.log("📘 Sceny:", scenes);
+
+    return scenes;
   } catch (err) {
-    getLogger("❌ Błąd przy ładowaniu scenariusza:", err);
+    console.log("❌ Błąd przy ładowaniu scenariusza:", err);
     return {};
   }
-
-  console.log("📘 Ładowanie scen dla aktu:", actId);
-  console.log("📘 Tłumaczenia:", translations[lang]);
-  console.log("📘 Płeć gracza:", plec);
-  console.log("📘 Sceny:", config.scenario.getScenes(translations[lang], plec));
 };
 
 export const getInitialSceneForAct = (actId: ActId): string => {

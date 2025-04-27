@@ -9,7 +9,7 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
-import { translations } from "@/lib/translations/translations";
+import { translations } from "@/i18n/translations";
 import { useGameMenuViewModel } from "@/viewmodels/useGameMenuViewModel";
 
 export default function GameMenu({ onReset }) {

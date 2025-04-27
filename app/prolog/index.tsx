@@ -12,8 +12,8 @@ import {
 import { useRouter } from "expo-router";
 import Storage from "expo-storage";
 import { StatusBar } from "expo-status-bar";
-import { translations, Language } from "@/lib/translations/translations";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
+import { translations, Language } from "@/i18n/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
 import { Audio } from "expo-av";
 import { PixelRatio } from "react-native";
 

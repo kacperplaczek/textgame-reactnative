@@ -13,8 +13,8 @@ import {
 import Storage from "expo-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { npcData } from "@/lib/dialogue/NPCData";
-import { translations, Language } from "@/lib/translations/translations";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController"; // ✅ Pobieranie języka
+import { translations, Language } from "@/i18n/translations";
+import { getCurrentLanguage } from "@/models/LanguageController"; // ✅ Pobieranie języka
 import GameMenu from "@/components/buttons/GameMenu";
 import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";

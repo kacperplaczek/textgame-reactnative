@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { DeviceEventEmitter } from "react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { translations } from "@/lib/translations/translations";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
+import { translations } from "@/i18n/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
 import Storage from "expo-storage";
-import { useGameEngine } from "@/lib/game/useGameEngine";
+import { useGameEngine } from "@/hooks/useGameEngine";
 
 export function useActsSwitchViewModel() {
   const [currentAct, setCurrentAct] = useState<string | null>(null);

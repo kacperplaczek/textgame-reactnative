@@ -8,9 +8,9 @@ import {
   ImageBackground,
 } from "react-native";
 import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
-import { translations } from "@/lib/translations/translations";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { stopSound } from "@/lib/helpers/soundController";
+import { translations } from "@/i18n/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { stopSound } from "@/services/soundController";
 
 // Domyślne tła
 const DefaultBgImage = require("@/assets/images/bg_intro.png");

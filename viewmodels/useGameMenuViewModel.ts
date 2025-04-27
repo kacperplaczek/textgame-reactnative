@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Alert } from "react-native";
-import { getCurrentLanguage } from "@/lib/settings/LanguageController";
-import { translations } from "@/lib/translations/translations";
+import { getCurrentLanguage } from "@/models/LanguageController";
+import { translations } from "@/i18n/translations";
 import * as Updates from "expo-updates";
 import Storage from "expo-storage";
 
