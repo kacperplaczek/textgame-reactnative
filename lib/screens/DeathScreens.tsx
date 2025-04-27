@@ -1,4 +1,4 @@
-import DeathScreen from "@/components/deathscreens/DeathScreen";
+import DeathScreen from "@/screens/DeathScreen/DeathScreen";
 
 export const deathScreensMap: Record<
   string,
@@ -45,7 +45,6 @@ export const deathScreensMap: Record<
   stormDeathScreen: ({ onRetry }) => (
     <DeathScreen
       title="GINIESZ W BURZY"
-      //   description="Utworzyła się dziura w kadłubie. Nikt nie przeżył."
       image={require("@/assets/images/spadles_z_urwiska.png")}
       onRetry={onRetry}
     />
