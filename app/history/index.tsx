@@ -15,8 +15,8 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import { npcData } from "@/lib/dialogue/NPCData";
 import { translations, Language } from "@/lib/translations/translations";
 import { getCurrentLanguage } from "@/lib/settings/LanguageController"; // ✅ Pobieranie języka
-import GameMenu from "@/components/ui/GameMenu";
-import ActSwitcher from "@/components/ui/ActsSwitch";
+import GameMenu from "@/components/buttons/GameMenu";
+import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 
 const { width, height } = Dimensions.get("window");
