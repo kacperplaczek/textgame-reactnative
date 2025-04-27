@@ -5,18 +5,15 @@ import { StatusBar } from "expo-status-bar";
 import { ImageBackground } from "react-native";
 import GlowSkia from "@/components/ui/GlowBackground";
 import { useDarknessUI } from "@/hooks/useDarnkessUI";
-import GameMenu from "@/components/ui/GameMenu";
-import WaitingScreenOverlay from "./_components/screens/WaitingScreen/WaitingScreen";
-import DialogueBox from "./_components/ui/DialogueBox";
-import OptionsBox from "./_components/ui/OptionsBox";
-import CallingScreenOverlay from "./_components/screens/CallingScreen/CallingScreen";
-import ActSwitcher from "@/components/ui/ActsSwitch";
-import { useSceneManager } from "@/lib/dialogue/useSceneManager";
-import { useOptions } from "@/lib/dialogue/useOptions";
+import GameMenu from "@/components/buttons/GameMenu";
+import WaitingScreenOverlay from "../../screens/WaitingScreen/WaitingScreen";
+import DialogueBox from "../../components/DialogueBox";
+import OptionsBox from "../../components/buttons/OptionsBox";
+import CallingScreenOverlay from "../../screens/CallingScreen/CallingScreen";
+import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { useGameEngine } from "@/lib/game/useGameEngine";
-import { stopAllSounds, stopSound } from "@/lib/helpers/soundController";
+import { stopAllSounds } from "@/lib/helpers/soundController";
 import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
-import DeathScreen from "./_components/screens/DeathScreen/DeathScreen";
 import { deathScreensMap } from "@/lib/screens/DeathScreens";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { adBannerUnitID } from "@/lib/ads/LoadBannerAd";
@@ -31,8 +28,8 @@ export default function GameScreen() {
     handleSceneChange,
     specialScene,
     specialSceneVisible,
-    setSpecialSceneVisible, // ← TO!
-    setSpecialScene, // ← TO TEŻ!
+    setSpecialSceneVisible,
+    setSpecialScene,
     waitingVisible,
     notifyScreenName,
     timeLeft,
