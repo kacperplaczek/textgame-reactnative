@@ -16,7 +16,7 @@ import { Language } from "../translations/translations";
 import { ActId } from "../helpers/scenarioLoader";
 import { schedulePushNotification } from "../notifications/NotificationUtils";
 import { useRestoreGame } from "../helpers/useRestoreGame";
-import { defaultScreen } from "@/app/game/_components/screens/WaitingScreen/_config/DefaultWaitingScreen";
+import { defaultScreen } from "@/screens/WaitingScreen/_config/DefaultWaitingScreen";
 import { saveToHistory } from "../dialogue/saveToHistory";
 
 export const useGameEngine = () => {
