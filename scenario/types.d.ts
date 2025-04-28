@@ -1,4 +1,4 @@
-import { NpcKey } from "@/lib/dialogue/NPCData";
+import { NpcKey } from "@/settings/NPCData";
 
 type SceneType = {
   npcKey?: NpcKey;

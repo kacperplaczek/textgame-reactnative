@@ -1,4 +1,4 @@
-import { actsConfig } from "@/lib/settings/acts.config";
+import { actsConfig } from "@/settings/acts.config";
 import { SceneType } from "@/scenario/types";
 import Storage from "expo-storage";
 
