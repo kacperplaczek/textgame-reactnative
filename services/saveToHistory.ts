@@ -1,5 +1,5 @@
 import Storage from "expo-storage";
-import { DialogueMessage } from "./useDialogue";
+import { DialogueMessage } from "@/viewmodels/useDialogueViewModel";
 
 export const saveToHistory = async (
   actId: string,

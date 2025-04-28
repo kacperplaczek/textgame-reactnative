@@ -1,4 +1,4 @@
-import { actsConfig } from "@/lib/settings/acts.config";
+import { actsConfig } from "@/settings/acts.config";
 import { Language, translations } from "@/i18n/translations";
 
 export type ActId = keyof typeof actsConfig;
