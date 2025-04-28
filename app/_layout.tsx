@@ -17,7 +17,6 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { LanguageProvider } from "@/components/LanguageProviders";
 import Storage from "expo-storage";
 import { Platform } from "react-native";
-import { getLogger } from "@/lib/helpers/getLogger";
 
 // 🎵 Globalny kontekst dźwięku
 const MusicContext = createContext({
@@ -64,13 +63,13 @@ async function initializeMusic() {
       const isMusicOn = storedMusic !== "off";
       if (isMusicOn) {
         await globalSoundRef.playAsync(); // Odtwarzaj tylko jeśli włączone
-        getLogger("{v} Muzyka załadowana i odtwarzana");
+        console.log("{v} Muzyka załadowana i odtwarzana");
       } else {
-        getLogger("{x} Muzyka załadowana, ale nie odtwarzana");
+        console.log("{x} Muzyka załadowana, ale nie odtwarzana");
       }
     }
   } catch (error) {
-    getLogger("{x} Błąd inicjalizacji muzyki", error);
+    console.log("{x} Błąd inicjalizacji muzyki", error);
   }
 }
 
@@ -85,18 +84,18 @@ async function playMusic() {
         volume: 1,
       });
       globalSoundRef = sound;
-      getLogger("{v} Muzyka w tle jest odtwarzana");
+      console.log("{v} Muzyka w tle jest odtwarzana");
     } else {
       const status = await globalSoundRef.getStatusAsync();
       if (!status.isPlaying) {
         await globalSoundRef.playAsync();
-        getLogger("{!} Muzyka w tle już jest odtwarzana");
+        console.log("{!} Muzyka w tle już jest odtwarzana");
       } else {
-        getLogger("{v} Muzyka już gra");
+        console.log("{v} Muzyka już gra");
       }
     }
   } catch (error) {
-    getLogger("{x} Błąd włączenia muzyki:", error);
+    console.log("{x} Błąd włączenia muzyki:", error);
   }
 }
 
@@ -107,13 +106,13 @@ async function stopMusic() {
       const status = await globalSoundRef.getStatusAsync();
       if (status.isPlaying) {
         await globalSoundRef.pauseAsync();
-        getLogger("{v} Muzyka wstrzymana");
+        console.log("{v} Muzyka wstrzymana");
       } else {
-        getLogger("{!} Muzyka jest już wstrzymana");
+        console.log("{!} Muzyka jest już wstrzymana");
       }
     }
   } catch (error) {
-    getLogger("{x} Błąd wstrzymywania muzyki:", error);
+    console.log("{x} Błąd wstrzymywania muzyki:", error);
   }
 }
 
