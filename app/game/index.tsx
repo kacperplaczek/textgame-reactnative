@@ -1,5 +1,4 @@
-// /app/game/index.tsx
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { ImageBackgroundProps, ScrollView, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { ImageBackground } from "react-native";
@@ -14,9 +13,9 @@ import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { useGameEngine } from "@/hooks/useGameEngine";
 import { stopAllSounds } from "@/services/soundController";
 import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
-import { deathScreensMap } from "@/lib/screens/DeathScreens";
+import { deathScreensMap } from "@/settings/screens/DeathScreens";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
-import { adBannerUnitID } from "@/lib/ads/LoadBannerAd";
+import { adBannerUnitID } from "@/services/LoadBannerAd";
 
 export default function GameScreen() {
   const scrollRef = useRef<ScrollView>(null);
