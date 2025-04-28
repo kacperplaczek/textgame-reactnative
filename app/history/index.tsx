@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import Storage from "expo-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
-import { npcData } from "@/lib/dialogue/NPCData";
+import { npcData } from "@/settings/NPCData";
 import { translations, Language } from "@/i18n/translations";
 import { getCurrentLanguage } from "@/models/LanguageController"; // ✅ Pobieranie języka
 import GameMenu from "@/components/buttons/GameMenu";
