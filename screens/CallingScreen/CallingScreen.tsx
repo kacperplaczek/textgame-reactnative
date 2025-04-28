@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { npcData, NpcKey } from "@/lib/dialogue/NPCData";
+import { npcData, NpcKey } from "@/settings/NPCData";
 import { translations } from "@/i18n/translations";
 import { getCurrentLanguage } from "@/models/LanguageController";
 import { stopSound } from "@/services/soundController";

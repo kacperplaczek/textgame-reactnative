@@ -11,7 +11,7 @@ import { getCurrentLanguage } from "@/models/LanguageController";
 import { translations } from "@/i18n/translations";
 import GlowSkia from "@/components/ui/GlowBackground";
 import { Dimensions, SafeAreaView } from "react-native";
-import { adListener, interstitial } from "@/lib/ads/LoadInterestialAd";
+import { adListener, interstitial } from "@/services/LoadInterestialAd";
 import { waitingScreens } from "./_config/WaitingScreens";
 import { defaultScreen } from "./_config/DefaultWaitingScreen";
 import { WaitingSCreenStyles } from "./_assets/styles";
