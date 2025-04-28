@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import { useHistoryScreenViewModel } from "@/viewmodels/useHistoryScreenViewModel";
 import {
   View,
   Text,
@@ -10,76 +10,25 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import Storage from "expo-storage";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { npcData } from "@/settings/NPCData";
-import { translations, Language } from "@/i18n/translations";
-import { getCurrentLanguage } from "@/models/LanguageController"; // ✅ Pobieranie języka
 import GameMenu from "@/components/buttons/GameMenu";
 import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
+import { translations } from "@/i18n/translations";
 
 const { width, height } = Dimensions.get("window");
 
 const HistoryScreen = () => {
-  const [dialogueHistory, setDialogueHistory] = useState([]);
-  const [language, setLanguage] = useState<Language>("pl"); // Domyślnie PL
   const { act } = useLocalSearchParams();
-  const scrollRef = useRef<ScrollView>(null);
   const router = useRouter();
+  const { dialogueHistory, language, scrollRef, getTranslatedActName } =
+    useHistoryScreenViewModel(act as string);
 
   const optionsBanner =
     Platform.OS === "android"
-      ? "ca-app-pub-4136563182662861/8460997846" // android
-      : "ca-app-pub-4136563182662861/4480470362"; // ios
-
-  useEffect(() => {
-    const loadLanguage = async () => {
-      const lang = await getCurrentLanguage(); // ✅ Pobranie aktualnego języka
-      setLanguage(lang || "pl");
-    };
-    loadLanguage();
-  }, []);
-
-  useEffect(() => {
-    const loadDialogueHistory = async () => {
-      const storedData = await Storage.getItem({ key: "dialogue_history" });
-
-      console.log("📖 Cała zapisana historia:", storedData);
-
-      if (storedData) {
-        const dialogues = JSON.parse(storedData);
-        const actHistory = dialogues[act];
-
-        if (actHistory) {
-          console.log(`📖 Odczytana historia dla aktu ${act}:`, actHistory);
-          setDialogueHistory(actHistory);
-        } else {
-          console.warn(`⚠️ Brak zapisanej historii dla aktu ${act}`);
-          setDialogueHistory([]);
-        }
-      } else {
-        console.warn("⚠️ Brak zapisanej historii w pamięci Storage.");
-        setDialogueHistory([]);
-      }
-    };
-
-    loadDialogueHistory();
-  }, [act]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      scrollRef.current?.scrollToEnd({ animated: true });
-    }, 100);
-  }, [dialogueHistory]);
-
-  // 🔍 Pobieramy przetłumaczoną nazwę aktu
-  const getTranslatedActName = (act: string) => {
-    const normalizedAct = act.replace("akt-", "akt");
-    return (
-      translations[language]?.[`${normalizedAct}Title`] || act.toUpperCase()
-    );
-  };
+      ? "ca-app-pub-4136563182662861/8460997846"
+      : "ca-app-pub-4136563182662861/4480470362";
 
   return (
     <ImageBackground
@@ -259,4 +208,5 @@ const styles = StyleSheet.create({
     fontSize: 23,
   },
 });
+
 export default HistoryScreen;
