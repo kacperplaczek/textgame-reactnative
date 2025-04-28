@@ -1,6 +1,4 @@
 // /lib/game/useGameEngine.ts
-import { useDialogue } from "@/lib/dialogue/useDialogue";
-import { useOptions } from "@/lib/dialogue/useOptions";
 import { useCallback, useEffect, useState } from "react";
 import Storage from "expo-storage";
 import { getCurrentLanguage } from "@/models/LanguageController";
@@ -16,6 +14,8 @@ import { schedulePushNotification } from "@/services/schedulePushNotification";
 import { useRestoreGame } from "@/hooks/useRestoreGame";
 import { defaultScreen } from "@/screens/WaitingScreen/_config/DefaultWaitingScreen";
 import { saveToHistory } from "@/services/saveToHistory";
+import { useDialogue } from "@/viewmodels/useDialogueViewModel";
+import { useOptions } from "@/services/useOptions";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();

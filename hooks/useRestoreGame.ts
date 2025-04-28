@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import Storage from "expo-storage";
-import { getCurrentAct } from "@/lib/helpers/getCurrentAct";
+import { getCurrentAct } from "@/services/getCurrentAct";
 import {
   getInitialSceneForAct,
   getScenesForAct,
