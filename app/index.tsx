@@ -6,11 +6,8 @@ import {
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import { useRouter } from "expo-router";
-import { getCurrentLanguage } from "@/models/LanguageController";
 import { translations } from "@/i18n/translations";
-import { useEffect, useState } from "react";
-import Storage from "expo-storage";
+import { useHomeScreenViewModel } from "@/viewmodels/useHomeScreenViewModel";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,38 +15,10 @@ import Animated, {
   withTiming,
   withDelay,
 } from "react-native-reanimated";
+import { useEffect } from "react";
 
 export default function HomeScreen() {
-  const router = useRouter();
-  const [jezyk, setJezyk] = useState<"pl" | "en">("pl");
-
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const lang = await getCurrentLanguage();
-      setJezyk(lang);
-    };
-    fetchLanguage();
-  }, []);
-
-  const handleStartPress = async () => {
-    const gameStarted = await Storage.getItem({ key: "gameStarted" });
-    const currentAct = await Storage.getItem({ key: "currentAct" });
-
-    console.log("🔍 Sprawdzanie statusu gry...");
-    console.log("📌 gameStarted:", gameStarted);
-    console.log("📌 currentAct:", currentAct);
-
-    if (gameStarted !== "true") {
-      console.log("🚀 Przenoszę gracza do prologu...");
-      router.replace("/prolog");
-    } else if (currentAct) {
-      console.log("🎭 Przenoszę gracza do aktu:", currentAct);
-      router.replace("/game");
-    } else {
-      console.log("🎮 Brak aktu, startuję od początku...");
-      router.replace("/game");
-    }
-  };
+  const { jezyk, handleStartPress } = useHomeScreenViewModel();
 
   const useBlinkingStyle = (delay = 0) => {
     const opacity = useSharedValue(1);
@@ -57,11 +26,7 @@ export default function HomeScreen() {
     useEffect(() => {
       opacity.value = withDelay(
         delay,
-        withRepeat(
-          withTiming(0, { duration: 500 }),
-          -1,
-          true // auto-reverse
-        )
+        withRepeat(withTiming(0, { duration: 500 }), -1, true)
       );
     }, []);
 
