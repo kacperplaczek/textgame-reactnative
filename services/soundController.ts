@@ -1,5 +1,5 @@
 import { Audio } from "expo-av";
-import { soundsMap } from "../lib/settings/soundMap";
+import { soundsMap } from "../settings/soundMap";
 
 let activeSounds: Audio.Sound[] = [];
 
