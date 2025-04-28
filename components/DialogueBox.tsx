@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, View, Text, Image, StyleSheet } from "react-native";
-import { npcData } from "@/lib/dialogue/NPCData";
+import { npcData } from "@/settings/NPCData";
 import { translations } from "@/i18n/translations";
 import { DialogueMessage } from "@/lib/dialogue/useDialogue";
 import { useDialogueBoxViewModel } from "@/viewmodels/useDialogueBoxViewModel";
