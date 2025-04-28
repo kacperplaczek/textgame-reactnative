@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { usePrologScreenViewModel } from "@/viewmodels/usePrologScreenViewModel";
 import {
   View,
   Text,
@@ -9,97 +9,14 @@ import {
   ActivityIndicator,
   ScrollView,
 } from "react-native";
-import { useRouter } from "expo-router";
-import Storage from "expo-storage";
 import { StatusBar } from "expo-status-bar";
-import { translations, Language } from "@/i18n/translations";
-import { getCurrentLanguage } from "@/models/LanguageController";
-import { Audio } from "expo-av";
-import { PixelRatio } from "react-native";
+import { translations } from "@/i18n/translations";
 
 const { width, height } = Dimensions.get("window");
 
 export default function PrologScreen() {
-  const router = useRouter();
-  const [currentScreen, setCurrentScreen] = useState<"intro" | "prolog">(
-    "intro"
-  );
-  const [isSaving, setIsSaving] = useState(false);
-  const [displayedText, setDisplayedText] = useState("");
-  const [fullText, setFullText] = useState("");
-  const [isTyping, setIsTyping] = useState(false);
-  const [typingInterval, setTypingInterval] = useState<NodeJS.Timeout | null>(
-    null
-  );
-  const [jezyk, setJezyk] = useState<Language>("pl");
-
-  useEffect(() => {
-    const loadLang = async () => {
-      const lang = await getCurrentLanguage();
-      setJezyk(lang);
-    };
-    loadLang();
-  }, []);
-
-  useEffect(() => {
-    const newText =
-      currentScreen === "intro"
-        ? translations[jezyk].introText
-        : translations[jezyk].prologText;
-
-    setFullText(newText);
-    setDisplayedText("");
-    setIsTyping(true);
-  }, [currentScreen, jezyk]);
-
-  useEffect(() => {
-    if (isTyping && fullText.length > 0) {
-      let i = 0;
-      const interval = setInterval(() => {
-        setDisplayedText(fullText.slice(0, i));
-        i++;
-        if (i > fullText.length) {
-          clearInterval(interval);
-          setIsTyping(false);
-        }
-      }, 25);
-
-      setTypingInterval(interval);
-      return () => clearInterval(interval);
-    }
-  }, [isTyping, fullText]);
-
-  const stopAllSounds = async () => {
-    try {
-      console.log("⏹️ Zatrzymuję wszystkie dźwięki przed przejściem...");
-      const sound = new Audio.Sound();
-      await sound.stopAsync().catch(() => {});
-      await sound.unloadAsync().catch(() => {});
-    } catch (e) {
-      console.error("❌ Błąd zatrzymywania dźwięków:", e);
-    }
-  };
-
-  const handleScreenChange = async () => {
-    if (isTyping) {
-      if (typingInterval) clearInterval(typingInterval);
-      setDisplayedText(fullText);
-      setIsTyping(false);
-      return;
-    }
-
-    if (currentScreen === "intro") {
-      console.log("📜 Przechodzę do prologu...");
-      setCurrentScreen("prolog");
-    } else if (currentScreen === "prolog") {
-      console.log("✅ Prolog zakończony, zapisuję stan gry...");
-      setIsSaving(true);
-      await stopAllSounds();
-      await Storage.setItem({ key: "gameStarted", value: "true" });
-      await Storage.setItem({ key: "currentAct", value: "startgame" });
-      router.replace("/game");
-    }
-  };
+  const { currentScreen, isSaving, displayedText, jezyk, handleScreenChange } =
+    usePrologScreenViewModel();
 
   return (
     <ImageBackground
@@ -131,7 +48,6 @@ export default function PrologScreen() {
           <ActivityIndicator color="#219653" style={{ marginTop: 20 }} />
         )}
 
-        {/* Klikalne "KLIKNIJ ABY KONTYNUOWAĆ" - zawsze na dole ekranu */}
         {!isSaving && (
           <View style={styles.bottomWrapper}>
             <TouchableOpacity
@@ -149,21 +65,7 @@ export default function PrologScreen() {
   );
 }
 
-// Skaluje czcionkę w zależności od ekranu
-const scaleFont = (size: number) => {
-  const { width, height } = Dimensions.get("window");
-  const scale = width / 375; // Punkt odniesienia: iPhone SE (375px szerokości)
-  const isTablet = width >= 768; // Prosty warunek rozpoznawania iPada
-
-  // Na iPadzie zmniejszamy skalowanie, żeby czcionki nie były za duże
-  const tabletScaleFactor = isTablet ? 0.7 : 1;
-
-  return Math.round(
-    PixelRatio.getFontScale() * size * scale * tabletScaleFactor
-  );
-};
-
-// Stylizacja
+// stylizacja (bez zmian)
 const styles = StyleSheet.create({
   background: {
     flex: 1,
@@ -173,7 +75,7 @@ const styles = StyleSheet.create({
   fullscreenTouchable: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center", // Tekst i tytuł wyrównane do lewej
+    alignItems: "center",
   },
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -182,27 +84,27 @@ const styles = StyleSheet.create({
   title: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: scaleFont(28),
+    fontSize: 28,
     marginBottom: 12,
   },
   textContainer: {
     flex: 1,
-    maxHeight: height * 0.6, // Maksymalna wysokość na treść
+    maxHeight: height * 0.6,
     paddingHorizontal: 10,
     marginBottom: 20,
   },
   text: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    textAlign: "left", // Tekst wyrównany do lewej
-    fontSize: scaleFont(24),
+    textAlign: "left",
+    fontSize: 24,
     paddingBottom: 0,
   },
   bottomWrapper: {
     position: "absolute",
-    bottom: height * 0.05, // Stała pozycja na dole ekranu
+    bottom: height * 0.05,
     width: "100%",
-    alignItems: "center", // TapText wyśrodkowany
+    alignItems: "center",
   },
   tapArea: {
     paddingVertical: 10,
@@ -211,7 +113,7 @@ const styles = StyleSheet.create({
   tapText: {
     color: "#219653",
     fontFamily: "VT323Regular",
-    fontSize: scaleFont(24),
+    fontSize: 24,
     textAlign: "center",
     textTransform: "uppercase",
   },
