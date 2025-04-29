@@ -1,4 +1,5 @@
 import { Audio } from "expo-av";
+import Storage from "expo-storage";
 
 // Ścieżki do plików
 const clickSoundAsset = require("@/assets/sounds/choice.wav");
@@ -7,9 +8,13 @@ const ringSoundAsset = require("@/assets/sounds/phone-call.mp3");
 
 let clickSound: Audio.Sound | null = null;
 let backgroundMusic: Audio.Sound | null = null;
-let isBackgroundMusicPlaying = false;
+let ringSoundRef: Audio.Sound | null = null;
 
-// Inicjalizacja kliknięcia
+// Flags
+let soundEffectsEnabled = true;
+let musicEnabled = true;
+
+// --- Inicjalizacja kliknięcia ---
 async function loadClickSound() {
   if (!clickSound) {
     const { sound } = await Audio.Sound.createAsync(clickSoundAsset);
@@ -17,9 +22,10 @@ async function loadClickSound() {
   }
 }
 
-// Odtwarzanie kliknięcia
+// --- Klik ---
 export async function playClickSound() {
   try {
+    if (!soundEffectsEnabled) return;
     await loadClickSound();
     await clickSound?.replayAsync();
   } catch (error) {
@@ -27,8 +33,8 @@ export async function playClickSound() {
   }
 }
 
-// Inicjalizacja i kontrola muzyki
-export async function initializeBackgroundMusic() {
+// --- Muzyka tła ---
+async function initializeBackgroundMusic() {
   if (!backgroundMusic) {
     const { sound } = await Audio.Sound.createAsync(pustyniaAsset, {
       shouldPlay: false,
@@ -40,13 +46,14 @@ export async function initializeBackgroundMusic() {
 
 export async function playBackgroundMusic() {
   try {
+    if (!musicEnabled) return;
     await initializeBackgroundMusic();
     const status = await backgroundMusic?.getStatusAsync();
     if (status && !status.isPlaying) {
       await backgroundMusic?.playAsync();
     }
   } catch (error) {
-    console.error("❌ Błąd włączania muzyki:", error);
+    console.error("❌ Błąd odtwarzania muzyki:", error);
   }
 }
 
@@ -55,7 +62,6 @@ export async function pauseBackgroundMusic() {
     const status = await backgroundMusic?.getStatusAsync();
     if (status?.isPlaying) {
       await backgroundMusic?.pauseAsync();
-      isBackgroundMusicPlaying = false;
     }
   } catch (error) {
     console.error("❌ Błąd pauzy muzyki:", error);
@@ -64,18 +70,17 @@ export async function pauseBackgroundMusic() {
 
 export async function resumeBackgroundMusic() {
   try {
+    if (!musicEnabled) return;
     const status = await backgroundMusic?.getStatusAsync();
-    if (status && !status.isPlaying && !isBackgroundMusicPlaying) {
+    if (status && !status.isPlaying) {
       await backgroundMusic?.playAsync();
-      isBackgroundMusicPlaying = true;
     }
   } catch (error) {
     console.error("❌ Błąd wznowienia muzyki:", error);
   }
 }
 
-let ringSoundRef: Audio.Sound | null = null;
-
+// --- Dzwonki ---
 export async function playRingSound() {
   try {
     if (!ringSoundRef) {
@@ -107,8 +112,10 @@ export async function stopRingSound() {
   }
 }
 
+// --- Odtwarzanie dowolnego dźwięku ---
 export async function playSound(soundPath: any, loop: boolean = false) {
   try {
+    if (!soundEffectsEnabled) return null;
     const { sound } = await Audio.Sound.createAsync(soundPath, {
       shouldPlay: true,
       isLooping: loop,
@@ -118,5 +125,47 @@ export async function playSound(soundPath: any, loop: boolean = false) {
   } catch (e) {
     console.error("❌ Błąd odtwarzania dźwięku:", e);
     return null;
+  }
+}
+
+// --- 🔥 Dynamiczne ustawienia 🔥 ---
+export async function setMusicEnabled(enabled: boolean) {
+  musicEnabled = enabled;
+  await Storage.setItem({ key: "canPlayMusic", value: enabled ? "on" : "off" });
+
+  if (enabled) {
+    await resumeBackgroundMusic();
+  } else {
+    await pauseBackgroundMusic();
+  }
+}
+
+export function isMusicEnabled() {
+  return musicEnabled;
+}
+
+export async function setSoundEffectsEnabled(enabled: boolean) {
+  soundEffectsEnabled = enabled;
+  await Storage.setItem({ key: "soundEnabled", value: enabled ? "on" : "off" });
+
+  // Kliknięcia są kontrolowane przez flagę - nie trzeba ich pauzować fizycznie
+}
+
+export function isSoundEnabled() {
+  return soundEffectsEnabled;
+}
+
+// --- Ładowanie zapisanych ustawień ---
+export async function loadSoundSettings() {
+  const musicSetting = await Storage.getItem({ key: "canPlayMusic" });
+  const soundSetting = await Storage.getItem({ key: "soundEnabled" });
+
+  musicEnabled = musicSetting !== "off";
+  soundEffectsEnabled = soundSetting !== "off";
+
+  if (!musicEnabled) {
+    await pauseBackgroundMusic();
+  } else {
+    await resumeBackgroundMusic();
   }
 }
