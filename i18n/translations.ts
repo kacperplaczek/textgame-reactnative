@@ -1128,7 +1128,8 @@ export const translations = {
     sound: "Dźwięk",
     soundOn: "WL",
     soundOff: "WYL",
-    music: "Dźwięki",
+    music: "Muzyka",
+    music_sounds: "Dźwięki",
     musicOn: "WL",
     musicOff: "WYL",
 
@@ -2362,6 +2363,7 @@ export const translations = {
     soundOn: "ON",
     soundOff: "OFF",
     music: "Music",
+    music_sounds: "Sounds",
     musicOn: "ON",
     musicOff: "OFF",
 
