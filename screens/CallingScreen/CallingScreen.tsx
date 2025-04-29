@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Text,
@@ -9,10 +9,14 @@ import {
 } from "react-native";
 import { npcData, NpcKey } from "@/settings/NPCData";
 import { translations } from "@/i18n/translations";
-import { getCurrentLanguage } from "@/models/LanguageController";
-import { stopSound } from "@/services/soundController";
+import { useLanguage } from "@/context/LanguageContext";
+import {
+  pauseBackgroundMusic,
+  resumeBackgroundMusic,
+  playRingSound,
+  stopRingSound,
+} from "@/services/soundController";
 
-// Domyślne tła
 const DefaultBgImage = require("@/assets/images/bg_intro.png");
 const BottomImage = require("@/assets/images/panel_komputera.png");
 
@@ -35,42 +39,59 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
   onClose,
   autoNextDelay,
 }) => {
-  const [jezyk, setJezyk] = useState<"pl" | "en" | null>(null);
+  const { language } = useLanguage();
 
   useEffect(() => {
-    const fetchLang = async () => {
-      const lang = await getCurrentLanguage();
-      setJezyk(lang);
+    console.log("🏁 Init useEffect - visible:", visible);
+
+    let timeout: NodeJS.Timeout;
+
+    const init = async () => {
+      if (visible) {
+        await pauseBackgroundMusic();
+        await playRingSound();
+      }
+
+      if (autoNextDelay) {
+        timeout = setTimeout(() => {
+          handleClose();
+        }, autoNextDelay);
+      }
     };
-    fetchLang();
 
-    if (autoNextDelay) {
-      const timeout = setTimeout(onClose, autoNextDelay);
-      return () => clearTimeout(timeout);
-    }
-  }, [autoNextDelay]);
+    init();
 
-  if (!visible || !jezyk) return null;
+    return () => {
+      clearTimeout(timeout);
+      stopRingSound();
+      resumeBackgroundMusic();
+    };
+  }, [visible, autoNextDelay]);
 
-  // Avatar i nazwa NPC
+  const handleClose = async () => {
+    await stopRingSound();
+    await resumeBackgroundMusic();
+    onClose();
+  };
+
+  if (!visible) return null;
+
   const npcAvatar = npcKey ? npcData[npcKey]?.avatar : null;
   const npcName =
-    npcKey && translations[jezyk]?.[npcData[npcKey]?.nameKey]
-      ? translations[jezyk][npcData[npcKey].nameKey]
+    npcKey && translations[language]?.[npcData[npcKey]?.nameKey]
+      ? translations[language][npcData[npcKey].nameKey]
       : "Nieznany NPC";
 
-  // Tłumaczenia tytułów
   const translatedTitle =
-    title && translations[jezyk]?.[title]
-      ? translations[jezyk][title]
-      : translations[jezyk]?.incomingCallTitle ?? "Połączenie przychodzące";
+    title && translations[language]?.[title]
+      ? translations[language][title]
+      : translations[language]?.incomingCallTitle ?? "Połączenie przychodzące";
 
   const translatedSubtitle =
-    subtitle && translations[jezyk]?.[subtitle]
-      ? translations[jezyk][subtitle]
-      : translations[jezyk]?.incomingCallSubtitle ?? "Kliknij, aby odebrać";
+    subtitle && translations[language]?.[subtitle]
+      ? translations[language][subtitle]
+      : translations[language]?.incomingCallSubtitle ?? "Kliknij, aby odebrać";
 
-  // Tło
   let backgroundImage = DefaultBgImage;
   if (typeof background === "string" && background.startsWith("http")) {
     backgroundImage = { uri: background };
@@ -81,8 +102,8 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
   return (
     <TouchableOpacity
       style={styles.overlay}
-      onPress={onClose}
-      activeOpacity={1}
+      onPress={handleClose}
+      activeOpacity={0.9}
     >
       <ImageBackground
         source={backgroundImage}
@@ -117,6 +138,7 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
 };
 
 export default CallingScreenOverlay;
+
 const styles = StyleSheet.create({
   overlay: {
     position: "absolute",
