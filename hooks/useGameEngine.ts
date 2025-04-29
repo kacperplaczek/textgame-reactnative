@@ -17,16 +17,18 @@ import { saveToHistory } from "@/services/saveToHistory";
 import { useDialogue } from "@/viewmodels/useDialogueViewModel";
 import { useOptions } from "@/services/useOptions";
 import { soundAssets } from "@/settings/soundAssets";
+import { useWaitingScreen } from "@/context/WaitingScreenContext";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();
   const { options, updateOptions } = useOptions();
   const [waitingVisible, setWaitingVisible] = useState(false);
   const [notifyScreenName, setNotifyScreenName] = useState<string | null>(null);
-  const [timeLeft, setTimeLeft] = useState(0);
+  // const [timeLeft, setTimeLeft] = useState(0);
   const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [currentAct, setCurrentActState] = useState<ActId | null>(null);
   const [specialSceneVisible, setSpecialSceneVisible] = useState(false);
+  const { startWaiting, stopWaiting, setTimeLeft } = useWaitingScreen();
   const [specialScene, setSpecialScene] = useState<any>(null);
   const [currentDeathScreen, setCurrentDeathScreen] = useState<string | null>(
     null
@@ -210,10 +212,7 @@ export const useGameEngine = () => {
           return handleSceneChange(targetScene);
         }
 
-        setWaitingVisible(true);
-        setNotifyScreenName(scene.notifyScreenName || "defaultScreen");
-
-        setTimeLeft(remaining);
+        startWaiting(scene.notifyScreenName || "defaultScreen", remaining);
 
         const interval = setInterval(async () => {
           const nowTick = Date.now();
@@ -222,7 +221,7 @@ export const useGameEngine = () => {
 
           if (diff <= 0) {
             clearInterval(interval);
-            setWaitingVisible(false);
+            stopWaiting();
 
             // Czyszczenie zawartości storage po przejściu do nastepnej sceny.
             await Storage.removeItem({ key: "waitingEndTimestamp" });
@@ -314,7 +313,6 @@ export const useGameEngine = () => {
     setSpecialScene,
     setSpecialSceneVisible,
     notifyScreenName,
-    timeLeft,
     deathScreenVisible,
     currentDeathScreen,
     onRetryFromDeath,
