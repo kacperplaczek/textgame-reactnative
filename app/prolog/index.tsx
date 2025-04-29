@@ -15,8 +15,13 @@ import { translations } from "@/i18n/translations";
 const { width, height } = Dimensions.get("window");
 
 export default function PrologScreen() {
-  const { currentScreen, isSaving, displayedText, jezyk, handleScreenChange } =
-    usePrologScreenViewModel();
+  const {
+    currentScreen,
+    isSaving,
+    displayedText,
+    language,
+    handleScreenChange,
+  } = usePrologScreenViewModel();
 
   return (
     <ImageBackground
@@ -35,8 +40,8 @@ export default function PrologScreen() {
         {/* Tytuł */}
         <Text style={styles.title}>
           {currentScreen === "intro"
-            ? translations[jezyk].introTitle
-            : translations[jezyk].prologTitle}
+            ? translations[language].introTitle
+            : translations[language].prologTitle}
         </Text>
 
         {/* Scrollowany tekst */}
@@ -55,7 +60,7 @@ export default function PrologScreen() {
               style={styles.tapArea}
             >
               <Text style={styles.tapText}>
-                {translations[jezyk].clickToContinue}
+                {translations[language].clickToContinue}
               </Text>
             </TouchableOpacity>
           </View>
