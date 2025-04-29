@@ -1,9 +1,9 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import {
   getCurrentLanguage,
-  setLanguage as setLangInStorage,
+  setLanguage as saveLanguage,
 } from "@/models/LanguageController";
-import { Language } from "@/i18n/translations";
+import type { Language } from "@/i18n/translations";
 
 type LanguageContextType = {
   language: Language;
@@ -14,33 +14,37 @@ const LanguageContext = createContext<LanguageContextType | undefined>(
   undefined
 );
 
-export const LanguageProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [language, setLanguageState] = useState<Language>("pl");
 
   useEffect(() => {
-    getCurrentLanguage().then(setLanguageState);
+    const loadLanguage = async () => {
+      const lang = await getCurrentLanguage();
+      setLanguageState(lang);
+    };
+    loadLanguage();
   }, []);
 
   const setLanguage = (lang: Language) => {
-    setLangInStorage(lang); // zapis do Storage
-    setLanguageState(lang); // aktualizacja kontekstu
+    setLanguageState(lang);
+    saveLanguage(lang);
   };
+
+  if (!language) {
+    return null; // <<< bardzo ważne: NIE ZWRACAJ STRINGÓW, tylko null albo komponent
+  }
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
       {children}
     </LanguageContext.Provider>
   );
-};
+}
 
-export const useLanguage = () => {
+export function useLanguage() {
   const context = useContext(LanguageContext);
   if (!context) {
     throw new Error("useLanguage must be used within a LanguageProvider");
   }
   return context;
-};
+}
