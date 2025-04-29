@@ -59,8 +59,25 @@ export const WaitingScreenProvider = ({
   };
 
   const startWaiting = async (screenName: string, totalTime: number) => {
-    const endTime = Date.now() + totalTime * 1000;
+    const existingTimestamp = await Storage.getItem({
+      key: STORAGE_KEYS.endTimestamp,
+    });
 
+    if (existingTimestamp) {
+      // Już wcześniej ustawiony — nie nadpisuj
+      const now = Date.now();
+      const endTime = parseInt(existingTimestamp);
+      const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+      setNotifyScreenName(screenName);
+      setWaitingVisible(true);
+      setTimeLeftState(remaining);
+      clearTimer();
+      intervalRef.current = setInterval(tick, 1000);
+      return;
+    }
+
+    // 🆕 Pierwsze ustawienie
+    const endTime = Date.now() + totalTime * 1000;
     await Storage.setItem({
       key: STORAGE_KEYS.endTimestamp,
       value: String(endTime),
@@ -69,8 +86,8 @@ export const WaitingScreenProvider = ({
 
     setNotifyScreenName(screenName);
     setWaitingVisible(true);
+    setTimeLeftState(totalTime);
 
-    tick();
     clearTimer();
     intervalRef.current = setInterval(tick, 1000);
   };
