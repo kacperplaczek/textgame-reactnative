@@ -20,6 +20,7 @@ import {
   pauseBackgroundMusic,
   loadSoundSettings,
 } from "@/services/soundController";
+import { WaitingScreenProvider } from "@/context/WaitingScreenContext";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -71,10 +72,14 @@ export default function RootLayout() {
 
   return (
     <LanguageProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-        <Stack screenOptions={{ headerShown: false }} />
-        <StatusBar style="auto" hidden />
-      </ThemeProvider>
+      <WaitingScreenProvider>
+        <ThemeProvider
+          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
+        >
+          <Stack screenOptions={{ headerShown: false }} />
+          <StatusBar style="auto" hidden />
+        </ThemeProvider>
+      </WaitingScreenProvider>
     </LanguageProvider>
   );
 }
