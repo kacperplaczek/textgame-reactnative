@@ -16,6 +16,7 @@ import { defaultScreen } from "@/screens/WaitingScreen/_config/DefaultWaitingScr
 import { saveToHistory } from "@/services/saveToHistory";
 import { useDialogue } from "@/viewmodels/useDialogueViewModel";
 import { useOptions } from "@/services/useOptions";
+import { soundAssets } from "@/settings/soundAssets";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();
@@ -232,11 +233,6 @@ export const useGameEngine = () => {
         }, 1000);
 
         return; // Zatrzymaj dalszą obsługę sceny
-      }
-
-      // 6. Obsłuż dźwięk (jeśli masz soundController)
-      if (scene.sound) {
-        await playSound(scene.sound, scene.soundPlayLoop ?? false);
       }
 
       // 7. Obsłuż ekran specjalny (jeśli jest)
