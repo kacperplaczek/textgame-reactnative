@@ -14,7 +14,7 @@ import * as Notifications from "expo-notifications";
 import * as NavigationBar from "expo-navigation-bar";
 import { Audio } from "expo-av";
 import { useColorScheme } from "@/hooks/useColorScheme";
-import { LanguageProvider } from "@/components/LanguageProviders";
+import { LanguageProvider } from "@/context/LanguageContext";
 import Storage from "expo-storage";
 import { Platform } from "react-native";
 
@@ -207,9 +207,7 @@ export default function RootLayout() {
         <ThemeProvider
           value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
         >
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="game" />
-          </Stack>
+          <Stack screenOptions={{ headerShown: false }}></Stack>
           <StatusBar style="auto" hidden />
         </ThemeProvider>
       </LanguageProvider>
