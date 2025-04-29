@@ -25,6 +25,7 @@ export default function GameMenu({ onReset }) {
     toggleMusic,
     toggleNotifications,
     handleResetGame,
+    toggleSound,
   } = useGameMenuViewModel();
 
   return (
@@ -60,6 +61,21 @@ export default function GameMenu({ onReset }) {
               {/* Sekcja przełączników */}
               <View style={styles.upperSection}>
                 {/* Przełącznik muzyki */}
+                <TouchableOpacity
+                  style={styles.optionRow}
+                  onPress={toggleSound}
+                >
+                  <Text style={styles.optionLabel}>
+                    {translations[jezyk].music_sounds}
+                  </Text>
+                  <Text style={styles.optionDots}>....................</Text>
+                  <Text style={styles.optionValue}>
+                    {soundEnabled
+                      ? translations[jezyk].musicOn
+                      : translations[jezyk].musicOff}
+                  </Text>
+                </TouchableOpacity>
+
                 {/* Przełącznik muzyki */}
                 <TouchableOpacity
                   style={styles.optionRow}
