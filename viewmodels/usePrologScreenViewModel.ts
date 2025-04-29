@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import { getCurrentLanguage } from "@/models/LanguageController";
-import { translations, Language } from "@/i18n/translations";
+import { translations } from "@/i18n/translations";
 import { useRouter } from "expo-router";
 import Storage from "expo-storage";
 import { Audio } from "expo-av";
+import { useLanguage } from "@/context/LanguageContext"; // <<< Dodane
 
 export function usePrologScreenViewModel() {
   const router = useRouter();
+  const { language } = useLanguage(); // <<< Teraz język globalny z Context API
+
   const [currentScreen, setCurrentScreen] = useState<"intro" | "prolog">(
     "intro"
   );
@@ -17,26 +19,17 @@ export function usePrologScreenViewModel() {
   const [typingInterval, setTypingInterval] = useState<NodeJS.Timeout | null>(
     null
   );
-  const [jezyk, setJezyk] = useState<Language>("pl");
-
-  useEffect(() => {
-    const loadLang = async () => {
-      const lang = await getCurrentLanguage();
-      setJezyk(lang);
-    };
-    loadLang();
-  }, []);
 
   useEffect(() => {
     const newText =
       currentScreen === "intro"
-        ? translations[jezyk].introText
-        : translations[jezyk].prologText;
+        ? translations[language].introText
+        : translations[language].prologText;
 
     setFullText(newText);
     setDisplayedText("");
     setIsTyping(true);
-  }, [currentScreen, jezyk]);
+  }, [currentScreen, language]); // <<< używamy language z kontekstu
 
   useEffect(() => {
     if (isTyping && fullText.length > 0) {
@@ -88,7 +81,7 @@ export function usePrologScreenViewModel() {
     currentScreen,
     isSaving,
     displayedText,
-    jezyk,
+    language,
     handleScreenChange,
   };
 }
