@@ -2,7 +2,7 @@
   "expo": {
     "name": "No Return",
     "slug": "no-return",
-    "version": "1.8.1",
+    "version": "1.8.2",
     "icon": "./assets/images/icon/app-icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
