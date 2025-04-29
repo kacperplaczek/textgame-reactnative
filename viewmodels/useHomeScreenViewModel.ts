@@ -1,19 +1,10 @@
-import { useEffect, useState } from "react";
-import { getCurrentLanguage } from "@/models/LanguageController";
 import { useRouter } from "expo-router";
 import Storage from "expo-storage";
+import { useLanguage } from "@/context/LanguageContext"; // <<< Dodane
 
 export function useHomeScreenViewModel() {
   const router = useRouter();
-  const [jezyk, setJezyk] = useState<"pl" | "en">("pl");
-
-  useEffect(() => {
-    const fetchLanguage = async () => {
-      const lang = await getCurrentLanguage();
-      setJezyk(lang);
-    };
-    fetchLanguage();
-  }, []);
+  const { language } = useLanguage(); // <<< Teraz język globalny z Context API
 
   const handleStartPress = async () => {
     const gameStarted = await Storage.getItem({ key: "gameStarted" });
@@ -36,7 +27,7 @@ export function useHomeScreenViewModel() {
   };
 
   return {
-    jezyk,
+    language, // zamiast jezyk
     handleStartPress,
   };
 }
