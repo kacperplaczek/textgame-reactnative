@@ -16,9 +16,15 @@ import Animated, {
   withDelay,
 } from "react-native-reanimated";
 import { useEffect } from "react";
+import { useLanguage } from "@/context/LanguageContext"; // <<< używamy LanguageContext!
 
 export default function HomeScreen() {
-  const { jezyk, handleStartPress } = useHomeScreenViewModel();
+  const { handleStartPress } = useHomeScreenViewModel();
+  const { language } = useLanguage(); // <<< to jest aktualny język
+
+  if (!language || !translations[language]) {
+    return null; // Poczekaj aż język się załaduje
+  }
 
   const useBlinkingStyle = (delay = 0) => {
     const opacity = useSharedValue(1);
@@ -77,11 +83,11 @@ export default function HomeScreen() {
           resizeMode="contain"
         >
           <Text style={styles.title}>
-            {translations[jezyk].startScreenTitle}
+            {translations[language].startScreenTitle}
           </Text>
           <View style={styles.spacer} />
           <Text style={styles.subtitle}>
-            {translations[jezyk].startScreenSubtitle}
+            {translations[language].startScreenSubtitle}
           </Text>
         </ImageBackground>
       </TouchableOpacity>
