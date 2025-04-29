@@ -8,15 +8,12 @@ import {
   getScenesForAct,
   ActId,
 } from "@/services/scenarioLoader";
-import { playSound } from "@/services/soundController";
 import { Language } from "@/i18n/translations";
 import { schedulePushNotification } from "@/services/schedulePushNotification";
 import { useRestoreGame } from "@/hooks/useRestoreGame";
-import { defaultScreen } from "@/screens/WaitingScreen/_config/DefaultWaitingScreen";
 import { saveToHistory } from "@/services/saveToHistory";
 import { useDialogue } from "@/viewmodels/useDialogueViewModel";
 import { useOptions } from "@/services/useOptions";
-import { soundAssets } from "@/settings/soundAssets";
 import { useWaitingScreen } from "@/context/WaitingScreenContext";
 
 export const useGameEngine = () => {
@@ -24,7 +21,6 @@ export const useGameEngine = () => {
   const { options, updateOptions } = useOptions();
   const [waitingVisible, setWaitingVisible] = useState(false);
   const [notifyScreenName, setNotifyScreenName] = useState<string | null>(null);
-  // const [timeLeft, setTimeLeft] = useState(0);
   const [currentScene, setCurrentScene] = useState<string | null>(null);
   const [currentAct, setCurrentActState] = useState<ActId | null>(null);
   const [specialSceneVisible, setSpecialSceneVisible] = useState(false);
@@ -68,6 +64,35 @@ export const useGameEngine = () => {
     };
 
     restoreAct();
+  }, []);
+
+  useEffect(() => {
+    const checkWaitingFromStorage = async () => {
+      const endTimestampStr = await Storage.getItem({
+        key: "waitingEndTimestamp",
+      });
+      const nextScene = await Storage.getItem({ key: "autoNextScene" });
+      const screenName = await Storage.getItem({ key: "waitingScreenName" });
+
+      if (!endTimestampStr || !nextScene || !screenName) return;
+
+      const endTimestamp = parseInt(endTimestampStr, 10);
+      const now = Date.now();
+
+      if (now >= endTimestamp) {
+        console.log("⌛ Waiting screen time is over, going to next scene");
+        await Storage.removeItem({ key: "waitingEndTimestamp" });
+        await Storage.removeItem({ key: "autoNextScene" });
+        await Storage.removeItem({ key: "waitingScreenName" });
+
+        return handleSceneChange(nextScene);
+      }
+
+      const remaining = Math.floor((endTimestamp - now) / 1000);
+      startWaiting(screenName, remaining);
+    };
+
+    checkWaitingFromStorage();
   }, []);
 
   const onRetryFromDeath = async () => {
@@ -178,20 +203,14 @@ export const useGameEngine = () => {
         let endTime = storedTimestamp ? parseInt(storedTimestamp) : null;
 
         // Jeśli brak - pierwszy raz wchodzimy do sceny, więc zapisujemy
-        if (!endTime) {
+        if (!storedTimestamp) {
           endTime = now + scene.notifyTime * 1000;
-
-          await Storage.setItem({
-            key: notifyKey,
-            value: String(endTime),
-          });
-
+          await Storage.setItem({ key: notifyKey, value: String(endTime) });
           await Storage.setItem({
             key: "autoNextScene",
             value: targetScene || "",
           });
 
-          // Tylko wtedy planuj powiadomienie
           if (
             scene.notification &&
             scene.notificationTitle &&
@@ -203,6 +222,8 @@ export const useGameEngine = () => {
               scene.notifyTime
             );
           }
+        } else {
+          endTime = parseInt(storedTimestamp);
         }
 
         const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
