@@ -11,11 +11,14 @@ import OptionsBox from "../../components/buttons/OptionsBox";
 import CallingScreenOverlay from "../../screens/CallingScreen/CallingScreen";
 import ActSwitcher from "@/components/buttons/ActsSwitch";
 import { useGameEngine } from "@/hooks/useGameEngine";
-import { stopAllSounds } from "@/services/soundController";
 import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
 import { deathScreensMap } from "@/settings/screens/DeathScreens";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { adBannerUnitID } from "@/services/LoadBannerAd";
+import {
+  resumeBackgroundMusic,
+  stopRingSound,
+} from "@/services/soundController";
 
 export default function GameScreen() {
   const scrollRef = useRef<ScrollView>(null);
@@ -77,13 +80,16 @@ export default function GameScreen() {
         background={specialScene?.background}
         onClose={async () => {
           console.log(
-            "📞 Kliknięto ekran – zatrzymuję dźwięki i przechodzę dalej..."
+            "📞 Kliknięto ekran – zatrzymuję dzwonek i wznawiam muzykę..."
           );
-          await stopAllSounds();
+          await stopRingSound(); // <<< zatrzymaj dzwonek!
+          await resumeBackgroundMusic(); // <<< przywróć muzykę!
           setSpecialSceneVisible(false);
           if (specialScene?.nextScene) {
             handleSceneChange(specialScene.nextScene);
           }
+
+          stopRingSound();
         }}
       />
 
