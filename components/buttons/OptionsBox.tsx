@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import { useOptions } from "@/lib/dialogue/useOptions";
+import { useOptions } from "@/services/useOptions";
+import { playClickSound } from "@/services/soundController";
 
 type GameOptions = {
   tekst: string;
@@ -13,7 +14,10 @@ const OptionsBox = ({ options }: { options: GameOptions[] }) => {
       {options.map((option, index) => (
         <TouchableOpacity
           key={index}
-          onPress={option.akcja}
+          onPress={async () => {
+            await playClickSound();
+            option.akcja();
+          }}
           style={styles.option}
         >
           <Text style={styles.text}>{option.tekst}</Text>
