@@ -1,17 +1,26 @@
 import React, { useRef } from "react";
-import { ImageBackgroundProps, ScrollView, View } from "react-native";
+import {
+  ScrollView,
+  View,
+  ImageBackground,
+  ImageBackgroundProps,
+  ViewProps,
+} from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { ImageBackground } from "react-native";
-import GlowSkia from "@/components/ui/GlowBackground";
-import { useDarknessUI } from "@/hooks/useDarnkessUI";
-import GameMenu from "@/components/buttons/GameMenu";
-import WaitingScreenOverlay from "../../screens/WaitingScreen/WaitingScreen";
-import DialogueBox from "../../components/DialogueBox";
-import OptionsBox from "../../components/buttons/OptionsBox";
-import CallingScreenOverlay from "../../screens/CallingScreen/CallingScreen";
-import ActSwitcher from "@/components/buttons/ActsSwitch";
+
 import { useGameEngine } from "@/hooks/useGameEngine";
-import { ViewProps } from "react-native-svg/lib/typescript/fabric/utils";
+import {
+  useWaitingScreen,
+  WaitingScreenProvider,
+} from "@/context/WaitingScreenContext";
+
+import GlowSkia from "@/components/ui/GlowBackground";
+import GameMenu from "@/components/buttons/GameMenu";
+import ActSwitcher from "@/components/buttons/ActsSwitch";
+import DialogueBox from "@/components/DialogueBox";
+import OptionsBox from "@/components/buttons/OptionsBox";
+import CallingScreenOverlay from "@/screens/CallingScreen/CallingScreen";
+import WaitingScreenOverlay from "@/screens/WaitingScreen/WaitingScreen";
 import { deathScreensMap } from "@/settings/screens/DeathScreens";
 import { BannerAd, BannerAdSize } from "react-native-google-mobile-ads";
 import { adBannerUnitID } from "@/services/LoadBannerAd";
@@ -19,10 +28,12 @@ import {
   resumeBackgroundMusic,
   stopRingSound,
 } from "@/services/soundController";
+import { useDarknessUI } from "@/hooks/useDarnkessUI";
 
 export default function GameScreen() {
   const scrollRef = useRef<ScrollView>(null);
   const { darknessUI } = useDarknessUI();
+
   const {
     dialogue,
     options,
@@ -32,17 +43,17 @@ export default function GameScreen() {
     specialSceneVisible,
     setSpecialSceneVisible,
     setSpecialScene,
-    waitingVisible,
-    notifyScreenName,
-    timeLeft,
     deathScreenVisible,
     currentDeathScreen,
     onRetryFromDeath,
     setActSwitcherRefresh,
   } = useGameEngine();
 
+  const { waitingVisible, notifyScreenName, timeLeft } = useWaitingScreen();
+
   const ContentWrapper: React.ComponentType<ViewProps | ImageBackgroundProps> =
     darknessUI ? View : ImageBackground;
+
   const wrapperProps = darknessUI
     ? { style: { flex: 1, backgroundColor: "black" } }
     : {
@@ -55,22 +66,24 @@ export default function GameScreen() {
     <ContentWrapper {...wrapperProps}>
       {!darknessUI && <GlowSkia />}
       <StatusBar hidden />
+
       <ActSwitcher
         onMountRefresh={() => {
           setActSwitcherRefresh(() => {
-            console.log("🔄 Odświeżam ActSwitcher (via onMountRefresh)");
-            // zaktualizuj completedActs etc.
-            // Użyj czegoś jak triggerReload() lub wewnętrzny refresh
+            console.log("🔄 Odświeżam ActSwitcher (via onMountRefresh)");
           });
         }}
       />
+
       <GameMenu onReset={() => {}} />
 
-      <WaitingScreenOverlay
-        visible={waitingVisible}
-        timeLeft={timeLeft}
-        notifyScreenName={notifyScreenName}
-      />
+      {waitingVisible && (
+        <WaitingScreenOverlay
+          visible={waitingVisible}
+          timeLeft={timeLeft}
+          notifyScreenName={notifyScreenName}
+        />
+      )}
 
       <CallingScreenOverlay
         visible={specialSceneVisible}
@@ -82,14 +95,12 @@ export default function GameScreen() {
           console.log(
             "📞 Kliknięto ekran – zatrzymuję dzwonek i wznawiam muzykę..."
           );
-          await stopRingSound(); // <<< zatrzymaj dzwonek!
-          await resumeBackgroundMusic(); // <<< przywróć muzykę!
+          await stopRingSound();
+          await resumeBackgroundMusic();
           setSpecialSceneVisible(false);
           if (specialScene?.nextScene) {
             handleSceneChange(specialScene.nextScene);
           }
-
-          stopRingSound();
         }}
       />
 
@@ -104,7 +115,9 @@ export default function GameScreen() {
             zIndex: 9999,
           }}
         >
-          {deathScreensMap[currentDeathScreen]?.({ onRetry: onRetryFromDeath })}
+          {deathScreensMap[currentDeathScreen]?.({
+            onRetry: onRetryFromDeath,
+          })}
         </View>
       )}
 
@@ -112,9 +125,7 @@ export default function GameScreen() {
         style={{ flex: 1, justifyContent: "space-between", paddingTop: 50 }}
       >
         <DialogueBox scrollRef={scrollRef} dialogue={dialogue || []} />
-
         <OptionsBox options={options} />
-
         <BannerAd unitId={adBannerUnitID} size={BannerAdSize.ADAPTIVE_BANNER} />
       </View>
     </ContentWrapper>
