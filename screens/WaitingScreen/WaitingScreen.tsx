@@ -1,39 +1,33 @@
+// /screens/WaitingScreen/WaitingScreen.tsx
 import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   ImageBackground,
-  Modal,
   ActivityIndicator,
+  Dimensions,
+  SafeAreaView,
 } from "react-native";
+import { useWaitingScreen } from "@/context/WaitingScreenContext";
 import { getCurrentLanguage } from "@/models/LanguageController";
 import { translations } from "@/i18n/translations";
-import GlowSkia from "@/components/ui/GlowBackground";
-import { Dimensions, SafeAreaView } from "react-native";
-import { adListener, interstitial } from "@/services/LoadInterestialAd";
 import { waitingScreens } from "./_config/WaitingScreens";
 import { defaultScreen } from "./_config/DefaultWaitingScreen";
-import { WaitingSCreenStyles } from "./_assets/styles";
+import GlowSkia from "@/components/ui/GlowBackground";
 
-export default function WaitingScreenOverlay({
-  visible,
-  timeLeft,
-  notifyScreenName,
-}: {
-  visible: boolean;
-  timeLeft: number;
-  notifyScreenName: string;
-}) {
+export default function WaitingScreenOverlay() {
+  const { waitingVisible, notifyScreenName, timeLeft } = useWaitingScreen();
   const { width, height } = Dimensions.get("window");
+
   const [screen, setScreen] = useState(defaultScreen);
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
-  const [isImageLoaded, setIsImageLoaded] = useState(false); // 👈 dodaj
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!waitingVisible) return;
 
-    setIsImageLoaded(false); // resetuj przy każdym ekranie
+    setIsImageLoaded(false);
 
     const selectedName =
       notifyScreenName && waitingScreens[notifyScreenName]
@@ -46,18 +40,10 @@ export default function WaitingScreenOverlay({
       const lang = await getCurrentLanguage();
       setJezyk(lang);
     };
-
     loadLang();
-    interstitial.load();
-  }, [visible, notifyScreenName]);
+  }, [waitingVisible, notifyScreenName]);
 
-  useEffect(() => {
-    return () => {
-      adListener();
-    };
-  }, []);
-
-  if (!visible) return null;
+  if (!waitingVisible) return null;
 
   const translatedTitle =
     translations[jezyk]?.[screen.titleKey] ?? "PROSZĘ CZEKAĆ";
@@ -80,39 +66,24 @@ export default function WaitingScreenOverlay({
         zIndex: 9999,
       }}
     >
-      {!isImageLoaded && (
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: "black",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <ActivityIndicator size="large" color="#219653" />
-        </View>
-      )}
+      {!isImageLoaded && <ActivityIndicator size="large" color="#219653" />}
 
       <ImageBackground
         source={screen.background}
         style={{ flex: 1 }}
         resizeMode="cover"
-        onLoadEnd={() => setIsImageLoaded(true)} // 👈 kluczowy moment
+        onLoadEnd={() => setIsImageLoaded(true)}
       >
         {isImageLoaded && (
           <>
             <GlowSkia />
-            <SafeAreaView style={WaitingSCreenStyles.overlay}>
-              <View style={WaitingSCreenStyles.header}>
-                <Text style={[WaitingSCreenStyles.title, { color: "#219653" }]}>
-                  {translatedTitle}
-                </Text>
+            <SafeAreaView style={styles.overlay}>
+              <View style={styles.header}>
+                <Text style={styles.title}>{translatedTitle}</Text>
               </View>
-              <View style={WaitingSCreenStyles.footer}>
-                <Text style={WaitingSCreenStyles.subtitle}>
-                  {translatedSubtitle}
-                </Text>
-                <Text style={WaitingSCreenStyles.timeText}>
+              <View style={styles.footer}>
+                <Text style={styles.subtitle}>{translatedSubtitle}</Text>
+                <Text style={styles.timeText}>
                   {translatedWaitingTime}: {Math.floor(timeLeft / 60)}m{" "}
                   {timeLeft % 60}s
                 </Text>
@@ -124,3 +95,35 @@ export default function WaitingScreenOverlay({
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  overlay: {
+    flex: 1,
+    padding: 20,
+    justifyContent: "space-between",
+  },
+  header: {
+    marginTop: 20,
+  },
+  title: {
+    color: "#219653",
+    fontSize: 28,
+    fontFamily: "VT323Regular",
+    textAlign: "center",
+  },
+  footer: {
+    marginBottom: 40,
+    alignItems: "center",
+  },
+  subtitle: {
+    color: "#41ff91",
+    fontSize: 20,
+    fontFamily: "VT323Regular",
+    marginBottom: 10,
+  },
+  timeText: {
+    color: "#41ff91",
+    fontSize: 18,
+    fontFamily: "VT323Regular",
+  },
+});
