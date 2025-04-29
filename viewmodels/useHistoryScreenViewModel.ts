@@ -1,20 +1,12 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Storage from "expo-storage";
-import { getCurrentLanguage } from "@/models/LanguageController";
-import { translations, Language } from "@/i18n/translations";
+import { translations } from "@/i18n/translations";
+import { useLanguage } from "@/context/LanguageContext"; // <<< Dodane
 
 export function useHistoryScreenViewModel(act: string) {
+  const { language } = useLanguage(); // <<< Korzystamy z globalnego języka
   const [dialogueHistory, setDialogueHistory] = useState([]);
-  const [language, setLanguage] = useState<Language>("pl"); // Domyślnie PL
-  const scrollRef = useRef(null);
-
-  useEffect(() => {
-    const loadLanguage = async () => {
-      const lang = await getCurrentLanguage();
-      setLanguage(lang || "pl");
-    };
-    loadLanguage();
-  }, []);
+  const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
     const loadDialogueHistory = async () => {
@@ -52,7 +44,6 @@ export function useHistoryScreenViewModel(act: string) {
 
   return {
     dialogueHistory,
-    language,
     scrollRef,
     getTranslatedActName,
   };
