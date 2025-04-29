@@ -9,10 +9,8 @@ import {
 import { StatusBar } from "expo-status-bar";
 
 import { useGameEngine } from "@/hooks/useGameEngine";
-import {
-  useWaitingScreen,
-  WaitingScreenProvider,
-} from "@/context/WaitingScreenContext";
+import { useWaitingScreen } from "@/context/WaitingScreenContext";
+import { useDarknessUI } from "@/context/DarknessUIContext";
 
 import GlowSkia from "@/components/ui/GlowBackground";
 import GameMenu from "@/components/buttons/GameMenu";
@@ -28,11 +26,10 @@ import {
   resumeBackgroundMusic,
   stopRingSound,
 } from "@/services/soundController";
-import { useDarknessUI } from "@/hooks/useDarnkessUI";
 
 export default function GameScreen() {
   const scrollRef = useRef<ScrollView>(null);
-  const { darknessUI } = useDarknessUI();
+  const { isDark } = useDarknessUI();
 
   const {
     dialogue,
@@ -52,9 +49,9 @@ export default function GameScreen() {
   const { waitingVisible, notifyScreenName, timeLeft } = useWaitingScreen();
 
   const ContentWrapper: React.ComponentType<ViewProps | ImageBackgroundProps> =
-    darknessUI ? View : ImageBackground;
+    isDark ? View : ImageBackground;
 
-  const wrapperProps = darknessUI
+  const wrapperProps = isDark
     ? { style: { flex: 1, backgroundColor: "black" } }
     : {
         source: require("@/assets/images/INTRO.png"),
@@ -64,7 +61,7 @@ export default function GameScreen() {
 
   return (
     <ContentWrapper {...wrapperProps}>
-      {!darknessUI && <GlowSkia />}
+      {!isDark && <GlowSkia />}
       <StatusBar hidden />
 
       <ActSwitcher
