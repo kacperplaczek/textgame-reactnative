@@ -16,9 +16,9 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { LanguageProvider } from "@/context/LanguageContext";
 import Storage from "expo-storage";
 import {
-  initializeBackgroundMusic,
   playBackgroundMusic,
   pauseBackgroundMusic,
+  loadSoundSettings,
 } from "@/services/soundController";
 
 export default function RootLayout() {
@@ -38,7 +38,7 @@ export default function RootLayout() {
 
   useEffect(() => {
     const setupMusic = async () => {
-      await initializeBackgroundMusic();
+      await loadSoundSettings();
       const storedMusic = await Storage.getItem({ key: "canPlayMusic" });
       if (storedMusic !== "off") {
         await playBackgroundMusic();
