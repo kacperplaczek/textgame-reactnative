@@ -1,42 +1,122 @@
 import { Audio } from "expo-av";
-import { soundsMap } from "../settings/soundMap";
 
-let activeSounds: Audio.Sound[] = [];
+// Ścieżki do plików
+const clickSoundAsset = require("@/assets/sounds/choice.wav");
+const pustyniaAsset = require("@/assets/sounds/pustynia.mp3");
+const ringSoundAsset = require("@/assets/sounds/phone-call.mp3");
 
-export const playSound = async (key: string, loop: boolean = false) => {
+let clickSound: Audio.Sound | null = null;
+let backgroundMusic: Audio.Sound | null = null;
+let isBackgroundMusicPlaying = false;
+
+// Inicjalizacja kliknięcia
+async function loadClickSound() {
+  if (!clickSound) {
+    const { sound } = await Audio.Sound.createAsync(clickSoundAsset);
+    clickSound = sound;
+  }
+}
+
+// Odtwarzanie kliknięcia
+export async function playClickSound() {
   try {
-    console.log(`🔊 playSound -> key: ${key}, loop: ${loop}`);
+    await loadClickSound();
+    await clickSound?.replayAsync();
+  } catch (error) {
+    console.error("❌ Błąd odtwarzania kliknięcia:", error);
+  }
+}
 
-    if (!soundsMap[key]) {
-      console.warn(`🚨 Dźwięk ${key} nie znaleziony w soundMap`);
-      return;
+// Inicjalizacja i kontrola muzyki
+export async function initializeBackgroundMusic() {
+  if (!backgroundMusic) {
+    const { sound } = await Audio.Sound.createAsync(pustyniaAsset, {
+      shouldPlay: false,
+      isLooping: true,
+    });
+    backgroundMusic = sound;
+  }
+}
+
+export async function playBackgroundMusic() {
+  try {
+    await initializeBackgroundMusic();
+    const status = await backgroundMusic?.getStatusAsync();
+    if (status && !status.isPlaying) {
+      await backgroundMusic?.playAsync();
     }
+  } catch (error) {
+    console.error("❌ Błąd włączania muzyki:", error);
+  }
+}
 
-    // Zatrzymaj wszystko co leci
-    await stopAllSounds();
+export async function pauseBackgroundMusic() {
+  try {
+    const status = await backgroundMusic?.getStatusAsync();
+    if (status?.isPlaying) {
+      await backgroundMusic?.pauseAsync();
+      isBackgroundMusicPlaying = false;
+    }
+  } catch (error) {
+    console.error("❌ Błąd pauzy muzyki:", error);
+  }
+}
 
-    const { sound } = await Audio.Sound.createAsync(soundsMap[key]);
-    activeSounds.push(sound);
+export async function resumeBackgroundMusic() {
+  try {
+    const status = await backgroundMusic?.getStatusAsync();
+    if (status && !status.isPlaying && !isBackgroundMusicPlaying) {
+      await backgroundMusic?.playAsync();
+      isBackgroundMusicPlaying = true;
+    }
+  } catch (error) {
+    console.error("❌ Błąd wznowienia muzyki:", error);
+  }
+}
 
-    await sound.setIsLoopingAsync(loop);
+let ringSoundRef: Audio.Sound | null = null;
+
+export async function playRingSound() {
+  try {
+    if (!ringSoundRef) {
+      const { sound } = await Audio.Sound.createAsync(ringSoundAsset, {
+        shouldPlay: true,
+        isLooping: true,
+      });
+      ringSoundRef = sound;
+    } else {
+      const status = await ringSoundRef.getStatusAsync();
+      if (!status.isPlaying) {
+        await ringSoundRef.playAsync();
+      }
+    }
+  } catch (e) {
+    console.error("❌ Błąd odtwarzania dzwonka:", e);
+  }
+}
+
+export async function stopRingSound() {
+  try {
+    if (ringSoundRef) {
+      await ringSoundRef.stopAsync();
+      await ringSoundRef.unloadAsync();
+      ringSoundRef = null;
+    }
+  } catch (e) {
+    console.error("❌ Błąd zatrzymywania dzwonka:", e);
+  }
+}
+
+export async function playSound(soundPath: any, loop: boolean = false) {
+  try {
+    const { sound } = await Audio.Sound.createAsync(soundPath, {
+      shouldPlay: true,
+      isLooping: loop,
+    });
     await sound.playAsync();
-
-    console.log("✅ Dźwięk gra");
-  } catch (err) {
-    console.error("❌ Błąd odtwarzania dźwięku:", err);
+    return sound;
+  } catch (e) {
+    console.error("❌ Błąd odtwarzania dźwięku:", e);
+    return null;
   }
-};
-
-export const stopAllSounds = async () => {
-  try {
-    console.log("🛑 Zatrzymuję wszystkie dźwięki...");
-    for (const sound of activeSounds) {
-      await sound.stopAsync();
-      await sound.unloadAsync();
-    }
-    activeSounds = [];
-    console.log("✅ Wszystkie dźwięki zatrzymane");
-  } catch (err) {
-    console.error("❌ Błąd zatrzymywania dźwięków:", err);
-  }
-};
+}
