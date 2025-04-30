@@ -40,6 +40,7 @@ const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = (props) => {
       style={styles.overlay}
       onPress={handleClose}
       activeOpacity={0.9}
+      testID="calling-screen-overlay"
     >
       <ImageBackground
         source={backgroundImage}
