@@ -12,7 +12,7 @@ import {
 import { translations } from "@/i18n/translations";
 import { useGameMenuViewModel } from "@/viewmodels/useGameMenuViewModel";
 
-export default function GameMenu({ onReset }) {
+export default function GameMenu({}) {
   const {
     jezyk,
     settingsVisible,
@@ -29,7 +29,7 @@ export default function GameMenu({ onReset }) {
   } = useGameMenuViewModel();
 
   return (
-    <View>
+    <View testID="game-menu">
       {/* Przycisk menu */}
       <TouchableOpacity
         style={styles.menuButton}
