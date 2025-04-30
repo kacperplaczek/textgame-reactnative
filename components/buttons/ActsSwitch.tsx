@@ -12,7 +12,7 @@ const ActSwitcher = ({ onMountRefresh }: { onMountRefresh?: () => void }) => {
   } = useActsSwitchViewModel();
 
   return (
-    <View style={styles.container}>
+    <View testID="acts-switch" style={styles.container}>
       <View style={styles.switcherContainer}>
         {completedActs.map((act) => (
           <TouchableOpacity
