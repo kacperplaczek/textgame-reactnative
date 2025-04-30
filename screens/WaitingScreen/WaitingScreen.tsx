@@ -65,6 +65,7 @@ export default function WaitingScreenOverlay() {
         alignItems: "center",
         zIndex: 9999,
       }}
+      testID="ActivityIndicator"
     >
       {!isImageLoaded && <ActivityIndicator size="large" color="#219653" />}
 
