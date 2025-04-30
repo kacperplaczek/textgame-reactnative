@@ -1,5 +1,57 @@
 # Changelog
 
+## [1.8.3] - 2025-04-30
+
+### 🛠 Refaktoryzacja
+
+- Podzielenie CallingScreen na viewmodel.
+- Podzielenie DeathScreen na viewmodel.
+- Usunięcie starej konfiguracji WaitingScreens.
+- Utworzono testy jednostkowe dla wszystkich ekranów w screens/ oraz dla wszystkich komponentów z components/buttons/
+
+### Zakończone:
+
+- Zakończono dzielenie kodu na ViewModele.
+- Utworzenie testów jednostkowych
+
+### Uwagi
+
+Wynik testów jednostkowych to:
+
+> Test Suites: 7 passed, 7 total
+> Tests: 14 passed, 14 total
+> Snapshots: 0 total
+> Time: 1.41 s, estimated 2 s
+> Ran all test suites.
+
+---
+
+## [1.8.2] - 2025-04-29
+
+### 🛠 Refaktoryzacja
+
+- Dodano Context API dla LanguageContext.tsx - obsługa i przechowywanie informacji o języku.
+- Zaktualizowano index.tsx oraz \_layout.tsx (Root Layout) pod nowe Context API dla LanguageContext.
+- Utworzono całkowicie nowy system kontroli dźwięku który został już zaimplementowany do \_layout.tsx, GameMenu.tsx, CallingScreen.tsx,
+- Utworzono ustawienia odrębnie dla dźwięku oraz muzyki w tle.
+
+### **Do przetestowania:**
+
+- Sprawdzić czy teraz po usunięciu parametru `"orientation": "portrait"` ekran na iPAD dalej się obraca.
+  > Zostało to wcześniej sprawdzone na tablecie Samsung Galaxy - ekran nie obraca się.
+
+> **Uwagi:**
+> Commity o ID: 083b5dd, bf93000, a3071f9 wystąpiły z błędu GIT na moim komputerze. Opisałem sytuację na WhatsApp więc pozwole sobie przekopiować tutaj treść wiadomości:
+
+_Treść wiadomości z WHATSAPP_:
+Witam chciałbym poinformować o tych 3 commitach, wystąpił u mnie problem z githubem gdy chciałem pozmieniać nazwy nagle wywaliło mi błędami, nie dało się zapisywać plików a na sam koniec wywaliło mnie z brancha na pojedyńczego commita.....
+Dlatego wróciłem do projektu raz jeszcze, switchnąłem się na branch dev i pushnąłem to co miałem związane z Context API.
+Uwzględnie to w uwagach przy changelog.
+
+> Te 3 commity odnoszą się do zmiany z Context API tj. podpięcie HomeScreen, PrologScreen, HistoryScreen ViewModels pod LanguageContext.tsx.
+
+---
+
 ## [1.8.1] - 2025-04-28
 
 ### 🛠 Refaktoryzacja
@@ -23,8 +75,9 @@
 
 ### **Do przetestowania:**
 
-- Sprawdzić czy teraz po usunięciu parametru `"orientation": "portrait"` ekran na iPAD dalej się obraca.
-  > Zostało to wcześniej sprawdzone na tablecie Samsung Galaxy - ekran nie obraca się.
+Sprawdzić czy teraz po usunięciu parametru `"orientation": "portrait"` ekran na iPAD dalej się obraca.
+
+- Zostało to wcześniej sprawdzone na tablecie Samsung Galaxy - ekran nie obraca się. \*
 
 > **Uwagi:**
 > W nadchodzącej wersji 1.8.2 zostaną dodane Context API do przechowywania stanu gry.
