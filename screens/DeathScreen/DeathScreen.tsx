@@ -29,6 +29,7 @@ const DeathScreen: React.FC<DeathScreenProps> = ({ title, image, onRetry }) => {
         style={styles.touchable}
         onPress={handleRetry}
         activeOpacity={1}
+        testID="death-screen-touchable"
       >
         <ImageBackground
           source={image}
