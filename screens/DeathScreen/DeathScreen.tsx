@@ -8,6 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { useDeathScreenViewModel } from "@/viewmodels/useDeathScreenViewModel";
+import GlowSkia from "@/components/ui/GlowBackground"; // <- dodany import
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,7 +37,11 @@ const DeathScreen: React.FC<DeathScreenProps> = ({ title, image, onRetry }) => {
           style={styles.imageBackground}
           resizeMode="cover"
         >
-          <View style={styles.overlay}>
+          {/* Przyciemnienie */}
+          <View style={styles.overlay} />
+
+          {/* Tytuł */}
+          <View style={styles.titleContainer}>
             <Text style={styles.title}>{resolvedTitle}</Text>
           </View>
         </ImageBackground>
@@ -62,21 +67,23 @@ const styles = StyleSheet.create({
   },
   imageBackground: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     width: "100%",
     height: "100%",
   },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
-    padding: 20,
-    borderRadius: 10,
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  titleContainer: {
+    position: "absolute",
+    top: height * 0.15,
+    width: "100%",
+    alignItems: "center",
   },
   title: {
     fontSize: 32,
-    color: "white",
+    color: "#219653",
     textAlign: "center",
-    fontWeight: "bold",
     fontFamily: "VT323Regular",
   },
 });
