@@ -20,10 +20,8 @@ export default function GameMenu({}) {
     modalVisible,
     setModalVisible,
     soundEnabled,
-    notificationsEnabled,
     canPlayMusic,
     toggleMusic,
-    toggleNotifications,
     handleResetGame,
     toggleSound,
   } = useGameMenuViewModel();
