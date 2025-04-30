@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -7,18 +7,9 @@ import {
   TouchableOpacity,
   ImageBackground,
 } from "react-native";
-import { npcData, NpcKey } from "@/settings/NPCData";
-import { translations } from "@/i18n/translations";
-import { useLanguage } from "@/context/LanguageContext";
-import {
-  pauseBackgroundMusic,
-  resumeBackgroundMusic,
-  playRingSound,
-  stopRingSound,
-} from "@/services/soundController";
-
-const DefaultBgImage = require("@/assets/images/bg_intro.png");
-const BottomImage = require("@/assets/images/panel_komputera.png");
+// import BottomImage from "@/assets/images/panel_komputera.png";
+import { useCallingScreenViewModel } from "@/viewmodels/useCallingScreenViewModel";
+import { NpcKey } from "@/settings/NPCData";
 
 interface CallingScreenOverlayProps {
   visible: boolean;
@@ -30,74 +21,19 @@ interface CallingScreenOverlayProps {
   autoNextDelay?: number;
 }
 
-const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = ({
-  visible,
-  title,
-  subtitle,
-  npcKey,
-  background,
-  onClose,
-  autoNextDelay,
-}) => {
-  const { language } = useLanguage();
+const CallingScreenOverlay: React.FC<CallingScreenOverlayProps> = (props) => {
+  const {
+    npcAvatar,
+    npcName,
+    translatedTitle,
+    translatedSubtitle,
+    backgroundImage,
+    handleClose,
+  } = useCallingScreenViewModel(props);
 
-  useEffect(() => {
-    console.log("🏁 Init useEffect - visible:", visible);
+  const BottomImage = require("@/assets/images/panel_komputera.png");
 
-    let timeout: NodeJS.Timeout;
-
-    const init = async () => {
-      if (visible) {
-        await pauseBackgroundMusic();
-        await playRingSound();
-      }
-
-      if (autoNextDelay) {
-        timeout = setTimeout(() => {
-          handleClose();
-        }, autoNextDelay);
-      }
-    };
-
-    init();
-
-    return () => {
-      clearTimeout(timeout);
-      stopRingSound();
-      resumeBackgroundMusic();
-    };
-  }, [visible, autoNextDelay]);
-
-  const handleClose = async () => {
-    await stopRingSound();
-    await resumeBackgroundMusic();
-    onClose();
-  };
-
-  if (!visible) return null;
-
-  const npcAvatar = npcKey ? npcData[npcKey]?.avatar : null;
-  const npcName =
-    npcKey && translations[language]?.[npcData[npcKey]?.nameKey]
-      ? translations[language][npcData[npcKey].nameKey]
-      : "Nieznany NPC";
-
-  const translatedTitle =
-    title && translations[language]?.[title]
-      ? translations[language][title]
-      : translations[language]?.incomingCallTitle ?? "Połączenie przychodzące";
-
-  const translatedSubtitle =
-    subtitle && translations[language]?.[subtitle]
-      ? translations[language][subtitle]
-      : translations[language]?.incomingCallSubtitle ?? "Kliknij, aby odebrać";
-
-  let backgroundImage = DefaultBgImage;
-  if (typeof background === "string" && background.startsWith("http")) {
-    backgroundImage = { uri: background };
-  } else if (background && typeof background !== "string") {
-    backgroundImage = background;
-  }
+  if (!props.visible) return null;
 
   return (
     <TouchableOpacity
