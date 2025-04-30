@@ -134,6 +134,18 @@ export const useGameEngine = () => {
       );
       let scene = scenes[sceneName];
 
+      // Włącz ciemne UI
+      if (scene.enableDarknessUI) {
+        console.log("Tryb ciemny został włączony");
+        await enableDark();
+      }
+
+      // Wyłącz ciemne UI
+      if (scene.disableDarknessUI) {
+        console.log("Tryb ciemny został wyłączony");
+        await disableDark();
+      }
+
       // ⛔ Jeżeli scena nie istnieje, sprawdź czy może to nextAct i trzeba zmienić akt
       if (!scene) {
         console.warn(
@@ -158,18 +170,6 @@ export const useGameEngine = () => {
       await saveToHistory(currentAct, msg);
 
       console.log("Dodaję wiadomość do dialogu", tekst);
-
-      // Włącz ciemne UI
-      if (scene.enableDarknessUI) {
-        console.log("Tryb ciemny został włączony");
-        await enableDark();
-      }
-
-      // Wyłącz ciemne UI
-      if (scene.disableDarknessUI) {
-        console.log("Tryb ciemny został wyłączony");
-        await disableDark();
-      }
 
       if (scene.options) {
         // 5. Dodaj opcje jeśli są
