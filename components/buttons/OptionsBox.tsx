@@ -10,7 +10,7 @@ type GameOptions = {
 
 const OptionsBox = ({ options }: { options: GameOptions[] }) => {
   return (
-    <View style={styles.container}>
+    <View testID="options-box" style={styles.container}>
       {options.map((option, index) => (
         <TouchableOpacity
           key={index}
