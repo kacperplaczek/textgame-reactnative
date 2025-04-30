@@ -22,7 +22,7 @@ export const getScenesForAct = (
 
     const scenes = config.scenario.getScenes(translations[lang], plec);
 
-    console.log("📘 Sceny:", scenes);
+    // console.log("📘 Sceny:", scenes);
 
     return scenes;
   } catch (err) {
