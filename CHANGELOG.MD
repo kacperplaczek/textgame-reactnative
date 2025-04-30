@@ -9,6 +9,7 @@
 - Usunięcie starej konfiguracji `WaitingScreens`.
 - Utworzono testy jednostkowe dla wszystkich ekranów w `screens/` oraz dla wszystkich komponentów z `components/buttons/`
 - Aktualizacja UI dla ekranu `DeathScreen`
+- Zaimplementowanie logiki `useDarnkessUI` do `useGameEngine`.
 
 ### Zakończone:
 
@@ -17,6 +18,7 @@
 - Prowadzenie Changeloga projektu
 - Utworzenie Stora - Context w context/
 - System obsługi dźwięku
+- Włączanie / wyłączanie ciemności w grze
 
 ### Uwagi
 
