@@ -17,7 +17,7 @@ export const getScenesForAct = (
 
   try {
     console.log("📘 Ładowanie scen dla aktu:", actId);
-    console.log("📘 Tłumaczenia:", translations[lang]);
+    // console.log("📘 Tłumaczenia:", translations[lang]);
     console.log("📘 Płeć gracza:", plec);
 
     const scenes = config.scenario.getScenes(translations[lang], plec);
