@@ -4,19 +4,23 @@
 
 ### 🛠 Refaktoryzacja
 
-- Podzielenie CallingScreen na viewmodel.
-- Podzielenie DeathScreen na viewmodel.
-- Usunięcie starej konfiguracji WaitingScreens.
-- Utworzono testy jednostkowe dla wszystkich ekranów w screens/ oraz dla wszystkich komponentów z components/buttons/
+- Podzielenie `CallingScreen` na viewmodel.
+- Podzielenie `DeathScreen` na viewmodel.
+- Usunięcie starej konfiguracji `WaitingScreens`.
+- Utworzono testy jednostkowe dla wszystkich ekranów w `screens/` oraz dla wszystkich komponentów z `components/buttons/`
+- Aktualizacja UI dla ekranu `DeathScreen`
 
 ### Zakończone:
 
 - Zakończono dzielenie kodu na ViewModele.
 - Utworzenie testów jednostkowych
+- Prowadzenie Changeloga projektu
+- Utworzenie Stora - Context w context/
+- System obsługi dźwięku
 
 ### Uwagi
 
-Wynik testów jednostkowych to:
+**Wynik testów jednostkowych to:**
 
 > Test Suites: 7 passed, 7 total
 > Tests: 14 passed, 14 total
