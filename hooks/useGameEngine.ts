@@ -15,6 +15,7 @@ import { saveToHistory } from "@/services/saveToHistory";
 import { useDialogue } from "@/viewmodels/useDialogueViewModel";
 import { useOptions } from "@/services/useOptions";
 import { useWaitingScreen } from "@/context/WaitingScreenContext";
+import { useDarknessUI } from "@/context/DarknessUIContext";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();
@@ -35,6 +36,7 @@ export const useGameEngine = () => {
   const [actSwitcherRefresh, setActSwitcherRefresh] = useState<
     (() => void) | null
   >(null);
+  const { enableDark, disableDark } = useDarknessUI();
 
   useEffect(() => {
     const setupAudioMode = async () => {
@@ -157,8 +159,20 @@ export const useGameEngine = () => {
 
       console.log("Dodaję wiadomość do dialogu", tekst);
 
-      // 5. Dodaj opcje jeśli są
+      // Włącz ciemne UI
+      if (scene.enableDarknessUI) {
+        console.log("Tryb ciemny został włączony");
+        await enableDark();
+      }
+
+      // Wyłącz ciemne UI
+      if (scene.disableDarknessUI) {
+        console.log("Tryb ciemny został wyłączony");
+        await disableDark();
+      }
+
       if (scene.options) {
+        // 5. Dodaj opcje jeśli są
         updateOptions(
           scene.options.map((option) => ({
             tekst: option.tekst,
