@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import Storage from "expo-storage";
 import { translations } from "@/i18n/translations";
-import { useLanguage } from "@/context/LanguageContext"; // <<< Dodane
+import { useLanguage } from "@/context/LanguageContext";
+import { ScrollView } from "react-native";
 
 export function useHistoryScreenViewModel(act: string) {
-  const { language } = useLanguage(); // <<< Korzystamy z globalnego języka
+  const { language } = useLanguage();
   const [dialogueHistory, setDialogueHistory] = useState([]);
   const scrollRef = useRef<ScrollView>(null);
 
