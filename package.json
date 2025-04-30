@@ -12,7 +12,13 @@
     "lint": "expo lint"
   },
   "jest": {
-    "preset": "jest-expo"
+    "preset": "jest-expo",
+    "setupFiles": [
+      "./jest.setup.js"
+    ],
+    "moduleNameMapper": {
+      "^expo-av$": "<rootDir>/__mocks__/expo-av.js"
+    }
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
