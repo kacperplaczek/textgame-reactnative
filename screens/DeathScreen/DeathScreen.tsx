@@ -7,23 +7,27 @@ import {
   Dimensions,
   ImageBackground,
 } from "react-native";
+import { useDeathScreenViewModel } from "@/viewmodels/useDeathScreenViewModel";
 
 const { width, height } = Dimensions.get("window");
 
-const DeathScreen = ({
-  title,
-  image,
-  onRetry,
-}: {
+interface DeathScreenProps {
   title: string;
   image: any;
   onRetry: () => void;
-}) => {
+}
+
+const DeathScreen: React.FC<DeathScreenProps> = ({ title, image, onRetry }) => {
+  const { title: resolvedTitle, handleRetry } = useDeathScreenViewModel({
+    title,
+    onRetry,
+  });
+
   return (
     <View style={styles.wrapper}>
       <TouchableOpacity
         style={styles.touchable}
-        onPress={onRetry}
+        onPress={handleRetry}
         activeOpacity={1}
       >
         <ImageBackground
@@ -32,7 +36,7 @@ const DeathScreen = ({
           resizeMode="cover"
         >
           <View style={styles.overlay}>
-            <Text style={styles.title}>{title}</Text>
+            <Text style={styles.title}>{resolvedTitle}</Text>
           </View>
         </ImageBackground>
       </TouchableOpacity>
