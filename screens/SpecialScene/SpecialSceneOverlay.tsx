@@ -14,7 +14,7 @@ export default function SpecialSceneOverlay({
   background?: any;
 }) {
   return (
-    <Modal visible={visible} transparent animationType="fade">
+    <Modal visible={visible} transparent animationType="fade" testID="">
       <ImageBackground
         source={background || require("@/assets/images/INTRO.png")}
         style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
