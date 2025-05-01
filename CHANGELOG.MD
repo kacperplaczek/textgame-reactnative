@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.8.4] - 2025-05-01
+
+### Lista Zmian
+
+- Dodano obsługę Powiadomień
+- Naprawiono błąd w wyniku którego powiadomienia przychodziły z znacznym opóźnieniem wynoszącym czas oczekiwania ekranu WaitingScreen.
+- Naprawiono błąd wysyłania więcej niż jednego powiadominienia dla sceny który generował się przy ponownym włączaniu się sceny.
+- Dodano pozwolenia na powiadomienia.
+- Zaktualizowano scenariusz do prawidłowych ustawień.
+
+### Zakończone:
+
+- System powiadomień.
+
+### Uwagi
+
+Trzeba przetestować aplikację pod kontem powiadomień, problem mam z tym, że powiadomienia pomimo tego iż data jest ustawiona z dokładnością co do 20ms to i tak powiadomienie wysyłane jest z opóźnieniem. Support EXPO poinformował mnie, że jest to spowodowane emulatorem EXPO i, że mam to przetestować na Produkcji w urządzeniu bezpośrednio.
+
+> Aplikacja przetestowana - powiadomienia na preview wysyłają się od 20 do 30 sekund po zakończeniu odliczania, opóźnienie spowodowane systemem nie grą.
+
+---
+
 ## [1.8.3] - 2025-04-30
 
 ### 🛠 Refaktoryzacja
