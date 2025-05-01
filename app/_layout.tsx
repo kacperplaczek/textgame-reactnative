@@ -41,6 +41,25 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
+    const requestPermissions = async () => {
+      const { status } = await Notifications.getPermissionsAsync();
+      if (status !== "granted") {
+        const { status: newStatus } =
+          await Notifications.requestPermissionsAsync();
+        if (newStatus !== "granted") {
+          console.warn("❌ Użytkownik nie wyraził zgody na powiadomienia.");
+        } else {
+          console.log("✅ Powiadomienia dozwolone.");
+        }
+      } else {
+        console.log("✅ Powiadomienia już dozwolone.");
+      }
+    };
+
+    requestPermissions();
+  }, []);
+
+  useEffect(() => {
     if (Platform.OS === "android") {
       NavigationBar.setVisibilityAsync("hidden");
       NavigationBar.setPositionAsync("absolute");
