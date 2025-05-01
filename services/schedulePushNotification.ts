@@ -1,6 +1,5 @@
 import * as Notifications from "expo-notifications";
 import { SchedulableTriggerInputTypes } from "expo-notifications";
-import { Platform } from "react-native";
 
 /**
  * 🔔 Funkcja do planowania powiadomienia
@@ -16,27 +15,33 @@ export const schedulePushNotification = async (
   try {
     console.log(`📢 Planowanie powiadomienia za: ${delayInSeconds} sekund`);
 
-    // Sprawdzenie uprawnień do powiadomień
     const { status } = await Notifications.getPermissionsAsync();
+    const safeDelay = Math.max(1, delayInSeconds);
+    const scheduledDate = new Date(Date.now() + safeDelay * 1000);
+
+    console.log(
+      `⏰ Obliczona data powiadomienia: ${scheduledDate.toISOString()}`
+    );
+
     if (status !== "granted") {
       console.warn("❌ Brak uprawnień do wysyłania powiadomień!");
       return;
     }
 
-    // Planowanie powiadomienia
-    await Notifications.scheduleNotificationAsync({
+    const result = await Notifications.scheduleNotificationAsync({
       content: {
         title,
         body,
       },
       trigger: {
         type: SchedulableTriggerInputTypes.DATE,
-        date: new Date(Date.now() + delayInSeconds * 1000),
+        date: scheduledDate,
         channelId: "default",
       },
     });
 
     console.log("✅ Powiadomienie zostało zaplanowane poprawnie!");
+    console.log(`🆔 ID zaplanowanego powiadomienia: ${result}`);
   } catch (error) {
     console.error("❌ Błąd planowania powiadomienia:", error);
   }
