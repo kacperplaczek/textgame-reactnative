@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { getCurrentLanguage } from "@/models/LanguageController";
-import { DialogueMessage } from "@/lib/dialogue/useDialogue";
+import { DialogueMessage } from "./useDialogueViewModel";
 
 export function useDialogueBoxViewModel(
   scrollRef: React.RefObject<ScrollView>,

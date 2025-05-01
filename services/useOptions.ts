@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Storage from "expo-storage";
 
 type Option = {
   tekst: string;
@@ -8,7 +9,7 @@ type Option = {
 export const useOptions = () => {
   const [options, setOptions] = useState<Option[]>([]);
 
-  const updateOptions = (newOptions: Option[]) => {
+  const updateOptions = async (newOptions: Option[]) => {
     setOptions(newOptions);
   };
 
