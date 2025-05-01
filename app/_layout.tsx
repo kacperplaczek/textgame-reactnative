@@ -22,6 +22,7 @@ import {
 } from "@/services/soundController";
 import { WaitingScreenProvider } from "@/context/WaitingScreenContext";
 import { DarknessUIProvider } from "@/context/DarknessUIContext";
+import * as Notifications from "expo-notifications";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -30,6 +31,14 @@ export default function RootLayout() {
   });
 
   const [canPlayMusic, setCanPlayMusic] = useState(false);
+
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: true,
+    }),
+  });
 
   useEffect(() => {
     if (Platform.OS === "android") {
