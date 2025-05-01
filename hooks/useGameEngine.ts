@@ -210,19 +210,27 @@ export const useGameEngine = () => {
       if (scene.notifyTime && scene.notifyScreenName) {
         const targetScene = scene.autoNextScene;
         const notifyKey = "waitingEndTimestamp";
+        const notifiedSceneKey = "notifiedScene";
 
         const storedTimestamp = await Storage.getItem({ key: notifyKey });
+        const storedNotifiedScene = await Storage.getItem({
+          key: notifiedSceneKey,
+        });
         const now = Date.now();
 
         let endTime = storedTimestamp ? parseInt(storedTimestamp) : null;
 
         // Jeśli brak - pierwszy raz wchodzimy do sceny, więc zapisujemy
-        if (!storedTimestamp) {
+        if (!storedTimestamp || storedNotifiedScene !== sceneName) {
           endTime = now + scene.notifyTime * 1000;
           await Storage.setItem({ key: notifyKey, value: String(endTime) });
           await Storage.setItem({
             key: "autoNextScene",
             value: targetScene || "",
+          });
+          await Storage.setItem({
+            key: notifiedSceneKey,
+            value: sceneName,
           });
 
           if (
@@ -244,6 +252,7 @@ export const useGameEngine = () => {
 
         if (remaining <= 0 && targetScene) {
           console.log("⏰ Czas oczekiwania już minął, przechodzę dalej...");
+          await Storage.removeItem({ key: notifiedSceneKey }); // ❗ resetuj znacznik sceny
           return handleSceneChange(targetScene);
         }
 
@@ -259,8 +268,9 @@ export const useGameEngine = () => {
             stopWaiting();
 
             // Czyszczenie zawartości storage po przejściu do nastepnej sceny.
-            await Storage.removeItem({ key: "waitingEndTimestamp" });
+            await Storage.removeItem({ key: notifyKey });
             await Storage.removeItem({ key: "autoNextScene" });
+            await Storage.removeItem({ key: notifiedSceneKey }); // ❗ resetuj znacznik sceny
 
             if (targetScene) handleSceneChange(targetScene);
           }
@@ -309,6 +319,7 @@ export const useGameEngine = () => {
         // Wyczyść pozostałości z poprzedniego aktu
         await Storage.removeItem({ key: "waitingEndTimestamp" });
         await Storage.removeItem({ key: "autoNextScene" });
+        await Storage.removeItem({ key: "notifiedScene" });
 
         updateOptions([]);
         clearMessages();
