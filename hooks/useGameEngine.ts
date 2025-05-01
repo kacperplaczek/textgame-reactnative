@@ -101,9 +101,24 @@ export const useGameEngine = () => {
     setDeathScreenVisible(false);
     setCurrentDeathScreen(null);
 
+    await Storage.removeItem({ key: "notifiedScene" });
+    console.log("Usunięto zapisane dane notifiedScene.");
+
     const sceneToRestore = lastCheckpoint || getInitialSceneForAct(currentAct!);
     console.log("↩️ Wracam do checkpointu:", sceneToRestore);
     await handleSceneChange(sceneToRestore);
+  };
+
+  const clearNotificationSentKeys = async () => {
+    const allKeys = await Storage.getAllKeys();
+    const notificationKeys = allKeys.filter((key) =>
+      key.startsWith("notificationSent:")
+    );
+
+    for (const key of notificationKeys) {
+      await Storage.removeItem({ key });
+      console.log(`🗑️ Usunięto klucz: ${key}`);
+    }
   };
 
   const handleSceneChange = useCallback(
@@ -180,6 +195,15 @@ export const useGameEngine = () => {
               // Wykonaj dodatkową akcję (np. zapis do Storage)
               if (option.akcja) {
                 await option.akcja();
+                await Storage.removeItem({ key: "waitingEndTimestamp" });
+                await Storage.removeItem({ key: "autoNextScene" });
+                await Storage.removeItem({ key: "notifiedScene" });
+                await Storage.removeItem({ key: "notificationSentKey" });
+
+                await clearNotificationSentKeys();
+                console.log(
+                  "Usunięto Storage dla waitingEndTimestamp, autoNextScene oraz notifiedScene"
+                );
               }
 
               // Zapisywanie odpowiedzi gracza do historii.
@@ -211,16 +235,19 @@ export const useGameEngine = () => {
         const targetScene = scene.autoNextScene;
         const notifyKey = "waitingEndTimestamp";
         const notifiedSceneKey = "notifiedScene";
+        const notificationSentKey = `notificationSent:${sceneName}`;
 
         const storedTimestamp = await Storage.getItem({ key: notifyKey });
         const storedNotifiedScene = await Storage.getItem({
           key: notifiedSceneKey,
         });
+        const notificationAlreadySent = await Storage.getItem({
+          key: notificationSentKey,
+        });
         const now = Date.now();
 
-        let endTime = storedTimestamp ? parseInt(storedTimestamp) : null;
+        let endTime;
 
-        // Jeśli brak - pierwszy raz wchodzimy do sceny, więc zapisujemy
         if (!storedTimestamp || storedNotifiedScene !== sceneName) {
           endTime = now + scene.notifyTime * 1000;
           await Storage.setItem({ key: notifyKey, value: String(endTime) });
@@ -228,31 +255,50 @@ export const useGameEngine = () => {
             key: "autoNextScene",
             value: targetScene || "",
           });
-          await Storage.setItem({
-            key: notifiedSceneKey,
-            value: sceneName,
-          });
-
-          if (
-            scene.notification &&
-            scene.notificationTitle &&
-            scene.notificationDesc
-          ) {
-            schedulePushNotification(
-              scene.notificationTitle,
-              scene.notificationDesc,
-              scene.notifyTime
-            );
-          }
+          await Storage.setItem({ key: notifiedSceneKey, value: sceneName });
+          console.log(
+            `🆕 Nowy endTime dla '${sceneName}': ${new Date(
+              endTime
+            ).toISOString()}`
+          );
         } else {
-          endTime = parseInt(storedTimestamp);
+          endTime = parseInt(storedTimestamp, 10);
+          console.log(
+            `⏳ Istniejący endTime dla '${sceneName}': ${new Date(
+              endTime
+            ).toISOString()}`
+          );
         }
 
         const remaining = Math.max(0, Math.floor((endTime - now) / 1000));
+        console.log(`⏰ Pozostały czas dla '${sceneName}': ${remaining}s`);
+
+        if (
+          scene.notification &&
+          scene.notificationTitle &&
+          scene.notificationDesc &&
+          !notificationAlreadySent &&
+          remaining > 0
+        ) {
+          console.log(
+            `📢 Planuję powiadomienie za ${remaining}s: ${scene.notificationTitle}`
+          );
+          await schedulePushNotification(
+            scene.notificationTitle,
+            scene.notificationDesc,
+            remaining
+          );
+          await Storage.setItem({ key: notificationSentKey, value: "true" });
+        } else if (notificationAlreadySent) {
+          console.log(`🚫 Powiadomienie dla '${sceneName}' już ustawione`);
+        }
 
         if (remaining <= 0 && targetScene) {
-          console.log("⏰ Czas oczekiwania już minął, przechodzę dalej...");
-          await Storage.removeItem({ key: notifiedSceneKey }); // ❗ resetuj znacznik sceny
+          console.log(`✅ Czas minął, przechodzę do '${targetScene}'`);
+          await Storage.removeItem({ key: notifyKey });
+          await Storage.removeItem({ key: "autoNextScene" });
+          await Storage.removeItem({ key: notifiedSceneKey });
+          await Storage.removeItem({ key: notificationSentKey });
           return handleSceneChange(targetScene);
         }
 
@@ -260,23 +306,26 @@ export const useGameEngine = () => {
 
         const interval = setInterval(async () => {
           const nowTick = Date.now();
-          const diff = Math.max(0, Math.floor((endTime! - nowTick) / 1000));
+          const diff = Math.max(0, Math.floor((endTime - nowTick) / 1000));
           setTimeLeft(diff);
 
           if (diff <= 0) {
             clearInterval(interval);
             stopWaiting();
 
-            // Czyszczenie zawartości storage po przejściu do nastepnej sceny.
+            console.log(
+              `✅ Oczekiwanie w '${sceneName}' zakończone, czyszczę dane`
+            );
             await Storage.removeItem({ key: notifyKey });
             await Storage.removeItem({ key: "autoNextScene" });
-            await Storage.removeItem({ key: notifiedSceneKey }); // ❗ resetuj znacznik sceny
+            await Storage.removeItem({ key: notifiedSceneKey });
+            await Storage.removeItem({ key: notificationSentKey });
 
             if (targetScene) handleSceneChange(targetScene);
           }
         }, 1000);
 
-        return; // Zatrzymaj dalszą obsługę sceny
+        return; // Stop dalszej obsługi sceny
       }
 
       // 7. Obsłuż ekran specjalny (jeśli jest)
