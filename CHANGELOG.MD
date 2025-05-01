@@ -149,3 +149,129 @@ Sprawdzić czy teraz po usunięciu parametru `"orientation": "portrait"` ekran n
 > **Uwagi:**  
 > Wersja 1.8.0 obejmuje duże zmiany strukturalne i wprowadzenie architektury MVVM do kluczowych komponentów.  
 > Prace nad uzupełnieniem globalnego store'a i testów jednostkowych są zaplanowane na kolejne commity.
+
+---
+
+## [1.7.0] - 2025-04-26
+
+### ✨ Nowe funkcje
+
+- Dodano pełną kompatybilność z Androidem.
+- Ukończono wszystkie akty gry.
+- Poprawiono UI w wielu miejscach.
+
+### 🛠 Refaktoryzacja i poprawki
+
+- Naprawiono WaitingScreen, NotifyScreen, GameMenu, ActsSwitch.
+- Zakomentowano pokazywanie czasu na WaitingScreenOverlay.
+- Zaktualizowano pliki konfiguracyjne, w tym `.gitignore`.
+- Poprawiono historię czatów.
+
+### 📦 Inne
+
+- Dodano nowe grafiki.
+
+---
+
+## [1.6.8] - 2025-04-24
+
+### ✨ Nowe funkcje
+
+- Dodano przełączniki (Switch) aktów.
+- Ulepszono historię czatów.
+
+### 🛠 Poprawki UI i błędów
+
+- Naprawiono błędy WaitingScreen.
+- Poprawiono wyświetlanie ekranów oczekiwania.
+- Poprawiono tłumaczenia (translations.ts, PrivacyText).
+- Poprawiono wygląd GameMenu.
+- Aktualizacja ścieżek importów.
+
+---
+
+## [1.6.7] - 2025-04-22
+
+### ✨ Nowe funkcje
+
+- Utworzono loader dla reklam typu Interstitial.
+- Dodano nowy widok `/game` do odgrywania całej gry.
+- Utworzono helper do pobierania aktualnego aktu.
+- Utworzono kontroler dźwięków i obsługę dialogów.
+- Utworzono manager scen i hook dla ciemnego motywu gry.
+
+### 🛠 Refaktoryzacja
+
+- Utworzono główny loader dla reklam bannerowych.
+- Przeniesiono komponenty gry i poprawiono kod.
+- Dodano helper do przywracania stanu gry.
+- Dodano obsługę zapisu danych gry do cache.
+- Dodano odświeżanie stanu gry i wykrywanie zmian.
+
+---
+
+## [1.6.6] - 2025-04-20
+
+### ✨ Struktura projektu
+
+- Przeniesiono ekrany z `_components/` do `screens/`.
+- Utworzono podfolder `buttons/` w `components/`.
+- Utworzono folder `viewmodels/` i dodano modele ActsSwitch i GameMenu.
+- Usunięto stare foldery ekranu śmierci i końca aktu.
+- Aktualizacja `.gitignore` (dodano \*.zip).
+- Utworzono `viewmodel` dla DialogueBox, HomeScreen, PrologScreen, HistoryScreen.
+
+### 🛠 Refaktoryzacja i czyszczenie
+
+- Przeniesiono pliki do `services/`, `i18n/`, `models/`, `hooks/`.
+- Usunięto folder `lib/` i stare skrypty.
+- Aktualizacja importów w całym projekcie.
+
+---
+
+## [1.6.5] - 2025-04-18
+
+### ✨ Testy jednostkowe
+
+- Utworzono testy dla ActsSwitch, GameMenu, OptionBox, WaitingScreen, SpecialSceneOverlay, CallingScreen, DeathScreens.
+
+### 🛠 Poprawki
+
+- Dodano konfigurację `jest` i mocki dla `expo-av`.
+- Poprawiono UI DeathScreen.
+- Dodano obsługę DarknessUI w silniku gry.
+- Poprawiono logikę włączania/wyłączania DarknessUI.
+
+---
+
+## [1.6.4] - 2025-04-16
+
+### ✨ Powiadomienia
+
+- Dodano prośbę o zgodę na wysyłanie powiadomień w `_layout.tsx`.
+- Dodano obsługę przechowywania danych o powiadomieniu.
+- Zaktualizowano silnik gry pod usuwanie danych powiadomień.
+- Dodano debugowanie w `schedulePushNotifications.ts`.
+
+### 🛠 Poprawki
+
+- Zaktualizowano CallingScreen pod kontroler dźwięku i LanguageContext.
+- Utworzono ustawienia assetów dla dźwięku.
+- Dodano obsługę ustawień dźwięku w GameMenuViewModel.
+- Zaktualizowano tłumaczenia.
+
+---
+
+## [1.6.3] - 2025-04-14
+
+### ✨ Context API
+
+- Utworzono Context API dla WaitingScreen i DarknessUI.
+- Podpięto WaitingScreen pod nowy ContextAPI.
+- Dodano obsługę WaitingScreenContext w Root Layout.
+
+### 🛠 Poprawki
+
+- Dodano sprawdzanie czasu gry i usuwanie ekranu po zakończeniu czasu.
+- Zakomentowano console.log dla załadowanych scen.
+- Utworzono testy jednostkowe dla ActsSwitch i GameMenu.
