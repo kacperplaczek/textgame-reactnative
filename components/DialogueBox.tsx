@@ -14,7 +14,7 @@ const DialogueBox = ({
 }) => {
   const { lang } = useDialogueBoxViewModel(scrollRef, dialogue);
 
-  console.log("Dialogue Box --> wiadomości:", dialogue);
+  // console.log("Dialogue Box --> wiadomości:", dialogue);
 
   return (
     <ScrollView
