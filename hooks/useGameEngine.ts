@@ -16,27 +16,38 @@ import { useDialogue } from "@/viewmodels/useDialogueViewModel";
 import { useOptions } from "@/services/useOptions";
 import { useWaitingScreen } from "@/context/WaitingScreenContext";
 import { useDarknessUI } from "@/context/DarknessUIContext";
+import { useGameStore } from "@/store/GameStore";
 
 export const useGameEngine = () => {
   const { dialogue, addMessage, clearMessages } = useDialogue();
   const { options, updateOptions } = useOptions();
-  const [waitingVisible, setWaitingVisible] = useState(false);
-  const [notifyScreenName, setNotifyScreenName] = useState<string | null>(null);
-  const [currentScene, setCurrentScene] = useState<string | null>(null);
-  const [currentAct, setCurrentActState] = useState<ActId | null>(null);
-  const [specialSceneVisible, setSpecialSceneVisible] = useState(false);
   const { startWaiting, stopWaiting, setTimeLeft } = useWaitingScreen();
-  const [specialScene, setSpecialScene] = useState<any>(null);
-  const [currentDeathScreen, setCurrentDeathScreen] = useState<string | null>(
-    null
-  );
-  const [deathScreenVisible, setDeathScreenVisible] = useState(false);
-  const [lastCheckpoint, setLastCheckpoint] = useState<string | null>(null);
-  const [actDataReloadKey, setActDataReloadKey] = useState(Date.now());
-  const [actSwitcherRefresh, setActSwitcherRefresh] = useState<
-    (() => void) | null
-  >(null);
   const { enableDark, disableDark } = useDarknessUI();
+  const {
+    currentScene,
+    setCurrentScene,
+    currentAct,
+    setCurrentAct,
+    specialScene,
+    setSpecialScene,
+    specialSceneVisible,
+    setSpecialSceneVisible,
+    deathScreenVisible,
+    setDeathScreenVisible,
+    currentDeathScreen,
+    setCurrentDeathScreen,
+    lastCheckpoint,
+    setLastCheckpoint,
+    actDataReloadKey,
+    setActDataReloadKey,
+    notifyScreenName,
+    setNotifyScreenName,
+    waitingVisible,
+    setWaitingVisible,
+    initializeAct,
+    onRetryFromDeath,
+    setActSwitcherRefresh,
+  } = useGameStore();
 
   useEffect(() => {
     const setupAudioMode = async () => {
@@ -62,7 +73,7 @@ export const useGameEngine = () => {
 
       console.log("Ustawiam AKT z Storage:", actToUse);
 
-      setCurrentActState(actToUse);
+      setCurrentAct(actToUse);
     };
 
     restoreAct();
@@ -96,18 +107,6 @@ export const useGameEngine = () => {
 
     checkWaitingFromStorage();
   }, []);
-
-  const onRetryFromDeath = async () => {
-    setDeathScreenVisible(false);
-    setCurrentDeathScreen(null);
-
-    await Storage.removeItem({ key: "notifiedScene" });
-    console.log("Usunięto zapisane dane notifiedScene.");
-
-    const sceneToRestore = lastCheckpoint || getInitialSceneForAct(currentAct!);
-    console.log("↩️ Wracam do checkpointu:", sceneToRestore);
-    await handleSceneChange(sceneToRestore);
-  };
 
   const clearNotificationSentKeys = async () => {
     const allKeys = await Storage.getAllKeys();
@@ -362,7 +361,7 @@ export const useGameEngine = () => {
         }
 
         const nextAct = scene.nextAct as ActId;
-        setCurrentActState(nextAct);
+        setCurrentAct(nextAct);
         await Storage.setItem({ key: "currentAct", value: nextAct });
 
         // Wyczyść pozostałości z poprzedniego aktu
@@ -412,6 +411,5 @@ export const useGameEngine = () => {
     currentDeathScreen,
     onRetryFromDeath,
     actDataReloadKey,
-    setActSwitcherRefresh,
   };
 };
