@@ -23,6 +23,7 @@ import {
 import { WaitingScreenProvider } from "@/context/WaitingScreenContext";
 import { DarknessUIProvider } from "@/context/DarknessUIContext";
 import * as Notifications from "expo-notifications";
+import { lockOrientation } from "@/services/lockOrientationScreen";
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -31,6 +32,8 @@ export default function RootLayout() {
   });
 
   const [canPlayMusic, setCanPlayMusic] = useState(false);
+
+  lockOrientation();
 
   Notifications.setNotificationHandler({
     handleNotification: async () => ({
