@@ -1,5 +1,39 @@
 # Changelog
 
+## [1.8.6] - 2025-05-05
+
+### Lista Zmian
+
+- Dodanie funckji lockOrientation do app/\_layout.tsx (RootLayout)
+
+### Zakończone:
+
+Brak
+
+### Uwagi
+
+Brak
+
+---
+
+## [1.8.5] - 2025-05-05
+
+### Lista Zmian
+
+- Dodanie ZUSTAND Store dla useGameEngine.ts
+- Dodanie ZUSTAND Store dla SchedulePushNotification.ts
+- Dodanie ZUSTAND Store dla LanguageController.ts
+
+### Zakończone:
+
+- Utworzenie ZUSTAND Store
+
+### Uwagi
+
+Brak
+
+---
+
 ## [1.8.4] - 2025-05-01
 
 ### Lista Zmian
