@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.8.7] - 2025-05-05
+
+### Lista Zmian
+
+- Naprawa błędu w WaitingScreen - ekrany były coraz węższe podczas dalszego przechodzenia gry.
+- Naprawa błędu w +not-found.tsx w wyniku którego po włączeniu aplikacji ta crashowała się.
+- Dodanie ładowania reklam w WaitingScreen
+- Uproszczono logikę loadInterestialAd.ts
+
+### Zakończone:
+
+Brak
+
+### Uwagi
+
+Brak
+
+---
+
 ## [1.8.6] - 2025-05-05
 
 ### Lista Zmian
