@@ -15,6 +15,7 @@ import { translations } from "@/i18n/translations";
 import { waitingScreens } from "./_config/WaitingScreens";
 import { defaultScreen } from "./_config/DefaultWaitingScreen";
 import GlowSkia from "@/components/ui/GlowBackground";
+import { useInterstitialAd } from "@/services/LoadInterestialAd";
 
 export default function WaitingScreenOverlay() {
   const { waitingVisible, notifyScreenName, timeLeft } = useWaitingScreen();
@@ -23,6 +24,8 @@ export default function WaitingScreenOverlay() {
   const [screen, setScreen] = useState(defaultScreen);
   const [jezyk, setJezyk] = useState<"pl" | "en">("en");
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+
+  useInterstitialAd();
 
   useEffect(() => {
     if (!waitingVisible) return;
@@ -71,7 +74,7 @@ export default function WaitingScreenOverlay() {
 
       <ImageBackground
         source={screen.background}
-        style={{ flex: 1 }}
+        style={{ width, height }}
         resizeMode="cover"
         onLoadEnd={() => setIsImageLoaded(true)}
       >
